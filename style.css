@@ -1,0 +1,35 @@
+body {
+    margin: 0;
+    padding: 0;
+    /* Ajoutez de l'espace en haut pour ne pas cacher votre contenu */
+    padding-top: 60px; 
+}
+/* Positionnement du conteneur en haut de page */
+.handdrawn-line-container {
+    width: 100%;            /* Prend toute la largeur de l'écran */
+    display: flex;
+    justify-content: center; /* Centre la ligne si max-width est atteint */
+    margin-top: 15px;       /* Marge en haut pour respirer */
+    margin-bottom: 25px;    /* Espace avec le contenu du dessous */
+    padding: 0 10%;          /* Évite que la ligne touche les bords exacts de l'écran */
+    box-sizing: border-box;
+}
+
+/* Stylisation du SVG lui-même */
+.handdrawn-line {
+    width: 100%;            /* S'adapte à la largeur de son conteneur parent */
+    height: auto;           /* Garde les proportions vectorielles */
+    max-width: 900px;       /* Empêche la ligne de devenir trop longue sur très grand écran */
+    overflow: visible;       /* Laisse dépasser les petites irrégularités du filtre */
+}
+
+/* Stylisation du tracé vectoriel */
+.line-path {
+    fill: none;             /* Pas de remplissage pour une ligne */
+    stroke: black;          /* Couleur de la ligne (changez ici pour "blue", "#333", etc.) */
+    stroke-width: 4;        /* Épaisseur de la ligne */
+    stroke-linecap: round;  /* Bords arrondis pour simuler la fin du geste du stylo */
+    
+    /* APPLIQUE LE FILTRE DÉFINI DANS LE HTML POUR L'EFFET MAIN */
+    filter: url(#handfelt-line); 
+}
