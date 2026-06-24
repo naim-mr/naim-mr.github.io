@@ -3,85 +3,172 @@
 
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="author" content="Naïm Moussaoui Remil">
     <meta name="description"
-        content="Personnal webpage of Naïm MOUSSAOUI REMIL. PhD Student in Computer Science. At École Normale Supérieure.">
+        content="Personal webpage of Naïm Moussaoui Remil — PhD Candidate in Computer Science at Inria Paris & École Normale Supérieure (PSL). Static analysis by abstract interpretation for CTL properties in adversarial contexts.">
 
-    <title>Naïm MOUSSAOUI REMIL</title>
+    <title>Naïm Moussaoui Remil</title>
     <link rel="shortcut icon" type="image/png" href="assets/favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --font-serif: 'Spectral', Georgia, serif;
+            --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+        }
+
+        body {
+            font-family: var(--font-serif);
+        }
+
+        .font-serif {
+            font-family: var(--font-serif);
+        }
+
+        .font-mono {
+            font-family: var(--font-mono);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        section {
+            scroll-margin-top: 5rem;
+        }
+    </style>
 </head>
 
-<body>
-    <script src="https://cdn.tailwindcss.com"></script>
+<body class="bg-white text-slate-900 antialiased">
 
+    <header class="w-full max-w-4xl mx-auto px-6 pt-20 pb-8">
+        <div class="flex flex-col items-center text-center">
+            <h1 class="text-5xl font-serif font-medium text-slate-900 tracking-tight mb-3">Naïm Moussaoui Remil</h1>
+            <p class="font-mono text-sm uppercase tracking-widest text-slate-500 mb-1">
+                PhD Candidate in Computer Science
+            </p>
+            <p class="font-mono text-xs text-slate-400 mb-5">
+                École Normale Supérieure | PSL &middot; Inria Paris &middot; Paris, France
+            </p>
 
-    <header class="w-full">
-        <div class="flex flex-col md:flex-row md:items-baseline md:justify-center mb-4">
-            <h1 class="text-5xl font-serif text-slate-900 tracking-tight mb-2">Naïm Moussaoui Remil</h1>
+            <div class="flex justify-center items-center gap-5 text-slate-600 mb-8">
+                <a href="https://naim-mr.github.io" class="hover:text-black transition-colors" title="Website">
+                    <i class="fa-solid fa-house w-5 h-5" aria-hidden="true"></i>
+                </a>
+                <a href="https://github.com/naim-mr" class="hover:text-black transition-colors" title="GitHub">
+                    <i class="fa-brands fa-github text-xl" aria-hidden="true"></i>
+                </a>
+                <a href="https://scholar.google.com/citations?hl=fr&user=llkPxh8AAAAJ"
+                    class="hover:text-black transition-colors" title="Google Scholar">
+                    <i class="fa-solid fa-graduation-cap text-xl" aria-hidden="true"></i>
+                </a>
+                <a href="https://dblp.org/pid/378/6608.html" class="hover:text-black transition-colors" title="DBLP">
+                    <span class="font-mono text-sm font-semibold">dblp</span>
+                </a>
+                <a href="https://www.linkedin.com/in/naim-moussaoui-remil-2a73a21b6/"
+                    class="hover:text-[#0077B5] transition-colors" title="LinkedIn">
+                    <i class="fa-brands fa-linkedin text-xl" aria-hidden="true"></i>
+                </a>
+                <a href="mailto:naim.moussaoui-remil@inria.fr" class="hover:text-black transition-colors" title="Email">
+                    <i class="fa-solid fa-envelope text-xl" aria-hidden="true"></i>
+                </a>
+            </div>
         </div>
-        <div class="flex flex-col md:flex-row md:items-baseline md:justify-center mb-4">
-            <h3 class="text-5xl tracking-tight text-slate-900 font-mono text-sm">Phd Student in Computer Science @ ENS &
-                INRIA PARIS</h3>
-        </div>
-        <div class="flex justify-center space-x-5 mb-4 mt-4 md:mt-0 text-slate-700">
-            <a href="https://github.com/naim-mr" class="hover:text-black transition-colors" title="GitHub">
-                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.823 1.102.823 2.222 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-                </svg>
-            </a>
-            <a href="https://www.linkedin.com/in/naim-moussaoui-remil-2a73a21b6/"
-                class="hover:text-[#0077B5] transition-colors" title="LinkedIn">
-                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                </svg>
-            </a>
-            <a aria-label="Send email" href="mailto:me">
-                <i class="icon fa-solid fa-envelope" aria-hidden="true"></i>
-            </a>
-        </div>
-        <div class="flex justify-center h-[1px] bg-slate-400"></div>
-        <div class="flex justify-center ">
-            <nav class="mt-8 flex gap-8 text-xs font-medium uppercase tracking-widest text-slate-400">
-                <a href="#about" class="hover:text-black transition-colors">About</a>
-                <a href="#publications" class="hover:text-black transition-colors">Publications</a>
-                <!-- <a href="#" class="hover:text-black transition-colors">Teaching</a> -->
-            </nav>
-        </div>
+
+        <div class="h-px bg-slate-200"></div>
+
+        <nav class="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-3 text-xs font-mono font-medium uppercase tracking-widest text-slate-400">
+            <a href="#news" class="hover:text-black transition-colors">News</a>
+            <a href="#about" class="hover:text-black transition-colors">About</a>
+            <a href="#publications" class="hover:text-black transition-colors">Publications</a>
+            <a href="#experience" class="hover:text-black transition-colors">Experience</a>
+            <a href="#talks" class="hover:text-black transition-colors">Talks</a>
+            <a href="#software" class="hover:text-black transition-colors">Software</a>
+            <a href="#skills" class="hover:text-black transition-colors">Skills</a>
+        </nav>
     </header>
+
     <main class="flex-grow">
-        <section id="about" class="max-w-4xl mx-auto px-6 py-20">
+
+        <!-- NEWS -->
+        <section id="news" class="max-w-4xl mx-auto px-6 pt-10 pb-4">
+            <div class="rounded-xl border border-sky-100 bg-gradient-to-br from-sky-50 to-white p-6 sm:p-8 shadow-sm">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="relative inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest text-white bg-sky-600 px-3 py-1.5 rounded-full">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                        </span>
+                        News!
+                    </span>
+                    <span class="text-sm font-mono text-slate-400">latest updates</span>
+                </div>
+                <ul class="space-y-4">
+                    <li class="flex flex-col sm:flex-row sm:gap-5">
+                        <span class="font-mono text-xs font-semibold text-sky-600 sm:w-24 shrink-0 sm:pt-0.5">Feb 2026</span>
+                        <span class="text-slate-700">Invited talk <em>Termination Resilience Static Analysis</em> at the LACL Seminar, Université Paris-Est Créteil.</span>
+                    </li>
+                    <li class="flex flex-col sm:flex-row sm:gap-5">
+                        <span class="font-mono text-xs font-semibold text-sky-600 sm:w-24 shrink-0 sm:pt-0.5">Jan 2026</span>
+                        <span class="text-slate-700">Presented <em>Termination Resilience Static Analysis</em> at <a href="https://conf.researchr.org/home/VMCAI-2026" class="underline decoration-sky-300 hover:decoration-sky-600 transition">VMCAI 2026</a>, Rennes.</span>
+                    </li>
+                    <li class="flex flex-col sm:flex-row sm:gap-5">
+                        <span class="font-mono text-xs font-semibold text-sky-600 sm:w-24 shrink-0 sm:pt-0.5">2026</span>
+                        <span class="text-slate-700">New competition contribution: <em>ReFuncTion</em> tool demo accepted at <a href="https://etaps.org/2026/conferences/tacas/" class="underline decoration-sky-300 hover:decoration-sky-600 transition">TACAS 2026 / SV-COMP</a> (ETAPS).</span>
+                    </li>
+                    <li class="flex flex-col sm:flex-row sm:gap-5">
+                        <span class="font-mono text-xs font-semibold text-sky-600 sm:w-24 shrink-0 sm:pt-0.5">Nov 2025</span>
+                        <span class="text-slate-700">Talk <em>Static Program Analysis Across Trust Boundaries</em> at the iFM 2025 PhD Symposium, Paris.</span>
+                    </li>
+                    <li class="flex flex-col sm:flex-row sm:gap-5">
+                        <span class="font-mono text-xs font-semibold text-sky-600 sm:w-24 shrink-0 sm:pt-0.5">Oct 2025</span>
+                        <span class="text-slate-700">Invited to Dagstuhl Seminar 25421 — <em>Sound Static Program Analysis in Modern Software Engineering</em>, Schloss Dagstuhl.</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ABOUT -->
+        <section id="about" class="max-w-4xl mx-auto px-6 py-16">
             <div class="flex items-baseline justify-between border-b border-slate-100 pb-4 mb-12">
-                <h2 class="text-xl font-light tracking-widest uppercase text-slate-900">About Me</h2>
+                <h2 class="text-xl font-light tracking-widest uppercase text-slate-900">About</h2>
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
                 <div class="lg:col-span-4 order-last lg:order-first">
                     <div class="space-y-8">
-                        <div>
-                            <div class="relative w-full max-w-[280px] mx-auto md:ml-auto">
-                                <div
-                                    class="relative p-2 border border-slate-100 bg-white shadow-sm hover:shadow-md transition-shadow duration-500">
-                                    <div class="overflow-hidden aspect-[3/4]">
-                                        <img src="papers/rug.jpg" alt="Portrait"
-                                            class="object-cover w-full h-full grayscale brightness-110 contrast-110 hover:grayscale-0 transition-all duration-500">
-                                    </div>
+                        <div class="relative w-full max-w-[280px] mx-auto lg:ml-auto">
+                            <div
+                                class="relative p-2 border border-slate-100 bg-white shadow-sm hover:shadow-md transition-shadow duration-500">
+                                <div class="overflow-hidden aspect-[3/4]">
+                                    <img src="papers/rug.jpg" alt="Portrait of Naïm Moussaoui Remil"
+                                        class="object-cover w-full h-full grayscale brightness-110 contrast-110 hover:grayscale-0 transition-all duration-500">
                                 </div>
                             </div>
                         </div>
                         <div>
                             <h3 class="text-xs font-bold uppercase tracking-widest text-slate-800 mb-3">Expertise</h3>
                             <div class="flex flex-wrap gap-2">
-                                <span
-                                    class="text-[13px] px-2 py-1 border border-slate-200 text-slate-500 rounded lowercase">#Formal-Methods</span>
-                                <span
-                                    class="text-[13px] px-2 py-1 border border-slate-200 text-slate-500 rounded lowercase">#Verification</span>
-                                <span
-                                    class="text-[13px] px-2 py-1 border border-slate-200 text-slate-500 rounded lowercase">#Static-Analysis</span>
-                                <span
-                                    class="text-[13px] px-2 py-1 border border-slate-200 text-slate-500 rounded lowercase">#Abstract-Interpretation
-                                </span>
+                                <span class="text-[13px] px-2 py-1 border border-slate-200 text-slate-500 rounded lowercase">#Formal-Methods</span>
+                                <span class="text-[13px] px-2 py-1 border border-slate-200 text-slate-500 rounded lowercase">#Verification</span>
+                                <span class="text-[13px] px-2 py-1 border border-slate-200 text-slate-500 rounded lowercase">#Static-Analysis</span>
+                                <span class="text-[13px] px-2 py-1 border border-slate-200 text-slate-500 rounded lowercase">#Abstract-Interpretation</span>
+                                <span class="text-[13px] px-2 py-1 border border-slate-200 text-slate-500 rounded lowercase">#Temporal-Properties</span>
+                                <span class="text-[13px] px-2 py-1 border border-slate-200 text-slate-500 rounded lowercase">#Software-Security</span>
                             </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-800 mb-3">Curriculum Vitæ</h3>
+                            <a href="cv_academic.pdf"
+                                class="inline-flex items-center gap-2 text-sm font-mono text-sky-600 hover:text-sky-800 transition-colors">
+                                <i class="fa-solid fa-file-pdf" aria-hidden="true"></i> Download CV (PDF)
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -89,28 +176,47 @@
                 <div class="lg:col-span-8">
                     <div class="text-lg text-slate-600 leading-relaxed space-y-6">
                         <p>
-                            I am a final-year PhD student in Computer Science at École Normale Supérieure under the
-                            supervision of <a href="caterinaurban.github.io"><span
-                                    class="underline decoration-sky-200 ">Caterina Urban</span></a>.
+                            I am a PhD candidate in Computer Science at the <strong class="font-medium text-slate-800">École
+                                Normale Supérieure (PSL)</strong> and <strong class="font-medium text-slate-800">Inria
+                                Paris</strong>, supervised by
+                            <a href="https://caterinaurban.github.io"
+                                class="underline decoration-sky-200 hover:decoration-sky-500 transition">Caterina
+                                Urban</a> (ENS &amp; Inria).
                         </p>
                         <p>
-                            My research focuses on providing mathematical guarantees about programs behavior.
-                            My works explore the verification of temporal properties of sequential C-like programs.
-                            More specifically, I use Abstract Interpretation to develop static analyses proving <a
-                                href="https://en.wikipedia.org/wiki/Computation_tree_logic" class="underline decoration-sky-200"> <span>CTL</span></span></a>
-                            properties of program in adversarial contexts.
+                            My research focuses on providing <strong class="font-medium text-slate-800">mathematical
+                                guarantees about program behavior</strong>. I explore the verification of temporal
+                            properties of sequential C-like programs. Specifically, I use abstract interpretation to
+                            develop static analyses proving
+                            <a href="https://en.wikipedia.org/wiki/Computation_tree_logic"
+                                class="underline decoration-sky-200 hover:decoration-sky-500 transition">CTL</a>
+                            properties of programs in <strong class="font-medium text-slate-800">adversarial
+                                contexts</strong>, including termination resilience and vulnerable variable detection.
+                        </p>
+                        <p class="font-semibold text-slate-800">
+                            My PhD topic is <em>Static Analysis by Abstract Interpretation for CTL Properties in
+                                Adversarial Contexts</em>.
+                        </p>
+                        <p>
+                            More broadly, I aim to generalize this branching-time setting (CTL) to
+                            <strong class="font-medium text-slate-800">Alternating-time Temporal Logic (ATL)</strong>,
+                            which captures what an agent can <em>guarantee</em> against an adversary. This unifies the
+                            problems I study — termination resilience and vulnerable variable detection — as strategic
+                            temporal properties, all provable within a single sound abstract-interpretation framework
+                            for C-like numerical programs.
                         </p>
                     </div>
                 </div>
             </div>
         </section>
-        <section id="publications" class="max-w-4xl mx-auto px-6 py-20 border-t border-slate-50">
 
+        <!-- PUBLICATIONS -->
+        <section id="publications" class="max-w-4xl mx-auto px-6 py-16 border-t border-slate-50">
             <div class="flex items-baseline justify-between border-b border-slate-100 pb-4 mb-12">
                 <h2 class="text-xl font-light tracking-widest uppercase text-slate-900">Publications</h2>
                 <a href="https://scholar.google.com/citations?hl=fr&user=llkPxh8AAAAJ"
                     class="text-xs font-mono text-sky-600 hover:text-sky-800 transition-colors">
-                    See my Google Scholar profile →
+                    Google Scholar →
                 </a>
             </div>
 
@@ -120,85 +226,322 @@
                     <div class="lg:col-span-2">
                         <span class="text-3xl font-serif italic text-slate-400">2026</span>
                     </div>
-                    <div class="lg:col-span-10 space-y-10">
+                    <div class="lg:col-span-10 space-y-12">
 
                         <div class="group">
                             <h3 class="text-lg font-medium text-slate-900 leading-snug mb-2">
-                                ReFuncTion: Conditional Termination by Abstract Interpretation of Numerical C Programs
-                                (Competition Contribution)
+                                Termination Resilience Static Analysis
                             </h3>
-                            <p class="text-sm text-slate-500 mb-3">
-                                Naïm Moussaoui Remil, Caterina Urban
-                            </p>
-                            <div class="flex items-center gap-4">
-                                <a href="https://etaps.org/2026/conferences/tacas/"
-                                    class="text-[10px] font-bold uppercase tracking-widest text-slate-900 bg-slate-50 px-2 py-1 rounded">TACAS
-                                    2026</a>
-                                <a href="papers/sv-comp2026.pdf"
+                            <p class="text-sm text-slate-500 mb-3">Naïm Moussaoui Remil, Caterina Urban</p>
+                            <div class="flex flex-wrap items-center gap-4">
+                                <a href="https://conf.researchr.org/home/VMCAI-2026"
+                                    class="text-[10px] font-bold uppercase tracking-widest text-slate-900 bg-slate-50 px-2 py-1 rounded">VMCAI 2026</a>
+                                <a href="papers/vcmai2026.pdf"
                                     class="text-xs font-bold border-b border-slate-900 pb-0.5 hover:text-sky-600 hover:border-sky-600 transition-all">PDF</a>
                                 <a href="https://zenodo.org/records/17176433"
-                                    class="text-xs font-bold border-b border-slate-900 pb-0.5 hover:text-sky-600 hover:border-sky-600 transition-all">Code</a>
+                                    class="text-xs font-bold border-b border-slate-900 pb-0.5 hover:text-sky-600 hover:border-sky-600 transition-all">Artifact</a>
                                 <a href="https://doi.org/10.1007/978-3-032-15700-3_11"
                                     class="text-xs font-bold border-b border-slate-900 pb-0.5 hover:text-sky-600 hover:border-sky-600 transition-all">DOI</a>
                             </div>
                         </div>
 
-
-                        <div class="lg:col-span-10 space-y-10">
-
-                            <div class="group">
-                                <h3 class="text-lg font-medium text-slate-900 leading-snug mb-2">
-                                    Termination Resilience Static Analysis
-                                </h3>
-                                <p class="text-sm text-slate-500 mb-3">
-                                    Naïm Moussaoui Remil, Caterina Urban
-                                </p>
-                                <div class="flex items-center gap-4">
-                                </div>
-                                <a href="https://conf.researchr.org/home/VMCAI-2026"
-                                    class="text-[10px] font-bold uppercase tracking-widest text-slate-900 bg-slate-50 px-2 py-1 rounded">VMCAI
-                                    2026</a>
-                                <a href="papers/vcmai2026.pdf"
+                        <div class="group">
+                            <h3 class="text-lg font-medium text-slate-900 leading-snug mb-2">
+                                ReFuncTion: Conditional Termination by Abstract Interpretation of Numerical C Programs
+                                <span class="text-slate-400 font-normal">(Competition Contribution)</span>
+                            </h3>
+                            <p class="text-sm text-slate-500 mb-3">Naïm Moussaoui Remil, Caterina Urban</p>
+                            <div class="flex flex-wrap items-center gap-4">
+                                <a href="https://etaps.org/2026/conferences/tacas/"
+                                    class="text-[10px] font-bold uppercase tracking-widest text-slate-900 bg-slate-50 px-2 py-1 rounded">TACAS 2026</a>
+                                <a href="papers/sv-comp2026.pdf"
                                     class="text-xs font-bold border-b border-slate-900 pb-0.5 hover:text-sky-600 hover:border-sky-600 transition-all">PDF</a>
-                                <a href="https://zenodo.org/records/17176433"
-                                    class="text-xs font-bold border-b border-slate-900 pb-0.5 hover:text-sky-600 hover:border-sky-600 transition-all">Code</a>
-                                <a href="https://doi.org/10.1007/978-3-032-15700-3_11"
+                                <a href="https://doi.org/10.1007/978-3-032-22749-2_33"
                                     class="text-xs font-bold border-b border-slate-900 pb-0.5 hover:text-sky-600 hover:border-sky-600 transition-all">DOI</a>
                             </div>
                         </div>
 
                     </div>
                 </div>
+
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <div class="lg:col-span-2">
                         <span class="text-3xl font-serif italic text-slate-400">2024</span>
                     </div>
-                    <div class="lg:col-span-10 space-y-10">
+                    <div class="lg:col-span-10 space-y-12">
 
                         <div class="group">
                             <h3 class="text-lg font-medium text-slate-900 leading-snug mb-2">
                                 Automatic Detection of Vulnerable Variables for CTL Properties of Programs
                             </h3>
-                            <p class="text-sm text-slate-500 mb-3">
-                                Naïm Moussaoui Remil, Caterina Urban, Antoine Miné
-                            </p>
-                            <div class="flex items-center gap-4">
+                            <p class="text-sm text-slate-500 mb-3">Naïm Moussaoui Remil, Caterina Urban, Antoine Miné</p>
+                            <div class="flex flex-wrap items-center gap-4">
                                 <a href="https://easychair.org/smart-program/LPAR2024/"
-                                    class="text-[10px] font-bold uppercase tracking-widest text-slate-900 bg-slate-50 px-2 py-1 rounded">LPAR-25</a>
+                                    class="text-[10px] font-bold uppercase tracking-widest text-slate-900 bg-slate-50 px-2 py-1 rounded">LPAR 2024</a>
                                 <a href="papers/lpar2024.pdf"
                                     class="text-xs font-bold border-b border-slate-900 pb-0.5 hover:text-sky-600 hover:border-sky-600 transition-all">PDF</a>
                                 <a href="https://zenodo.org/records/10964500"
-                                    class="text-xs font-bold border-b border-slate-900 pb-0.5 hover:text-sky-600 hover:border-sky-600 transition-all">Code</a>
-                                <a href="https://zenodo.org/records/10964500"
+                                    class="text-xs font-bold border-b border-slate-900 pb-0.5 hover:text-sky-600 hover:border-sky-600 transition-all">Artifact</a>
+                                <a href="https://doi.org/10.29007/dnpx"
                                     class="text-xs font-bold border-b border-slate-900 pb-0.5 hover:text-sky-600 hover:border-sky-600 transition-all">DOI</a>
                             </div>
                         </div>
 
                     </div>
-        </section>
-    </main>
-    <footer> </footer>
+                </div>
 
+            </div>
+        </section>
+
+        <!-- EXPERIENCE & EDUCATION -->
+        <section id="experience" class="max-w-4xl mx-auto px-6 py-16 border-t border-slate-50">
+            <div class="flex items-baseline justify-between border-b border-slate-100 pb-4 mb-12">
+                <h2 class="text-xl font-light tracking-widest uppercase text-slate-900">Experience &amp; Education</h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+
+                <!-- Research experience -->
+                <div class="lg:col-span-6 space-y-8">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-slate-800">Research Experience</h3>
+
+                    <div>
+                        <div class="flex items-baseline justify-between gap-4">
+                            <h4 class="font-medium text-slate-900">Research Intern — M2</h4>
+                            <span class="font-mono text-xs text-slate-400 whitespace-nowrap">2023</span>
+                        </div>
+                        <p class="text-sm text-slate-500 italic">Inria Paris, Équipe Antique — ENS, Paris</p>
+                        <p class="text-sm text-slate-600 mt-1">Vulnerable variable detection for CTL properties by
+                            abstract interpretation (Caterina Urban &amp; Antoine Miné). Led to LPAR 2024 and to the PhD.</p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-baseline justify-between gap-4">
+                            <h4 class="font-medium text-slate-900">Research Intern — M1</h4>
+                            <span class="font-mono text-xs text-slate-400 whitespace-nowrap">2022</span>
+                        </div>
+                        <p class="text-sm text-slate-500 italic">MPI-SWS, Kaiserslautern, Germany</p>
+                        <p class="text-sm text-slate-600 mt-1">Extending the GenMC model-checker (Viktor Vafeiadis).</p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-baseline justify-between gap-4">
+                            <h4 class="font-medium text-slate-900">Research Intern</h4>
+                            <span class="font-mono text-xs text-slate-400 whitespace-nowrap">2021–22</span>
+                        </div>
+                        <p class="text-sm text-slate-500 italic">ENS de Rennes, France</p>
+                        <p class="text-sm text-slate-600 mt-1">9-month research project (Martin Quinson &amp; Thierry Jéron).</p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-baseline justify-between gap-4">
+                            <h4 class="font-medium text-slate-900">Research Intern — L3</h4>
+                            <span class="font-mono text-xs text-slate-400 whitespace-nowrap">2021</span>
+                        </div>
+                        <p class="text-sm text-slate-500 italic">LACL, Université Paris-Est Créteil, France</p>
+                        <p class="text-sm text-slate-600 mt-1">Visualising global graph transformation (Antoine Spicher).</p>
+                    </div>
+                </div>
+
+                <!-- Education -->
+                <div class="lg:col-span-6 space-y-8">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-slate-800">Education</h3>
+
+                    <div>
+                        <div class="flex items-baseline justify-between gap-4">
+                            <h4 class="font-medium text-slate-900">PhD in Computer Science</h4>
+                            <span class="font-mono text-xs text-slate-400 whitespace-nowrap">2023–present</span>
+                        </div>
+                        <p class="text-sm text-slate-500 italic">Inria Paris &amp; ENS | PSL</p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-baseline justify-between gap-4">
+                            <h4 class="font-medium text-slate-900">Master 2 — MPRI</h4>
+                            <span class="font-mono text-xs text-slate-400 whitespace-nowrap">2022–23</span>
+                        </div>
+                        <p class="text-sm text-slate-500 italic">ENS Paris · Polytechnique · Paris-Cité · ENS Paris-Saclay</p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-baseline justify-between gap-4">
+                            <h4 class="font-medium text-slate-900">Normalien Élève — CS (Master)</h4>
+                            <span class="font-mono text-xs text-slate-400 whitespace-nowrap">2019–23</span>
+                        </div>
+                        <p class="text-sm text-slate-500 italic">ENS de Rennes (admitted via second concours)</p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-baseline justify-between gap-4">
+                            <h4 class="font-medium text-slate-900">Double Major BSc — Maths &amp; CS</h4>
+                            <span class="font-mono text-xs text-slate-400 whitespace-nowrap">2017–19</span>
+                        </div>
+                        <p class="text-sm text-slate-500 italic">Université Paris-Est Créteil — summa cum laude</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teaching & Service -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-14 pt-10 border-t border-slate-100">
+                <div class="lg:col-span-6 space-y-6">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-slate-800">Teaching</h3>
+                    <div>
+                        <div class="flex items-baseline justify-between gap-4">
+                            <h4 class="font-medium text-slate-900">Teaching Assistant (Chargé de TD)</h4>
+                            <span class="font-mono text-xs text-slate-400 whitespace-nowrap">2024–25</span>
+                        </div>
+                        <p class="text-sm text-slate-500 italic">ENS | PSL, Paris</p>
+                        <p class="text-sm text-slate-600 mt-1">Practical sessions for second-year CPES students,
+                            including Lustre synchronous programming.</p>
+                    </div>
+                    <div>
+                        <div class="flex items-baseline justify-between gap-4">
+                            <h4 class="font-medium text-slate-900">Teaching Assistant — C Programming</h4>
+                            <span class="font-mono text-xs text-slate-400 whitespace-nowrap">2024–25</span>
+                        </div>
+                        <p class="text-sm text-slate-500 italic">Sorbonne Université, Paris</p>
+                        <p class="text-sm text-slate-600 mt-1">Practical sessions in C programming.</p>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 space-y-4">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-slate-800">Academic Service</h3>
+                    <ul class="text-sm text-slate-600 space-y-2">
+                        <li class="flex justify-between gap-4"><span>Sub-reviewer, OOPSLA</span><span class="font-mono text-xs text-slate-400">2026</span></li>
+                        <li class="flex justify-between gap-4"><span>Sub-reviewer, SAS</span><span class="font-mono text-xs text-slate-400">2026</span></li>
+                        <li class="flex justify-between gap-4"><span>Artifact Evaluation Committee, SAS / SPLASH</span><span class="font-mono text-xs text-slate-400">2024</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- TALKS -->
+        <section id="talks" class="max-w-4xl mx-auto px-6 py-16 border-t border-slate-50">
+            <div class="flex items-baseline justify-between border-b border-slate-100 pb-4 mb-12">
+                <h2 class="text-xl font-light tracking-widest uppercase text-slate-900">Talks &amp; Seminars</h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <div class="lg:col-span-6 space-y-6">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-slate-800">Invited Talks</h3>
+                    <ul class="space-y-5">
+                        <li>
+                            <p class="text-slate-900">Termination Resilience Static Analysis</p>
+                            <p class="text-sm text-slate-500">LACL Seminar, Université Paris-Est Créteil — Feb 2026</p>
+                        </li>
+                        <li>
+                            <p class="text-slate-900">Static Program Analysis Across Trust Boundaries</p>
+                            <p class="text-sm text-slate-500">Dagstuhl Seminar 25421, Schloss Dagstuhl — Oct 2025</p>
+                        </li>
+                        <li>
+                            <p class="text-slate-900">Termination Resilience Static Analysis</p>
+                            <p class="text-sm text-slate-500">SemAntique, Inria/Antique, Paris — Mar 2025</p>
+                        </li>
+                        <li>
+                            <p class="text-slate-900">Termination Resilience Static Analysis by Abstract Interpretation</p>
+                            <p class="text-sm text-slate-500">Inria PhD Seminar, Paris — Mar 2025</p>
+                        </li>
+                        <li>
+                            <p class="text-slate-900">Automatic Detection of Vulnerable Variables for CTL Properties</p>
+                            <p class="text-sm text-slate-500">SemAntique, Inria/Antique, Paris — Mar 2024</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="lg:col-span-6 space-y-6">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-slate-800">Conferences &amp; Symposia</h3>
+                    <ul class="space-y-5">
+                        <li>
+                            <p class="text-slate-900">Termination Resilience Static Analysis</p>
+                            <p class="text-sm text-slate-500">VMCAI 2026, Rennes — Jan 2026</p>
+                        </li>
+                        <li>
+                            <p class="text-slate-900">ReFuncTion: Conditional Termination by Abstract Interpretation
+                                (Tool Demo, SV-COMP)</p>
+                            <p class="text-sm text-slate-500">TACAS 2026, ETAPS</p>
+                        </li>
+                        <li>
+                            <p class="text-slate-900">Static Program Analysis Across Trust Boundaries</p>
+                            <p class="text-sm text-slate-500">iFM 2025 PhD Symposium, Paris — Nov 2025</p>
+                        </li>
+                        <li>
+                            <p class="text-slate-900">Automatic Detection of Vulnerable Variables for CTL Properties</p>
+                            <p class="text-sm text-slate-500">LPAR 2024, Port Louis, Mauritius — May 2024</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SOFTWARE -->
+        <section id="software" class="max-w-4xl mx-auto px-6 py-16 border-t border-slate-50">
+            <div class="flex items-baseline justify-between border-b border-slate-100 pb-4 mb-12">
+                <h2 class="text-xl font-light tracking-widest uppercase text-slate-900">Open-Source Software</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <a href="https://github.com/naim-mr/refunction"
+                    class="group block border border-slate-100 p-6 hover:shadow-md hover:border-sky-200 transition-all">
+                    <h3 class="text-lg font-medium text-slate-900 mb-2 flex items-center gap-2">
+                        FuncTion / FuncTion-V / ReFuncTion
+                        <i class="fa-brands fa-github text-slate-400 group-hover:text-sky-600 transition-colors" aria-hidden="true"></i>
+                    </h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Abstract-interpretation-based static analyzer for (conditional) alternating-time temporal
+                        properties — including classical termination, non-termination and CTL properties — of C-like
+                        numerical programs. Written in OCaml. Extension of FuncTion by Caterina Urban.
+                    </p>
+                </a>
+                <a href="https://github.com/naim-mr/Marsh"
+                    class="group block border border-slate-100 p-6 hover:shadow-md hover:border-sky-200 transition-all">
+                    <h3 class="text-lg font-medium text-slate-900 mb-2 flex items-center gap-2">
+                        Marsh
+                        <i class="fa-brands fa-github text-slate-400 group-hover:text-sky-600 transition-colors" aria-hidden="true"></i>
+                    </h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        A small language for probabilistic programming with exact inference. Written in OCaml.
+                    </p>
+                </a>
+            </div>
+        </section>
+
+        <!-- SKILLS -->
+        <section id="skills" class="max-w-4xl mx-auto px-6 py-16 border-t border-slate-50">
+            <div class="flex items-baseline justify-between border-b border-slate-100 pb-4 mb-12">
+                <h2 class="text-xl font-light tracking-widest uppercase text-slate-900">Technical Skills</h2>
+            </div>
+
+            <dl class="space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                    <dt class="text-xs font-bold uppercase tracking-widest text-slate-800 sm:col-span-1">Languages</dt>
+                    <dd class="text-slate-600 sm:col-span-3">OCaml, Python, C, Rust, Bash, HTML/CSS, JavaScript, Lustre</dd>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                    <dt class="text-xs font-bold uppercase tracking-widest text-slate-800 sm:col-span-1">Formal Methods</dt>
+                    <dd class="text-slate-600 sm:col-span-3">Abstract Interpretation, Static Analysis, Temporal
+                        Specification, Program Logic, Taint Analysis, Software Security, Synchronous Programming</dd>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                    <dt class="text-xs font-bold uppercase tracking-widest text-slate-800 sm:col-span-1">Tools</dt>
+                    <dd class="text-slate-600 sm:col-span-3">Git, LaTeX, Linux</dd>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                    <dt class="text-xs font-bold uppercase tracking-widest text-slate-800 sm:col-span-1">Spoken</dt>
+                    <dd class="text-slate-600 sm:col-span-3">French (native), English (fluent), Arabic</dd>
+                </div>
+            </dl>
+        </section>
+
+    </main>
+
+    <footer class="max-w-4xl mx-auto px-6 py-10 border-t border-slate-100">
+        <p class="text-center text-xs font-mono text-slate-400">
+            © <span id="year"></span> Naïm Moussaoui Remil ·
+            <a href="mailto:naim.moussaoui-remil@inria.fr" class="hover:text-slate-700 transition-colors">naim.moussaoui-remil@inria.fr</a>
+        </p>
+    </footer>
+
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 
 </html>
