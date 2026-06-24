@@ -1,0 +1,38 @@
+group,file,property,domain,result,status,time_s,analyzer_time,vulnerability
+atl/,tests/atl/bintest_rr/grub2.c,<attacker>F{canary == 1},polyhedra,TRUE,TRUE,17.931,16.6781780001,Not analyzed
+atl/,tests/atl/classic/matching_pennies.c,"<p1,p2>F{gain1 == 1}",polyhedra,TRUE,TRUE,0.282,0.134084000001,Not analyzed
+atl/,tests/atl/classic/matching_pennies.c,<p1>F{gain1 == 1},polyhedra,UNKNOWN,UNKNOWN,0.302,0.146944000001,Not analyzed
+atl/,tests/atl/classic/nim.c,<me>F{win == 0},polyhedra,-,TO,60.07,-,-
+atl/,tests/atl/classic/robots_carriage.c,<r1>F{pos == 1},polyhedra,UNKNOWN,UNKNOWN,1.253,0.966576000001,Not analyzed
+atl/,tests/atl/classic/robots_carriage.c,"<r1,r2>F{<r1,r2>G{pos == 1}}",polyhedra,TRUE,TRUE,3.554,2.91563200001,Not analyzed
+atl/,tests/atl/classic/robots_carriage.c,"<r1,r2>F{pos == 1}",polyhedra,TRUE,TRUE,3.777,2.76586700001,Not analyzed
+atl/,tests/atl/classic/train_gate.c,<train>F{s == 3},polyhedra,-,FAIL,0.123,-,-
+atl/,tests/atl/classic/train_gate.c,<ctr>G{<ctr>F{s == 0}},polyhedra,-,FAIL,0.137,-,-
+atl/,tests/atl/classic/train_gate.c,<controller>G{in1 + in2 <= 1},polyhedra,UNKNOWN,UNKNOWN,0.288,1,Not analyzed
+atl/,tests/atl/mcmas/bit_transmission.c,"<sender,chan>F{ack == 1}",polyhedra,TRUE,TRUE,1.578,1.38608700001,Not analyzed
+atl/,tests/atl/prism_games/intrusion_detection.c,<def>G{compromised == 0},polyhedra,UNKNOWN,UNKNOWN,0.791,0.486874000001,Not analyzed
+atl/,tests/atl/prism_games/intrusion_detection.c,<def>G{<def>F{exposure == 0}},polyhedra,TRUE,TRUE,1.598,1.05917600001,Not analyzed
+atl/,tests/atl/prism_games/microgrid.c,<ctrl>G{load <= 3},polyhedra,UNKNOWN,UNKNOWN,2.791,2.36688200001,Not analyzed
+atl/,tests/atl/prism_games/microgrid.c,<ctrl>G{AND{load <= 3}{<ctrl>F{load == 0}}},polyhedra,UNKNOWN,UNKNOWN,16.546,15.3192920001,Not analyzed
+atl/,tests/atl/prism_games/robot_coordination.c,"<r1,r2>F{x1 >= 4}",polyhedra,TRUE,TRUE,7.686,6.50183300001,Not analyzed
+atl/,tests/atl/prism_games/task_graph.c,<sched>F{done == 1},polyhedra,TRUE,TRUE,3.474,2.78426700001,Not analyzed
+atl/,tests/atl/stv/bridge_end.c,<decl>F{tricks >= 2},polyhedra,-,TO,60.08,-,-
+atl/,tests/atl/stv/castles.c,<att>F{hp2 == 0},polyhedra,UNKNOWN,UNKNOWN,5.505,4.11178600001,Not analyzed
+atl/,tests/atl/stv/castles.c,<att>U{hp1 > 0}{hp2 == 0},polyhedra,UNKNOWN,UNKNOWN,6.715,5.82640000001,Not analyzed
+atl/,tests/atl/stv/castles.c,<att>F{NOT{<def>F{hp1 == 0}}},polyhedra,UNKNOWN,UNKNOWN,11.997,10.1294500001,Not analyzed
+atl/,tests/atl/stv/drones.c,"<d1,d2>F{<d1,d2>G{p == 0}}",polyhedra,UNKNOWN,UNKNOWN,4.529,3.85305900001,Not analyzed
+atl/,tests/atl/stv/drones.c,<d1>G{p <= 5},polyhedra,UNKNOWN,UNKNOWN,17.891,16.6757550001,Not analyzed
+atl/,tests/atl/stv/drones.c,"<d1,d2>G{p <= 5}",polyhedra,UNKNOWN,UNKNOWN,18.409,17.4044730001,Not analyzed
+atl/,tests/atl/stv/machines_robots.c,"<r1,r2>F{produced >= 4}",polyhedra,TRUE,TRUE,19.324,18.8157560001,Not analyzed
+atl/,tests/atl/stv/tianji.c,<tj>F{wins >= 2},polyhedra,-,TO,60.076,-,-
+atl/,tests/atl/syntcomp/load_balancer.c,<lb>G{g1 + g2 <= 1},polyhedra,UNKNOWN,UNKNOWN,10.389,9.03664100001,Not analyzed
+atl/,tests/atl/syntcomp/prioritized_arbiter.c,<arb>G{g1 + g2 + gm <= 1},polyhedra,UNKNOWN,UNKNOWN,6.092,4.29446700001,Not analyzed
+atl/,tests/atl/syntcomp/round_robin_arbiter.c,<arb>G{<arb>F{g1 == 1}},polyhedra,TRUE,TRUE,0.599,0.384209000001,Not analyzed
+atl/,tests/atl/syntcomp/round_robin_arbiter.c,<arb>G{g1 + g2 <= 1},polyhedra,UNKNOWN,UNKNOWN,0.61,0.323601000001,Not analyzed
+atl/,tests/atl/syntcomp/simple_arbiter.c,<arb>G{g1 + g2 <= 1},polyhedra,UNKNOWN,UNKNOWN,0.43,0.284309000001,Not analyzed
+atl/,tests/atl/undesirable/arbiter_mutex_safe.c,<env>F{g1 + g2 >= 2},polyhedra,UNKNOWN,UNKNOWN,5.944,4.49994700001,Not analyzed
+atl/,tests/atl/undesirable/arbiter_mutex_unsafe.c,<env>F{g1 + g2 >= 2},polyhedra,TRUE,TRUE,1.008,0.728727000001,Not analyzed
+atl/,tests/atl/undesirable/reentrancy_safe.c,<atk>F{balance < 0},polyhedra,UNKNOWN,UNKNOWN,0.342,0.142516000001,Not analyzed
+atl/,tests/atl/undesirable/reentrancy_unsafe.c,<atk>F{balance < 0},polyhedra,TRUE,TRUE,21.197,20.3530010001,Not analyzed
+atl/,tests/atl/undesirable/verifypin_hardened.c,<atk>F{auth == 1},polyhedra,UNKNOWN,UNKNOWN,3.332,2.47632700001,Not analyzed
+atl/,tests/atl/undesirable/verifypin_unsafe.c,<atk>F{auth == 1},polyhedra,TRUE,TRUE,0.701,0.474674000001,Not analyzed

@@ -1,0 +1,856 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>example1a.c</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+:root, html[data-theme="dark"]{
+  --bg:#0f1115; --surface:#171a21; --surface2:#1e222b; --border:#2a2f3a;
+  --text:#e6e8ee; --muted:#9aa3b2; --accent:#5b8def;
+  --true:#3fb950; --true-bg:#10371d;
+  --unknown:#d29922; --unknown-bg:#3a2e0c;
+  --fail:#f85149; --fail-bg:#3a1413;
+  --hero:linear-gradient(135deg,#1b2a4a 0%,#10131a 70%);
+}
+html[data-theme="light"]{
+  --bg:#f4f6fb; --surface:#ffffff; --surface2:#eef1f7; --border:#d8deea;
+  --text:#1b2430; --muted:#5b6675; --accent:#1f6feb;
+  --true:#1a7f37; --true-bg:#d8f3df;
+  --unknown:#9a6700; --unknown-bg:#fdf0d0;
+  --fail:#cf222e; --fail-bg:#ffe0e0;
+  --hero:linear-gradient(135deg,#dbe6ff 0%,#f4f6fb 70%);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px; line-height:1.5;
+}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1200px; margin:0 auto; padding:0 24px 80px}
+header.hero{
+  background:var(--hero);
+  border-bottom:1px solid var(--border); padding:34px 24px; margin-bottom:24px;
+}
+header.hero .inner{max-width:1200px; margin:0 auto; position:relative}
+header.hero h1{margin:0; font-size:30px; font-weight:700; letter-spacing:.3px}
+.theme-toggle{
+  position:absolute; top:0; right:0; cursor:pointer; font-size:13px; font-weight:600;
+  padding:8px 14px; border-radius:999px; background:var(--surface2);
+  border:1px solid var(--border); color:var(--text);
+}
+.theme-toggle:hover{border-color:var(--accent)}
+.stats{margin:4px 0 30px}
+.stats .stat-head{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:12px}
+.stats h2{font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); margin:0}
+.seg{display:inline-flex; border:1px solid var(--border); border-radius:10px; overflow:hidden}
+.seg button{
+  background:var(--surface); color:var(--muted); border:none; padding:7px 16px;
+  font-size:13px; font-weight:600; cursor:pointer;
+}
+.seg button.active{background:var(--accent); color:#fff}
+.stats .chart{background:#fff; border:1px solid var(--border); border-radius:14px; padding:10px; text-align:center}
+.stats .chart img{max-width:100%; height:auto}
+header.hero .sub{color:var(--muted); margin-top:6px; font-size:14px}
+.chips{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px}
+.chip{
+  display:inline-flex; align-items:baseline; gap:8px; padding:7px 14px;
+  border-radius:999px; background:var(--surface2); border:1px solid var(--border);
+  font-size:13px; font-weight:600;
+}
+.chip b{font-size:16px}
+.chip.true{color:var(--true)} .chip.unknown{color:var(--unknown)}
+.chip.fail,.chip.timeout{color:var(--fail)} .chip.total{color:var(--text)}
+.controls{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin:6px 0 22px}
+.controls input[type=search]{
+  flex:1; min-width:220px; padding:10px 14px; border-radius:10px;
+  background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:14px;
+}
+.controls label{color:var(--muted); font-size:14px; display:inline-flex; gap:7px; align-items:center; cursor:pointer}
+section.grp{margin-bottom:30px}
+section.grp h2{
+  font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted);
+  margin:0 0 10px; padding-bottom:8px; border-bottom:1px solid var(--border);
+}
+.card{background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden}
+table{border-collapse:collapse; width:100%; font-size:14px}
+thead th{
+  position:sticky; top:0; background:var(--surface2); color:var(--muted);
+  text-align:left; font-weight:600; padding:11px 16px; border-bottom:1px solid var(--border);
+  font-size:12px; text-transform:uppercase; letter-spacing:.5px;
+}
+tbody td{padding:11px 16px; border-bottom:1px solid var(--border); vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface2)}
+td.c{text-align:center; white-space:nowrap}
+code.mono,td.prop,.mono{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  font-size:13px; color:var(--text)}
+td.prop{color:var(--text); font-weight:500}
+.badge{
+  display:inline-block; padding:3px 11px; border-radius:999px; font-size:12px; font-weight:700;
+  letter-spacing:.3px;
+}
+.badge.true{color:var(--true); background:var(--true-bg)}
+.badge.unknown{color:var(--unknown); background:var(--unknown-bg)}
+.badge.fail,.badge.timeout{color:var(--fail); background:var(--fail-bg)}
+.tag{font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--muted);
+  background:var(--surface2); padding:2px 8px; border-radius:6px}
+.empty{color:var(--muted); text-align:center; padding:40px}
+/* per-test page */
+.meta{display:flex; flex-wrap:wrap; gap:22px; background:var(--surface); border:1px solid var(--border);
+  border-radius:14px; padding:18px 22px; margin-bottom:22px}
+.meta .item{display:flex; flex-direction:column; gap:3px}
+.meta .item .k{font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted)}
+.meta .item .v{font-size:15px; font-family:ui-monospace,Menlo,monospace}
+/* tabs */
+nav.tabs{display:flex; gap:6px; margin:0 0 22px; border-bottom:1px solid var(--border)}
+nav.tabs button{
+  background:none; border:none; border-bottom:2px solid transparent; color:var(--muted);
+  font-size:15px; font-weight:600; padding:10px 18px; cursor:pointer; margin-bottom:-1px;
+}
+nav.tabs button:hover{color:var(--text)}
+nav.tabs button.active{color:var(--accent); border-bottom-color:var(--accent)}
+.panel[hidden]{display:none}
+/* summary table */
+table.summary{margin-bottom:22px}
+table.summary td.num{text-align:right; font-family:ui-monospace,Menlo,monospace}
+.rate{display:inline-block; min-width:46px}
+.bar{height:7px; border-radius:4px; background:var(--surface2); overflow:hidden; margin-top:4px}
+.bar > i{display:block; height:100%; background:var(--true)}
+/* decision tree */
+.treechips{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px}
+.tag.true{color:var(--true); background:var(--true-bg)}
+.treesvg{background:#fff; padding:14px; text-align:center; overflow:auto}
+.treesvg svg{max-width:100%; height:auto}
+ul.guards{margin:6px 0; padding-left:22px}
+ul.guards li{padding:2px 0; font-size:13px}
+h3.sec{font-size:14px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:26px 0 10px}
+pre.block{background:#0b0d12; border:1px solid var(--border); border-radius:12px; padding:16px;
+  overflow:auto; font-size:13px; line-height:1.45; max-height:560px}
+pre.block code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.back{display:inline-block; margin-bottom:18px; font-size:14px}
+</style><script>
+(function(){
+  const root = document.documentElement;
+  function fromUrl(){ try{ return new URLSearchParams(location.search).get('theme'); }catch(e){ return null; } }
+  function fromStore(){ try{ return localStorage.getItem('ftheme'); }catch(e){ return null; } }
+  function persist(t){ try{ localStorage.setItem('ftheme', t); }catch(e){} }
+  // URL param wins (survives file:// where localStorage is not shared across pages).
+  root.setAttribute('data-theme', fromUrl() || fromStore() || 'dark');
+  // Carry the current theme through internal links so navigation keeps it.
+  function propagate(t){
+    document.querySelectorAll('a[href]').forEach(function(a){
+      const href = a.getAttribute('href');
+      if(!href || href.indexOf('://')>=0 || href.charAt(0)==='#') return;
+      if(href.indexOf('.html')<0) return;
+      a.setAttribute('href', href.split('?')[0] + '?theme=' + t);
+    });
+  }
+  function lbl(){ return root.getAttribute('data-theme')==='dark' ? '\u2600 light' : '\u263e dark'; }
+  document.addEventListener('DOMContentLoaded', function(){
+    propagate(root.getAttribute('data-theme'));
+    const btn = document.getElementById('theme');
+    if(!btn) return;
+    btn.textContent = lbl();
+    btn.addEventListener('click', function(){
+      const next = root.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      persist(next);
+      propagate(next);
+      btn.textContent = lbl();
+    });
+  });
+})();
+</script></head><body>
+<header class="hero"><div class="inner">
+<button id="theme" class="theme-toggle"></button>
+<a class="back" href="./index.html">&larr; back to overview</a>
+<h1>example1a.c</h1>
+<div class="sub mono">tests/termination/example1a.c</div>
+</div></header>
+<div class="wrap">
+<div class="meta">
+  <div class="item"><span class="k">Group</span><span class="v">termination</span></div>
+  <div class="item"><span class="k">Property</span><span class="v">AF{exit:true}</span></div>
+  <div class="item"><span class="k">Domain</span><span class="v">polyhedra</span></div>
+  <div class="item"><span class="k">Result</span><span class="v"><span class="badge unknown">UNKNOWN</span></span></div>
+  <div class="item"><span class="k">Time</span><span class="v">1.000 s</span></div>
+  <div class="item"><span class="k">Wall time</span><span class="v">0.104 s</span></div>
+</div>
+<h3 class="sec">Analyzer config</h3>
+<div class="card"><table><tbody><tr><td class="mono" style="color:var(--muted)">filename</td><td class="mono">tests/termination/example1a.c</td></tr><tr><td class="mono" style="color:var(--muted)">analysis_type</td><td class="mono">termination</td></tr><tr><td class="mono" style="color:var(--muted)">property</td><td class="mono">AF{exit:true}</td></tr><tr><td class="mono" style="color:var(--muted)">precondition</td><td class="mono">true</td></tr><tr><td class="mono" style="color:var(--muted)">result</td><td class="mono">UKNOWN</td></tr><tr><td class="mono" style="color:var(--muted)">domain</td><td class="mono">polyhedra</td></tr><tr><td class="mono" style="color:var(--muted)">joinbwd</td><td class="mono">2</td></tr><tr><td class="mono" style="color:var(--muted)">time</td><td class="mono">1</td></tr></tbody></table></div>
+<h3 class="sec">Decision tree &amp; preconditions</h3>
+<div class="treechips">
+  <span class="tag">11 leaves</span>
+  <span class="tag true">5 defined region(s)</span>
+  <span class="tag">2 distinct guard(s)</span>
+</div>
+<div class="card treesvg"><svg width="565pt" height="476pt"
+ viewBox="0.00 0.00 565.00 476.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 472)">
+<title>T</title>
+<!-- n0 -->
+<g id="node1" class="node">
+<title>n0</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="149" cy="-450" rx="34.05" ry="18"/>
+<text text-anchor="middle" x="149" y="-447.2" font-family="monospace" font-size="11.00" fill="#1f3a93">0 &gt;= 2</text>
+</g>
+<!-- n1 -->
+<g id="node2" class="node">
+<title>n1</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="106" cy="-378" rx="34.05" ry="18"/>
+<text text-anchor="middle" x="106" y="-375.2" font-family="monospace" font-size="11.00" fill="#1f3a93">0 &gt;= 2</text>
+</g>
+<!-- n0&#45;&gt;n1 -->
+<g id="edge19" class="edge">
+<title>n0&#45;&gt;n1</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M139.03,-432.76C133.84,-424.32 127.38,-413.8 121.55,-404.31"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="124.43,-402.32 116.22,-395.63 118.47,-405.99 124.43,-402.32"/>
+</g>
+<!-- n6 -->
+<g id="node7" class="node">
+<title>n6</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="221" cy="-378" rx="34.05" ry="18"/>
+<text text-anchor="middle" x="221" y="-375.2" font-family="monospace" font-size="11.00" fill="#1f3a93">0 &gt;= 1</text>
+</g>
+<!-- n0&#45;&gt;n6 -->
+<g id="edge20" class="edge">
+<title>n0&#45;&gt;n6</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M164.62,-433.81C174.44,-424.27 187.26,-411.8 198.2,-401.17"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="200.68,-403.64 205.41,-394.16 195.8,-398.62 200.68,-403.64"/>
+</g>
+<!-- n2 -->
+<g id="node3" class="node">
+<title>n2</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M42,-324C42,-324 12,-324 12,-324 6,-324 0,-318 0,-312 0,-312 0,-300 0,-300 0,-294 6,-288 12,-288 12,-288 42,-288 42,-288 48,-288 54,-294 54,-300 54,-300 54,-312 54,-312 54,-318 48,-324 42,-324"/>
+<text text-anchor="middle" x="27" y="-303.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n1&#45;&gt;n2 -->
+<g id="edge3" class="edge">
+<title>n1&#45;&gt;n2</title>
+<path fill="none" stroke="#aaaaaa" d="M89.25,-362.15C79.02,-353.09 65.7,-341.29 54.01,-330.93"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="56.04,-328.05 46.23,-324.04 51.39,-333.29 56.04,-328.05"/>
+</g>
+<!-- n3 -->
+<g id="node4" class="node">
+<title>n3</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="106" cy="-306" rx="34.05" ry="18"/>
+<text text-anchor="middle" x="106" y="-303.2" font-family="monospace" font-size="11.00" fill="#1f3a93">0 &gt;= 1</text>
+</g>
+<!-- n1&#45;&gt;n3 -->
+<g id="edge4" class="edge">
+<title>n1&#45;&gt;n3</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M106,-359.7C106,-351.98 106,-342.71 106,-334.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="109.5,-334.1 106,-324.1 102.5,-334.1 109.5,-334.1"/>
+</g>
+<!-- n4 -->
+<g id="node5" class="node">
+<title>n4</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M49,-252C49,-252 19,-252 19,-252 13,-252 7,-246 7,-240 7,-240 7,-228 7,-228 7,-222 13,-216 19,-216 19,-216 49,-216 49,-216 55,-216 61,-222 61,-228 61,-228 61,-240 61,-240 61,-246 55,-252 49,-252"/>
+<text text-anchor="middle" x="34" y="-231.2" font-family="monospace" font-size="11.00" fill="#1b2430">9</text>
+</g>
+<!-- n3&#45;&gt;n4 -->
+<g id="edge1" class="edge">
+<title>n3&#45;&gt;n4</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M90.38,-289.81C81.19,-280.88 69.37,-269.38 58.92,-259.23"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="61.23,-256.59 51.62,-252.13 56.35,-261.61 61.23,-256.59"/>
+</g>
+<!-- n5 -->
+<g id="node6" class="node">
+<title>n5</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M121,-252C121,-252 91,-252 91,-252 85,-252 79,-246 79,-240 79,-240 79,-228 79,-228 79,-222 85,-216 91,-216 91,-216 121,-216 121,-216 127,-216 133,-222 133,-228 133,-228 133,-240 133,-240 133,-246 127,-252 121,-252"/>
+<text text-anchor="middle" x="106" y="-231.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n3&#45;&gt;n5 -->
+<g id="edge2" class="edge">
+<title>n3&#45;&gt;n5</title>
+<path fill="none" stroke="#aaaaaa" d="M106,-287.7C106,-279.98 106,-270.71 106,-262.11"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="109.5,-262.1 106,-252.1 102.5,-262.1 109.5,-262.1"/>
+</g>
+<!-- n7 -->
+<g id="node8" class="node">
+<title>n7</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="221" cy="-306" rx="34.05" ry="18"/>
+<text text-anchor="middle" x="221" y="-303.2" font-family="monospace" font-size="11.00" fill="#1f3a93">0 &gt;= 2</text>
+</g>
+<!-- n6&#45;&gt;n7 -->
+<g id="edge17" class="edge">
+<title>n6&#45;&gt;n7</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M221,-359.7C221,-351.98 221,-342.71 221,-334.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="224.5,-334.1 221,-324.1 217.5,-334.1 224.5,-334.1"/>
+</g>
+<!-- n12 -->
+<g id="node13" class="node">
+<title>n12</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="336" cy="-306" rx="34.05" ry="18"/>
+<text text-anchor="middle" x="336" y="-303.2" font-family="monospace" font-size="11.00" fill="#1f3a93">0 &gt;= 2</text>
+</g>
+<!-- n6&#45;&gt;n12 -->
+<g id="edge18" class="edge">
+<title>n6&#45;&gt;n12</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M242.63,-363.83C260.46,-352.98 285.95,-337.46 305.79,-325.39"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="307.74,-328.3 314.47,-320.11 304.1,-322.32 307.74,-328.3"/>
+</g>
+<!-- n8 -->
+<g id="node9" class="node">
+<title>n8</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M193,-252C193,-252 163,-252 163,-252 157,-252 151,-246 151,-240 151,-240 151,-228 151,-228 151,-222 157,-216 163,-216 163,-216 193,-216 193,-216 199,-216 205,-222 205,-228 205,-228 205,-240 205,-240 205,-246 199,-252 193,-252"/>
+<text text-anchor="middle" x="178" y="-231.2" font-family="monospace" font-size="11.00" fill="#1b2430">11</text>
+</g>
+<!-- n7&#45;&gt;n8 -->
+<g id="edge7" class="edge">
+<title>n7&#45;&gt;n8</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M211.03,-288.76C205.91,-280.44 199.56,-270.1 193.8,-260.73"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="196.74,-258.81 188.52,-252.12 190.77,-262.48 196.74,-258.81"/>
+</g>
+<!-- n9 -->
+<g id="node10" class="node">
+<title>n9</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="257" cy="-234" rx="34.05" ry="18"/>
+<text text-anchor="middle" x="257" y="-231.2" font-family="monospace" font-size="11.00" fill="#1f3a93">0 &gt;= 1</text>
+</g>
+<!-- n7&#45;&gt;n9 -->
+<g id="edge8" class="edge">
+<title>n7&#45;&gt;n9</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M229.53,-288.41C233.84,-280.04 239.15,-269.71 243.95,-260.37"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="247.07,-261.96 248.53,-251.47 240.84,-258.76 247.07,-261.96"/>
+</g>
+<!-- n10 -->
+<g id="node11" class="node">
+<title>n10</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M203,-180C203,-180 173,-180 173,-180 167,-180 161,-174 161,-168 161,-168 161,-156 161,-156 161,-150 167,-144 173,-144 173,-144 203,-144 203,-144 209,-144 215,-150 215,-156 215,-156 215,-168 215,-168 215,-174 209,-180 203,-180"/>
+<text text-anchor="middle" x="188" y="-159.2" font-family="monospace" font-size="11.00" fill="#1b2430">9</text>
+</g>
+<!-- n9&#45;&gt;n10 -->
+<g id="edge5" class="edge">
+<title>n9&#45;&gt;n10</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M241.69,-217.46C233.08,-208.73 222.14,-197.63 212.38,-187.74"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="214.72,-185.13 205.21,-180.46 209.74,-190.04 214.72,-185.13"/>
+</g>
+<!-- n11 -->
+<g id="node12" class="node">
+<title>n11</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M275,-180C275,-180 245,-180 245,-180 239,-180 233,-174 233,-168 233,-168 233,-156 233,-156 233,-150 239,-144 245,-144 245,-144 275,-144 275,-144 281,-144 287,-150 287,-156 287,-156 287,-168 287,-168 287,-174 281,-180 275,-180"/>
+<text text-anchor="middle" x="260" y="-159.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n9&#45;&gt;n11 -->
+<g id="edge6" class="edge">
+<title>n9&#45;&gt;n11</title>
+<path fill="none" stroke="#aaaaaa" d="M257.74,-215.7C258.07,-207.98 258.47,-198.71 258.84,-190.11"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="262.34,-190.25 259.27,-180.1 255.34,-189.95 262.34,-190.25"/>
+</g>
+<!-- n13 -->
+<g id="node14" class="node">
+<title>n13</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M351,-252C351,-252 321,-252 321,-252 315,-252 309,-246 309,-240 309,-240 309,-228 309,-228 309,-222 315,-216 321,-216 321,-216 351,-216 351,-216 357,-216 363,-222 363,-228 363,-228 363,-240 363,-240 363,-246 357,-252 351,-252"/>
+<text text-anchor="middle" x="336" y="-231.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n12&#45;&gt;n13 -->
+<g id="edge15" class="edge">
+<title>n12&#45;&gt;n13</title>
+<path fill="none" stroke="#aaaaaa" d="M336,-287.7C336,-279.98 336,-270.71 336,-262.11"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="339.5,-262.1 336,-252.1 332.5,-262.1 339.5,-262.1"/>
+</g>
+<!-- n14 -->
+<g id="node15" class="node">
+<title>n14</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="415" cy="-234" rx="34.05" ry="18"/>
+<text text-anchor="middle" x="415" y="-231.2" font-family="monospace" font-size="11.00" fill="#1f3a93">0 &gt;= 1</text>
+</g>
+<!-- n12&#45;&gt;n14 -->
+<g id="edge16" class="edge">
+<title>n12&#45;&gt;n14</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M352.75,-290.15C363.75,-280.41 378.32,-267.5 390.59,-256.63"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="393.11,-259.08 398.27,-249.82 388.46,-253.84 393.11,-259.08"/>
+</g>
+<!-- n15 -->
+<g id="node16" class="node">
+<title>n15</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M390,-180C390,-180 360,-180 360,-180 354,-180 348,-174 348,-168 348,-168 348,-156 348,-156 348,-150 354,-144 360,-144 360,-144 390,-144 390,-144 396,-144 402,-150 402,-156 402,-156 402,-168 402,-168 402,-174 396,-180 390,-180"/>
+<text text-anchor="middle" x="375" y="-159.2" font-family="monospace" font-size="11.00" fill="#1b2430">9</text>
+</g>
+<!-- n14&#45;&gt;n15 -->
+<g id="edge13" class="edge">
+<title>n14&#45;&gt;n15</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M405.52,-216.41C400.88,-208.28 395.18,-198.31 389.96,-189.18"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="392.97,-187.39 384.97,-180.45 386.89,-190.87 392.97,-187.39"/>
+</g>
+<!-- n16 -->
+<g id="node17" class="node">
+<title>n16</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="454" cy="-162" rx="34.05" ry="18"/>
+<text text-anchor="middle" x="454" y="-159.2" font-family="monospace" font-size="11.00" fill="#1f3a93">0 &gt;= 2</text>
+</g>
+<!-- n14&#45;&gt;n16 -->
+<g id="edge14" class="edge">
+<title>n14&#45;&gt;n16</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M424.24,-216.41C428.91,-208.04 434.66,-197.71 439.87,-188.37"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="443.01,-189.91 444.82,-179.47 436.9,-186.5 443.01,-189.91"/>
+</g>
+<!-- n17 -->
+<g id="node18" class="node">
+<title>n17</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M430,-108C430,-108 400,-108 400,-108 394,-108 388,-102 388,-96 388,-96 388,-84 388,-84 388,-78 394,-72 400,-72 400,-72 430,-72 430,-72 436,-72 442,-78 442,-84 442,-84 442,-96 442,-96 442,-102 436,-108 430,-108"/>
+<text text-anchor="middle" x="415" y="-87.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n16&#45;&gt;n17 -->
+<g id="edge11" class="edge">
+<title>n16&#45;&gt;n17</title>
+<path fill="none" stroke="#aaaaaa" d="M444.76,-144.41C440.23,-136.28 434.67,-126.31 429.59,-117.18"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="432.64,-115.48 424.72,-108.45 426.53,-118.89 432.64,-115.48"/>
+</g>
+<!-- n18 -->
+<g id="node19" class="node">
+<title>n18</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="494" cy="-90" rx="34.05" ry="18"/>
+<text text-anchor="middle" x="494" y="-87.2" font-family="monospace" font-size="11.00" fill="#1f3a93">0 &gt;= 1</text>
+</g>
+<!-- n16&#45;&gt;n18 -->
+<g id="edge12" class="edge">
+<title>n16&#45;&gt;n18</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M463.48,-144.41C468.26,-136.04 474.17,-125.71 479.5,-116.37"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="482.67,-117.89 484.59,-107.47 476.59,-114.42 482.67,-117.89"/>
+</g>
+<!-- n19 -->
+<g id="node20" class="node">
+<title>n19</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M473,-36C473,-36 443,-36 443,-36 437,-36 431,-30 431,-24 431,-24 431,-12 431,-12 431,-6 437,0 443,0 443,0 473,0 473,0 479,0 485,-6 485,-12 485,-12 485,-24 485,-24 485,-30 479,-36 473,-36"/>
+<text text-anchor="middle" x="458" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">10</text>
+</g>
+<!-- n18&#45;&gt;n19 -->
+<g id="edge9" class="edge">
+<title>n18&#45;&gt;n19</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M485.47,-72.41C481.33,-64.37 476.26,-54.51 471.61,-45.47"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="474.66,-43.74 466.97,-36.45 468.43,-46.94 474.66,-43.74"/>
+</g>
+<!-- n20 -->
+<g id="node21" class="node">
+<title>n20</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M545,-36C545,-36 515,-36 515,-36 509,-36 503,-30 503,-24 503,-24 503,-12 503,-12 503,-6 509,0 515,0 515,0 545,0 545,0 551,0 557,-6 557,-12 557,-12 557,-24 557,-24 557,-30 551,-36 545,-36"/>
+<text text-anchor="middle" x="530" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n18&#45;&gt;n20 -->
+<g id="edge10" class="edge">
+<title>n18&#45;&gt;n20</title>
+<path fill="none" stroke="#aaaaaa" d="M502.53,-72.41C506.67,-64.37 511.74,-54.51 516.39,-45.47"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="519.57,-46.94 521.03,-36.45 513.34,-43.74 519.57,-46.94"/>
+</g>
+</g>
+</svg>
+</div>
+<h3 class="sec">Defined regions (sufficient preconditions)</h3>
+<div class="card"><table><thead><tr><th>#</th><th>Region (conjunction of guards)</th>
+<th>Ranking function</th><th>Status</th></tr></thead><tbody><tr><td class="num">1</td><td class="prop">0 &gt;= 2 &and; &not;(0 &gt;= 2) &and; 0 &gt;= 1</td><td class="mono">9</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">2</td><td class="prop">&not;(0 &gt;= 2) &and; 0 &gt;= 1 &and; 0 &gt;= 2</td><td class="mono">11</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">3</td><td class="prop">&not;(0 &gt;= 2) &and; 0 &gt;= 1 &and; &not;(0 &gt;= 2) &and; 0 &gt;= 1</td><td class="mono">9</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">4</td><td class="prop">&not;(0 &gt;= 2) &and; &not;(0 &gt;= 1) &and; &not;(0 &gt;= 2) &and; 0 &gt;= 1</td><td class="mono">9</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">5</td><td class="prop">&not;(0 &gt;= 2) &and; &not;(0 &gt;= 1) &and; &not;(0 &gt;= 2) &and; &not;(0 &gt;= 1) &and; &not;(0 &gt;= 2) &and; 0 &gt;= 1</td><td class="mono">10</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">6</td><td class="prop">0 &gt;= 2 &and; 0 &gt;= 2</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">7</td><td class="prop">0 &gt;= 2 &and; &not;(0 &gt;= 2) &and; &not;(0 &gt;= 1)</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">8</td><td class="prop">&not;(0 &gt;= 2) &and; &not;(0 &gt;= 1) &and; 0 &gt;= 2</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">9</td><td class="prop">&not;(0 &gt;= 2) &and; 0 &gt;= 1 &and; &not;(0 &gt;= 2) &and; &not;(0 &gt;= 1)</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">10</td><td class="prop">&not;(0 &gt;= 2) &and; &not;(0 &gt;= 1) &and; &not;(0 &gt;= 2) &and; &not;(0 &gt;= 1) &and; 0 &gt;= 2</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">11</td><td class="prop">&not;(0 &gt;= 2) &and; &not;(0 &gt;= 1) &and; &not;(0 &gt;= 2) &and; &not;(0 &gt;= 1) &and; &not;(0 &gt;= 2) &and; &not;(0 &gt;= 1)</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr></tbody></table></div>
+<h3 class="sec">Distinct guards</h3>
+<div class="card" style="padding:10px 20px"><ul class="guards"><li class="mono">0 &gt;= 1</li><li class="mono">0 &gt;= 2</li></ul></div>
+
+<h3 class="sec">Source</h3>
+<pre class="block"><code class="language-c">/*
+TERMINATION
+
+suggested parameters:
+- conflict-driven conditional termination
+- partition abstract domain = boxes [default]
+- function abstract domain = affine [default]
+- backward widening delay = 2 [default]
+*/
+
+int get_step(int x) {
+  return 1;
+}
+
+int main()  {
+  int y, step;
+  step = get_step(y);
+  if (y &gt; 0) {
+    step = -step;
+  }
+  while(y &lt; 1 || y &gt; 1) {
+    y = y + step;
+  }
+  return 0;
+}</code></pre>
+<h3 class="sec">Analysis log</h3>
+<pre class="block"><code>
+Abstract typed Syntax:
+{
+  {44}
+}
+int get_step(int x)@
+{
+  {9} __return7 = 1;
+  {10} return;
+  {11} return#6:;
+  {12}
+}
+int main()@
+{
+  {16} int y;
+  {18} int step;
+  {20} int x = y;
+  {21} int __returned19;
+  {22} int __return7;
+  {23} __return7 = get_step(x);
+  {24} __returned19 = __return7;
+  {25} delete __return7;
+  {26} delete x;
+  {27} step = __returned19;
+  {28} delete __returned19;
+  {29} if (y &gt; 0)
+  {
+    {30} step = - step;
+    {31}
+  }
+  else
+  {
+    {32}
+  }
+  {33} while {34} (y &lt; 1 || y &gt; 1)
+  {
+    {35} y = y + step;
+    {36}
+  }
+  {37} break#34:;
+  {38} __return14 = 0;
+  {39} return;
+  {40} return#13:;
+  {41} delete y;
+  {42} delete step;
+  {43}
+}
+
+Backward Analysis:
+[9:]: top ? 1
+
+[ 10:]: top ? 0.
+
+[11:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 7
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 6
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == -1 ? top
+0 == 1 &amp;&amp; 0 == 0 ? 6
+0 &gt;= 2 &amp;&amp; 0 == -1 ? 8
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 6
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[12:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 7
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 6
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == -1 ? top
+0 == 1 &amp;&amp; 0 == 0 ? 6
+0 &gt;= 2 &amp;&amp; 0 == -1 ? 8
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 6
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[16:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 10
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 9
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == -1 ? top
+0 == 1 &amp;&amp; 0 == 0 ? 9
+0 &gt;= 2 &amp;&amp; 0 == -1 ? 11
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 9
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[18:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 10
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 9
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == -1 ? top
+0 == 1 &amp;&amp; 0 == 0 ? 9
+0 &gt;= 2 &amp;&amp; 0 == -1 ? 11
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 9
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[20:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 10
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 9
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == -1 ? top
+0 == 1 &amp;&amp; 0 == 0 ? 9
+0 &gt;= 2 &amp;&amp; 0 == -1 ? 11
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 9
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[21:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 9
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 8
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == -1 ? top
+0 == 1 &amp;&amp; 0 == 0 ? 8
+0 &gt;= 2 &amp;&amp; 0 == -1 ? 10
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 8
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[22:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 9
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 8
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == -1 ? top
+0 == 1 &amp;&amp; 0 == 0 ? 8
+0 &gt;= 2 &amp;&amp; 0 == -1 ? 10
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 8
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[23:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 9
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 8
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == -1 ? top
+0 == 1 &amp;&amp; 0 == 0 ? 8
+0 &gt;= 2 &amp;&amp; 0 == -1 ? 10
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 8
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[24:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 7
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 6
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == -1 ? top
+0 == 1 &amp;&amp; 0 == 0 ? 6
+0 &gt;= 2 &amp;&amp; 0 == -1 ? 8
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 6
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[25:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 6
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 5
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == -1 ? top
+0 == 1 &amp;&amp; 0 == 0 ? 5
+0 &gt;= 2 &amp;&amp; 0 == -1 ? 7
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 5
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[26:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 6
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 5
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == -1 ? top
+0 == 1 &amp;&amp; 0 == 0 ? 5
+0 &gt;= 2 &amp;&amp; 0 == -1 ? 7
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 5
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[27:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 6
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 5
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == -1 ? top
+0 == 1 &amp;&amp; 0 == 0 ? 5
+0 &gt;= 2 &amp;&amp; 0 == -1 ? 7
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 5
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[28:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 5
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 4
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == -1 ? top
+0 == 1 &amp;&amp; 0 == 0 ? 4
+0 &gt;= 2 &amp;&amp; 0 == -1 ? 6
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 4
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[29:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 5
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 4
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == -1 ? top
+0 == 1 &amp;&amp; 0 == 0 ? 4
+0 &gt;= 2 &amp;&amp; 0 == -1 ? 6
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 4
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[30:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 3
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == -1 ? 5
+0 == 1 &amp;&amp; 0 == 0 ? 3
+0 &gt;= 2 &amp;&amp; 0 == -1 ? 5
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 3
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[31:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 4
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 == 1 ? 2
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 2 &amp;&amp; 0 == 1 ? 4
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[32:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 4
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 == 1 ? 2
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 2 &amp;&amp; 0 == 1 ? 4
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[33:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 4
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 == 1 ? 2
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 2 &amp;&amp; 0 == 1 ? 4
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[34:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 4
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 == 1 ? 2
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 2 &amp;&amp; 0 == 1 ? 4
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[35:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 5
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 == 1 ? 3
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 3 &amp;&amp; 0 == 1 ? 5
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[36:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 4
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 == 1 ? 2
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 2 &amp;&amp; 0 == 1 ? 4
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+[37:]: top ? 1
+
+[38:]: top ? 1
+
+[39:]: top ? 0.
+
+[40:]: top ? 0.
+
+[41:]: top ? 0.
+
+[42:]: top ? 0.
+
+[43:]: top ? 0.
+
+[44:]: 0 &gt;= 0 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == 1 ? 10
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 9
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 0 &amp;&amp; 0 == -1 ? top
+0 == 1 &amp;&amp; 0 == 0 ? 9
+0 &gt;= 2 &amp;&amp; 0 == -1 ? 11
+0 &gt;= 2 &amp;&amp; 0 &gt;= 0 ? top
+0 &gt;= 1 &amp;&amp; 0 == 1 ? 9
+0 &gt;= 2 &amp;&amp; 0 &gt;= 2 ? top
+
+
+Final Analysis Result: UNKNOWN
+{
+  &quot;Config&quot;: {
+    &quot;filename&quot;: &quot;tests/termination/example1a.c&quot;,
+    &quot;analysis_type&quot;: &quot;termination&quot;,
+    &quot;property&quot;: &quot;AF{exit:true}&quot;,
+    &quot;precondition&quot;: &quot;true&quot;,
+    &quot;result&quot;: &quot;UKNOWN&quot;,
+    &quot;domain&quot;: &quot;polyhedra&quot;,
+    &quot;joinbwd&quot;: 2,
+    &quot;time&quot;: &quot;1&quot;
+  },
+  &quot;tree&quot;: {
+    &quot;Node&quot;: {
+      &quot;constraint&quot;: &quot;0 &gt;= 2&quot;,
+      &quot;left&quot;: {
+        &quot;Node&quot;: {
+          &quot;constraint&quot;: &quot;0 &gt;= 2&quot;,
+          &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+          &quot;right&quot;: {
+            &quot;Node&quot;: {
+              &quot;constraint&quot;: &quot;0 &gt;= 1&quot;,
+              &quot;left&quot;: { &quot;Leaf&quot;: &quot;9&quot; },
+              &quot;right&quot;: { &quot;Leaf&quot;: &quot;top&quot; }
+            }
+          }
+        }
+      },
+      &quot;right&quot;: {
+        &quot;Node&quot;: {
+          &quot;constraint&quot;: &quot;0 &gt;= 1&quot;,
+          &quot;left&quot;: {
+            &quot;Node&quot;: {
+              &quot;constraint&quot;: &quot;0 &gt;= 2&quot;,
+              &quot;left&quot;: { &quot;Leaf&quot;: &quot;11&quot; },
+              &quot;right&quot;: {
+                &quot;Node&quot;: {
+                  &quot;constraint&quot;: &quot;0 &gt;= 1&quot;,
+                  &quot;left&quot;: { &quot;Leaf&quot;: &quot;9&quot; },
+                  &quot;right&quot;: { &quot;Leaf&quot;: &quot;top&quot; }
+                }
+              }
+            }
+          },
+          &quot;right&quot;: {
+            &quot;Node&quot;: {
+              &quot;constraint&quot;: &quot;0 &gt;= 2&quot;,
+              &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+              &quot;right&quot;: {
+                &quot;Node&quot;: {
+                  &quot;constraint&quot;: &quot;0 &gt;= 1&quot;,
+                  &quot;left&quot;: { &quot;Leaf&quot;: &quot;9&quot; },
+                  &quot;right&quot;: {
+                    &quot;Node&quot;: {
+                      &quot;constraint&quot;: &quot;0 &gt;= 2&quot;,
+                      &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+                      &quot;right&quot;: {
+                        &quot;Node&quot;: {
+                          &quot;constraint&quot;: &quot;0 &gt;= 1&quot;,
+                          &quot;left&quot;: { &quot;Leaf&quot;: &quot;10&quot; },
+                          &quot;right&quot;: { &quot;Leaf&quot;: &quot;top&quot; }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  &quot;vulnerability&quot;: &quot;Not analyzed&quot;
+}</code></pre>
+</div>
+<script>hljs.highlightAll();</script>
+</body></html>

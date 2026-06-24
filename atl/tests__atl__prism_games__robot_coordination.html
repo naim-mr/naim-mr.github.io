@@ -1,0 +1,1485 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>robot_coordination</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+:root, html[data-theme="dark"]{
+  --bg:#0f1115; --surface:#171a21; --surface2:#1e222b; --border:#2a2f3a;
+  --text:#e6e8ee; --muted:#9aa3b2; --accent:#5b8def;
+  --true:#3fb950; --true-bg:#10371d;
+  --unknown:#d29922; --unknown-bg:#3a2e0c;
+  --fail:#f85149; --fail-bg:#3a1413;
+  --hero:linear-gradient(135deg,#1b2a4a 0%,#10131a 70%);
+}
+html[data-theme="light"]{
+  --bg:#f4f6fb; --surface:#ffffff; --surface2:#eef1f7; --border:#d8deea;
+  --text:#1b2430; --muted:#5b6675; --accent:#1f6feb;
+  --true:#1a7f37; --true-bg:#d8f3df;
+  --unknown:#9a6700; --unknown-bg:#fdf0d0;
+  --fail:#cf222e; --fail-bg:#ffe0e0;
+  --hero:linear-gradient(135deg,#dbe6ff 0%,#f4f6fb 70%);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px; line-height:1.5;
+}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1200px; margin:0 auto; padding:0 24px 80px}
+header.hero{
+  background:var(--hero);
+  border-bottom:1px solid var(--border); padding:34px 24px; margin-bottom:24px;
+}
+header.hero .inner{max-width:1200px; margin:0 auto; position:relative}
+header.hero h1{margin:0; font-size:30px; font-weight:700; letter-spacing:.3px}
+.theme-toggle{
+  position:absolute; top:0; right:0; cursor:pointer; font-size:13px; font-weight:600;
+  padding:8px 14px; border-radius:999px; background:var(--surface2);
+  border:1px solid var(--border); color:var(--text);
+}
+.theme-toggle:hover{border-color:var(--accent)}
+.stats{margin:4px 0 30px}
+.stats .stat-head{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:12px}
+.stats h2{font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); margin:0}
+.seg{display:inline-flex; border:1px solid var(--border); border-radius:10px; overflow:hidden}
+.seg button{
+  background:var(--surface); color:var(--muted); border:none; padding:7px 16px;
+  font-size:13px; font-weight:600; cursor:pointer;
+}
+.seg button.active{background:var(--accent); color:#fff}
+.stats .chart{background:#fff; border:1px solid var(--border); border-radius:14px; padding:10px; text-align:center}
+.stats .chart img{max-width:100%; height:auto}
+header.hero .sub{color:var(--muted); margin-top:6px; font-size:14px}
+.chips{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px}
+.chip{
+  display:inline-flex; align-items:baseline; gap:8px; padding:7px 14px;
+  border-radius:999px; background:var(--surface2); border:1px solid var(--border);
+  font-size:13px; font-weight:600;
+}
+.chip b{font-size:16px}
+.chip.true{color:var(--true)} .chip.unknown{color:var(--unknown)}
+.chip.fail,.chip.timeout{color:var(--fail)} .chip.total{color:var(--text)}
+.controls{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin:6px 0 22px}
+.controls input[type=search]{
+  flex:1; min-width:220px; padding:10px 14px; border-radius:10px;
+  background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:14px;
+}
+.controls label{color:var(--muted); font-size:14px; display:inline-flex; gap:7px; align-items:center; cursor:pointer}
+section.grp{margin-bottom:30px}
+section.grp h2{
+  font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted);
+  margin:0 0 10px; padding-bottom:8px; border-bottom:1px solid var(--border);
+}
+.card{background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden}
+table{border-collapse:collapse; width:100%; font-size:14px}
+thead th{
+  position:sticky; top:0; background:var(--surface2); color:var(--muted);
+  text-align:left; font-weight:600; padding:11px 16px; border-bottom:1px solid var(--border);
+  font-size:12px; text-transform:uppercase; letter-spacing:.5px;
+}
+tbody td{padding:11px 16px; border-bottom:1px solid var(--border); vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface2)}
+td.c{text-align:center; white-space:nowrap}
+code.mono,td.prop,.mono{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  font-size:13px; color:var(--text)}
+td.prop{color:var(--text); font-weight:500}
+.badge{
+  display:inline-block; padding:3px 11px; border-radius:999px; font-size:12px; font-weight:700;
+  letter-spacing:.3px;
+}
+.badge.true{color:var(--true); background:var(--true-bg)}
+.badge.unknown{color:var(--unknown); background:var(--unknown-bg)}
+.badge.fail,.badge.timeout{color:var(--fail); background:var(--fail-bg)}
+.tag{font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--muted);
+  background:var(--surface2); padding:2px 8px; border-radius:6px}
+.empty{color:var(--muted); text-align:center; padding:40px}
+/* per-test page */
+.meta{display:flex; flex-wrap:wrap; gap:22px; background:var(--surface); border:1px solid var(--border);
+  border-radius:14px; padding:18px 22px; margin-bottom:22px}
+.meta .item{display:flex; flex-direction:column; gap:3px}
+.meta .item .k{font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted)}
+.meta .item .v{font-size:15px; font-family:ui-monospace,Menlo,monospace}
+/* tabs */
+nav.tabs{display:flex; gap:6px; margin:0 0 22px; border-bottom:1px solid var(--border)}
+nav.tabs button{
+  background:none; border:none; border-bottom:2px solid transparent; color:var(--muted);
+  font-size:15px; font-weight:600; padding:10px 18px; cursor:pointer; margin-bottom:-1px;
+}
+nav.tabs button:hover{color:var(--text)}
+nav.tabs button.active{color:var(--accent); border-bottom-color:var(--accent)}
+.panel[hidden]{display:none}
+/* summary table */
+table.summary{margin-bottom:22px}
+table.summary td.num{text-align:right; font-family:ui-monospace,Menlo,monospace}
+.rate{display:inline-block; min-width:46px}
+.bar{height:7px; border-radius:4px; background:var(--surface2); overflow:hidden; margin-top:4px}
+.bar > i{display:block; height:100%; background:var(--true)}
+/* decision tree */
+.treechips{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px}
+.tag.true{color:var(--true); background:var(--true-bg)}
+.treesvg{background:#fff; padding:14px; text-align:center; overflow:auto}
+.treesvg svg{max-width:100%; height:auto}
+ul.guards{margin:6px 0; padding-left:22px}
+ul.guards li{padding:2px 0; font-size:13px}
+h3.sec{font-size:14px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:26px 0 10px}
+pre.block{background:#0b0d12; border:1px solid var(--border); border-radius:12px; padding:16px;
+  overflow:auto; font-size:13px; line-height:1.45; max-height:560px}
+pre.block code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.back{display:inline-block; margin-bottom:18px; font-size:14px}
+</style><script>
+(function(){
+  const root = document.documentElement;
+  function fromUrl(){ try{ return new URLSearchParams(location.search).get('theme'); }catch(e){ return null; } }
+  function fromStore(){ try{ return localStorage.getItem('ftheme'); }catch(e){ return null; } }
+  function persist(t){ try{ localStorage.setItem('ftheme', t); }catch(e){} }
+  // URL param wins (survives file:// where localStorage is not shared across pages).
+  root.setAttribute('data-theme', fromUrl() || fromStore() || 'dark');
+  // Carry the current theme through internal links so navigation keeps it.
+  function propagate(t){
+    document.querySelectorAll('a[href]').forEach(function(a){
+      const href = a.getAttribute('href');
+      if(!href || href.indexOf('://')>=0 || href.charAt(0)==='#') return;
+      if(href.indexOf('.html')<0) return;
+      a.setAttribute('href', href.split('?')[0] + '?theme=' + t);
+    });
+  }
+  function lbl(){ return root.getAttribute('data-theme')==='dark' ? '\u2600 light' : '\u263e dark'; }
+  document.addEventListener('DOMContentLoaded', function(){
+    propagate(root.getAttribute('data-theme'));
+    const btn = document.getElementById('theme');
+    if(!btn) return;
+    btn.textContent = lbl();
+    btn.addEventListener('click', function(){
+      const next = root.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      persist(next);
+      propagate(next);
+      btn.textContent = lbl();
+    });
+  });
+})();
+</script></head><body>
+<header class="hero"><div class="inner">
+<button id="theme" class="theme-toggle"></button>
+<a class="back" href="./index.html">&larr; back to overview</a>
+<h1>robot_coordination</h1>
+<div class="sub mono">tests/atl/prism_games/robot_coordination.c</div>
+</div></header>
+<div class="wrap">
+<div class="meta">
+  <div class="item"><span class="k">Group</span><span class="v">atl/</span></div>
+  <div class="item"><span class="k">Property</span><span class="v">&lt;r1,r2&gt;F{x1 &gt;= 4}</span></div>
+  <div class="item"><span class="k">Domain</span><span class="v">polyhedra</span></div>
+  <div class="item"><span class="k">Result</span><span class="v"><span class="badge true">TRUE</span></span></div>
+  <div class="item"><span class="k">Time</span><span class="v">6.502 s</span></div>
+  <div class="item"><span class="k">Wall time</span><span class="v">7.686 s</span></div>
+</div>
+<h3 class="sec">Analyzer config</h3>
+<div class="card"><table><tbody><tr><td class="mono" style="color:var(--muted)">filename</td><td class="mono">tests/atl/prism_games/robot_coordination.c</td></tr><tr><td class="mono" style="color:var(--muted)">analysis_type</td><td class="mono">atl-resilience</td></tr><tr><td class="mono" style="color:var(--muted)">property</td><td class="mono">&lt;r1,r2&gt;F{x1 &gt;= 4}</td></tr><tr><td class="mono" style="color:var(--muted)">precondition</td><td class="mono">true</td></tr><tr><td class="mono" style="color:var(--muted)">result</td><td class="mono">TRUE</td></tr><tr><td class="mono" style="color:var(--muted)">domain</td><td class="mono">polyhedra</td></tr><tr><td class="mono" style="color:var(--muted)">joinbwd</td><td class="mono">2</td></tr><tr><td class="mono" style="color:var(--muted)">time</td><td class="mono">6.50183300001</td></tr></tbody></table></div>
+<h3 class="sec">Decision tree &amp; preconditions</h3>
+<div class="treechips">
+  <span class="tag">2 leaves</span>
+  <span class="tag true">2 defined region(s)</span>
+  <span class="tag">1 distinct guard(s)</span>
+</div>
+<div class="card treesvg"><svg width="134pt" height="116pt"
+ viewBox="0.00 0.00 134.00 116.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 112)">
+<title>T</title>
+<!-- n0 -->
+<g id="node1" class="node">
+<title>n0</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="63" cy="-90" rx="54.94" ry="18"/>
+<text text-anchor="middle" x="63" y="-87.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$5{x1} &gt;= 4</text>
+</g>
+<!-- n1 -->
+<g id="node2" class="node">
+<title>n1</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M42,-36C42,-36 12,-36 12,-36 6,-36 0,-30 0,-24 0,-24 0,-12 0,-12 0,-6 6,0 12,0 12,0 42,0 42,0 48,0 54,-6 54,-12 54,-12 54,-24 54,-24 54,-30 48,-36 42,-36"/>
+<text text-anchor="middle" x="27" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">0.</text>
+</g>
+<!-- n0&#45;&gt;n1 -->
+<g id="edge1" class="edge">
+<title>n0&#45;&gt;n1</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M54.29,-72.05C50.15,-64.01 45.11,-54.2 40.49,-45.23"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="43.57,-43.57 35.88,-36.28 37.35,-46.77 43.57,-43.57"/>
+</g>
+<!-- n2 -->
+<g id="node3" class="node">
+<title>n2</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M114,-36C114,-36 84,-36 84,-36 78,-36 72,-30 72,-24 72,-24 72,-12 72,-12 72,-6 78,0 84,0 84,0 114,0 114,0 120,0 126,-6 126,-12 126,-12 126,-24 126,-24 126,-30 120,-36 114,-36"/>
+<text text-anchor="middle" x="99" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">26</text>
+</g>
+<!-- n0&#45;&gt;n2 -->
+<g id="edge2" class="edge">
+<title>n0&#45;&gt;n2</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M71.71,-72.05C75.85,-64.01 80.89,-54.2 85.51,-45.23"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="88.65,-46.77 90.12,-36.28 82.43,-43.57 88.65,-46.77"/>
+</g>
+</g>
+</svg>
+</div>
+<h3 class="sec">Defined regions (sufficient preconditions)</h3>
+<div class="card"><table><thead><tr><th>#</th><th>Region (conjunction of guards)</th>
+<th>Ranking function</th><th>Status</th></tr></thead><tbody><tr><td class="num">1</td><td class="prop">$5{x1} &gt;= 4</td><td class="mono">0.</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">2</td><td class="prop">&not;($5{x1} &gt;= 4)</td><td class="mono">26</td><td class="c"><span class="badge true">defined</span></td></tr></tbody></table></div>
+<h3 class="sec">Distinct guards</h3>
+<div class="card" style="padding:10px 20px"><ul class="guards"><li class="mono">$5{x1} &gt;= 4</li></ul></div>
+
+<h3 class="sec">Source</h3>
+<pre class="block"><code class="language-c">// =====================================================================
+// Robot Coordination -- PRISM-games case study (de-probabilised rPATL)
+// ---------------------------------------------------------------------
+// Source : PRISM-games, &quot;Robot coordination&quot;.
+//   https://www.prismmodelchecker.org/games/casestudies/robot_coordination.php
+//   Tool/papers: https://www.prismmodelchecker.org/games/
+// Original model description: see robot_coordination.txt
+// ---------------------------------------------------------------------
+// Two robots move along a 1-D corridor of length L toward a meeting point.
+// The floor is &quot;slippery&quot;: the environment may push a robot back by one
+// cell. The coalition of robots can still guarantee that both reach the
+// goal cell (their positions meet at L).
+//
+//   agents &quot;r1&quot;,&quot;r2&quot; = input(&quot;r1&quot;), input(&quot;r2&quot;)  -&gt; robots (coalition)
+//   agent  &quot;env&quot;     = input(&quot;env&quot;)              -&gt; slip / disturbance (adversary)
+//
+// Robots can coordinate to reach the goal (TRUE):
+//   -atl &quot;&lt;r1,r2&gt;F{x1 &gt;= 4}&quot;
+// =====================================================================
+
+int main() {
+    int x1 = 0;            // position of robot 1
+    int x2 = 0;            // position of robot 2 (kept for symmetry)
+    while (x1 &lt; 4) {
+        int slip = input(&quot;env&quot;);   // environment may slip robot 1 back
+        int m1 = input(&quot;r1&quot;);      // robot 1 step
+        int m2 = input(&quot;r2&quot;);      // robot 2 step
+        if (m1 == 1) { x1 = x1 + 2; }   // a firm step advances 2
+        if (slip == 1) { x1 = x1 - 1; } // slip costs 1  -&gt; net +1 guaranteed
+        if (m2 == 1) { x2 = x2 + 1; }
+    }
+    while (1) {}
+}
+</code></pre>
+<h3 class="sec">Analysis log</h3>
+<pre class="block"><code>
+Abstract typed Syntax:
+{
+  {42}
+}
+int main()@
+{
+  {6} int x1 = 0;
+  {8} int x2 = 0;
+  {9} while {10} (x1 &lt; 4)
+  {
+    {12} int slip = input(&#x27;env&#x27;);
+    {14} int m1 = input(&#x27;r1&#x27;);
+    {16} int m2 = input(&#x27;r2&#x27;);
+    {17} if (m1 == 1)
+    {
+      {18} x1 = x1 + 2;
+      {19}
+    }
+    else
+    {
+      {20}
+    }
+    {21} if (slip == 1)
+    {
+      {22} x1 = x1 - 1;
+      {23}
+    }
+    else
+    {
+      {24}
+    }
+    {25} if (m2 == 1)
+    {
+      {26} x2 = x2 + 1;
+      {27}
+    }
+    else
+    {
+      {28}
+    }
+    {29} delete slip;
+    {30} delete m1;
+    {31} delete m2;
+    {32}
+  }
+  {33} break#10:;
+  {34} while {35} (1 != 0)
+  {
+    {36}
+  }
+  {37} break#35:;
+  {38} return#3:;
+  {39} delete x1;
+  {40} delete x2;
+  {41}
+}
+
+Abstract atl typed Syntax:
+ {
+  {42}
+}
+int main()@
+{
+  {6} int x1 = 0;
+  {8} int x2 = 0;
+  {9} while {10} (x1 &lt; 4)
+  {
+    {12} int slip = input(&#x27;env&#x27;);
+    {14} int m1 = input(&#x27;r1&#x27;);
+    {16} int m2 = input(&#x27;r2&#x27;);
+    {17} if (m1 == 1)
+    {
+      {18} x1 = x1 + 2;
+      {19}
+    }
+    else
+    {
+      {20}
+    }
+    {21} if (slip == 1)
+    {
+      {22} x1 = x1 - 1;
+      {23}
+    }
+    else
+    {
+      {24}
+    }
+    {25} if (m2 == 1)
+    {
+      {26} x2 = x2 + 1;
+      {27}
+    }
+    else
+    {
+      {28}
+    }
+    {29} delete slip;
+    {30} delete m1;
+    {31} delete m2;
+    {32}
+  }
+  {33} break#10:;
+  {34} while {35} (1 != 0)
+  {
+    {36}
+  }
+  {37} break#35:;
+  {38} return#3:;
+  {39} delete x1;
+  {40} delete x2;
+  {-1} exit:;
+  {41}
+}
+Property: x1 &gt;= 4
+
+[-1:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[6:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[8:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[9:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[ 10:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[12:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[14:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[16:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[17:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[18:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[19:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[20:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[21:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[22:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[23:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[24:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[25:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[26:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[27:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[28:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[29:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[30:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[31:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[32:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[33:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[34:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[35:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[36:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[37:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[38:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[39:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[40:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[41:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+debug cp 
+r1
+r2in if is tainted ?m1 == 1no! 
+in if is tainted ?slip == 1yes! 
+in if is tainted ?m2 == 1no! 
+in if is tainted ?x1 &lt; 4no! 
+in if is tainted ?1 != 0no! 
+
+Forward Taint Summary :
+
+Forward Analysis numerical:
+[-1:]: 
+[6:]: 
+[8:]: 
+[9:]: 
+[ 10:]: 
+[12:]: 
+[14:]: slip -- 
+[16:]: slip -- 
+[17:]: slip -- 
+[18:]: slip -- 
+[19:]: slip -- 
+[20:]: slip -- 
+[21:]: slip -- 
+[22:]: slip -- 
+[23:]: slip -- 
+[24:]: slip -- 
+[25:]: slip -- x1 -- 
+[26:]: slip -- x1 -- 
+[27:]: slip -- x1 -- 
+[28:]: slip -- x1 -- 
+[29:]: slip -- x1 -- 
+[30:]: slip -- x1 -- 
+[31:]: slip -- x1 -- 
+[32:]: slip -- x1 -- 
+[33:]: 
+[34:]: 
+[35:]: 
+[36:]: 
+[37:]: 
+[38:]: 
+[39:]: 
+[40:]: 
+[41:]: 
+check if is controlled 1 != 0 ? true 
+ check if is controlled 1 != 0 ? true 
+ check if is controlled x2 + 1 ? true 
+ check if is controlled m2 == 1 ? true 
+ check if is controlled x1 - 1 ? true 
+ check if is controlled slip == 1 ? false 
+ check if is controlled x1 + 2 ? true 
+ check if is controlled m1 == 1 ? true 
+ check if is controlled input(&#x27;r2&#x27;) ? true 
+ check if is controlled input(&#x27;r1&#x27;) ? true 
+ check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled x1 &lt; 4 ? true 
+ check if is controlled x2 + 1 ? true 
+ check if is controlled m2 == 1 ? true 
+ check if is controlled x1 - 1 ? true 
+ check if is controlled slip == 1 ? false 
+ check if is controlled x1 + 2 ? true 
+ check if is controlled m1 == 1 ? true 
+ check if is controlled input(&#x27;r2&#x27;) ? true 
+ check if is controlled input(&#x27;r1&#x27;) ? true 
+ check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled x1 &lt; 4 ? true 
+ check if is controlled x2 + 1 ? true 
+ check if is controlled m2 == 1 ? true 
+ check if is controlled x1 - 1 ? true 
+ check if is controlled slip == 1 ? false 
+ check if is controlled x1 + 2 ? true 
+ check if is controlled m1 == 1 ? true 
+ check if is controlled input(&#x27;r2&#x27;) ? true 
+ check if is controlled input(&#x27;r1&#x27;) ? true 
+ check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled x1 &lt; 4 ? true 
+ check if is controlled x2 + 1 ? true 
+ check if is controlled m2 == 1 ? true 
+ check if is controlled x1 - 1 ? true 
+ check if is controlled slip == 1 ? false 
+ check if is controlled x1 + 2 ? true 
+ check if is controlled m1 == 1 ? true 
+ check if is controlled input(&#x27;r2&#x27;) ? true 
+ check if is controlled input(&#x27;r1&#x27;) ? true 
+ check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled x1 &lt; 4 ? true 
+ check if is controlled x2 + 1 ? true 
+ check if is controlled m2 == 1 ? true 
+ check if is controlled x1 - 1 ? true 
+ check if is controlled slip == 1 ? false 
+ check if is controlled x1 + 2 ? true 
+ check if is controlled m1 == 1 ? true 
+ check if is controlled input(&#x27;r2&#x27;) ? true 
+ check if is controlled input(&#x27;r1&#x27;) ? true 
+ check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled x1 &lt; 4 ? true 
+ check if is controlled 0 ? true 
+ check if is controlled 0 ? true 
+ Property: &lt;r1 r2 &gt;F{x1 &gt;= 4}
+
+[-1:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[6:]:
+-$5{x1} &gt;= -3 ? 26
+$5{x1} &gt;= 4 ? 0.
+
+[8:]:
+-$5{x1} &gt;= 1 ? 25
+$5{x1} == 0 ? 25
+$5{x1} == 1 ? 16
+$5{x1} == 2 ? 7
+$5{x1} == 3 ? 7
+$5{x1} &gt;= 4 ? 0.
+
+[9:]:
+-$5{x1} &gt;= 1 ? 24
+$5{x1} == 0 ? 24
+$5{x1} == 1 ? 15
+$5{x1} == 2 ? 6
+$5{x1} == 3 ? 6
+$5{x1} &gt;= 4 ? 0.
+
+[ 10:]:
+-$5{x1} &gt;= 1 ? 24
+$5{x1} == 0 ? 24
+$5{x1} == 1 ? 15
+$5{x1} == 2 ? 6
+$5{x1} == 3 ? 6
+$5{x1} &gt;= 4 ? 0
+
+[12:]:
+-$5{x1} &gt;= 3 ? 23
+$5{x1} == -2 ? 41
+$5{x1} == -1 ? 32
+$5{x1} == 0 ? 23
+$5{x1} == 1 ? 14
+$5{x1} == 2 ? 5
+$5{x1} == 3 ? 5
+$5{x1} == 4 ? 0.
+$5{x1} &gt;= 5 ? 0.
+
+[14:]:
+-$5{x1} &gt;= 3 &amp;&amp; -$11{slip} &gt;= 0 ? 12
+-$5{x1} &gt;= 3 &amp;&amp; $11{slip} == 1 ? 22
+$11{slip} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 ? 12
+-$11{slip} &gt;= 0 &amp;&amp; $5{x1} == -2 ? 30
+$11{slip} == 1 &amp;&amp; $5{x1} == -2 ? 40
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} == -2 ? 30
+-$11{slip} &gt;= 0 &amp;&amp; $5{x1} == -1 ? 21
+$11{slip} == 1 &amp;&amp; $5{x1} == -1 ? 31
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} == -1 ? 21
+-$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 12
+$11{slip} == 1 &amp;&amp; $5{x1} == 0 ? 22
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} == 0 ? 12
+-$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 12
+$11{slip} == 1 &amp;&amp; $5{x1} == 1 ? 13
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} == 1 ? 12
+-$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 4
+$11{slip} == 1 &amp;&amp; $5{x1} == 2 ? 4
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} == 2 ? 4
+-$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 4
+$11{slip} == 1 &amp;&amp; $5{x1} == 3 ? 4
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} == 3 ? 4
+-$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} == 4 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$11{slip} &gt;= 0 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; $11{slip} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 ? 0.
+
+[16:]:
+-$5{x1} &gt;= 3 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 ? 28
+-$5{x1} &gt;= 3 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 ? 38
+$11{slip} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; -$13{m1} &gt;= 0 ? 28
+-$5{x1} &gt;= 3 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 ? 11
+-$5{x1} &gt;= 3 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 ? 21
+$11{slip} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; $13{m1} == 1 ? 11
+$13{m1} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; -$11{slip} &gt;= 0 ? 28
+$13{m1} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; $11{slip} == 1 ? 38
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 ? 28
+-$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == -2 ? 46
+-$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == -2 ? 56
+$11{slip} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == -2 ? 46
+-$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == -2 ? 29
+$11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == -2 ? 39
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == -2 ? 29
+$13{m1} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == -2 ? 46
+$13{m1} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == -2 ? 56
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $5{x1} == -2 ? 46
+-$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == -1 ? 37
+-$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == -1 ? 47
+$11{slip} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == -1 ? 37
+-$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == -1 ? 20
+$11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == -1 ? 30
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == -1 ? 20
+$13{m1} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == -1 ? 37
+$13{m1} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == -1 ? 47
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $5{x1} == -1 ? 37
+-$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 28
+-$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 0 ? 38
+$11{slip} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 28
+-$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 0 ? 11
+$11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 0 ? 21
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 0 ? 11
+$13{m1} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 28
+$13{m1} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 0 ? 38
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $5{x1} == 0 ? 28
+-$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 19
+-$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 1 ? 29
+$11{slip} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 19
+-$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 1 ? 11
+$11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 1 ? 12
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 1 ? 11
+$13{m1} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 19
+$13{m1} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 1 ? 29
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $5{x1} == 1 ? 19
+-$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 10
+-$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 2 ? 20
+$11{slip} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 10
+-$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 2 ? 3
+$11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 2 ? 3
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 2 ? 3
+$13{m1} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 10
+$13{m1} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 2 ? 20
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $5{x1} == 2 ? 10
+-$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 10
+-$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 3 ? 11
+$11{slip} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 10
+-$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 3 ? 3
+$11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 3 ? 3
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 3 ? 3
+$13{m1} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 10
+$13{m1} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 3 ? 11
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $5{x1} == 3 ? 10
+-$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+-$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+-$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$13{m1} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+$13{m1} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $5{x1} == 4 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$13{m1} &gt;= 0 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; $13{m1} == 1 ? 0.
+$13{m1} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$11{slip} &gt;= 0 ? 0.
+$13{m1} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; $11{slip} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 ? 0.
+
+[17:]:
+-$5{x1} &gt;= 3 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 ? 27
+-$5{x1} &gt;= 3 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 ? 37
+$11{slip} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 ? 27
+-$5{x1} &gt;= 3 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 ? 10
+-$5{x1} &gt;= 3 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 ? 20
+$11{slip} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $13{m1} == 1 ? 10
+$13{m1} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 ? 27
+$13{m1} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 ? 37
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; -$15{m2} &gt;= 0 ? 27
+-$5{x1} &gt;= 3 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 ? 28
+-$5{x1} &gt;= 3 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 ? 38
+$11{slip} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $15{m2} == 1 ? 28
+-$5{x1} &gt;= 3 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 ? 11
+-$5{x1} &gt;= 3 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 ? 21
+$11{slip} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 ? 11
+$13{m1} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 ? 28
+$13{m1} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 ? 38
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; $15{m2} == 1 ? 28
+$15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 ? 27
+$15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 ? 37
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; -$13{m1} &gt;= 0 ? 27
+$15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 ? 10
+$15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 ? 20
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; $13{m1} == 1 ? 10
+$13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; -$11{slip} &gt;= 0 ? 27
+$13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; $11{slip} == 1 ? 37
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 ? 27
+-$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == -2 ? 27
+-$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == -2 ? 37
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == -2 ? 27
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == -2 ? 28
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == -2 ? 38
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == -2 ? 28
+$13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == -2 ? 27
+$13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == -2 ? 37
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == -2 ? 27
+-$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -2 ? 28
+-$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -2 ? 38
+$11{slip} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -2 ? 28
+-$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -2 ? 29
+$11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -2 ? 39
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -2 ? 29
+$13{m1} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -2 ? 28
+$13{m1} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -2 ? 38
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -2 ? 28
+$15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == -2 ? 27
+$15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == -2 ? 37
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == -2 ? 27
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == -2 ? 28
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == -2 ? 38
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == -2 ? 28
+$13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == -2 ? 27
+$13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == -2 ? 37
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == -2 ? 27
+-$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == -1 ? 27
+-$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == -1 ? 37
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == -1 ? 27
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == -1 ? 19
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == -1 ? 29
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == -1 ? 19
+$13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == -1 ? 27
+$13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == -1 ? 37
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == -1 ? 27
+-$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -1 ? 28
+-$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -1 ? 38
+$11{slip} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -1 ? 28
+-$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -1 ? 20
+$11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -1 ? 30
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -1 ? 20
+$13{m1} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -1 ? 28
+$13{m1} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -1 ? 38
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -1 ? 28
+$15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == -1 ? 27
+$15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == -1 ? 37
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == -1 ? 27
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == -1 ? 19
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == -1 ? 29
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == -1 ? 19
+$13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == -1 ? 27
+$13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == -1 ? 37
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == -1 ? 27
+-$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 27
+-$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 0 ? 37
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 27
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 0 ? 10
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 0 ? 20
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 0 ? 10
+$13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 27
+$13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 0 ? 37
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 27
+-$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 28
+-$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 38
+$11{slip} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 28
+-$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 11
+$11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 21
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 11
+$13{m1} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 28
+$13{m1} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 38
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 28
+$15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 27
+$15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 0 ? 37
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 27
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 0 ? 10
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 0 ? 20
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 0 ? 10
+$13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 27
+$13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 0 ? 37
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 0 ? 27
+-$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 18
+-$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 1 ? 28
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 18
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 1 ? 10
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 1 ? 11
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 1 ? 10
+$13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 18
+$13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 1 ? 28
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 18
+-$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 19
+-$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 29
+$11{slip} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 19
+-$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 11
+$11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 12
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 11
+$13{m1} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 19
+$13{m1} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 29
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 19
+$15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 18
+$15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 1 ? 28
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 18
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 1 ? 10
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 1 ? 11
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 1 ? 10
+$13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 18
+$13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 1 ? 28
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 1 ? 18
+-$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 9
+-$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 2 ? 19
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 9
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 2 ? 2
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 2 ? 2
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 2 ? 2
+$13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 9
+$13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 2 ? 19
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 9
+-$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 10
+-$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 20
+$11{slip} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 10
+-$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 2
+$11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 2
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 2
+$13{m1} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 10
+$13{m1} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 20
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 10
+$15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 9
+$15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 2 ? 19
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 9
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 2 ? 2
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 2 ? 2
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 2 ? 2
+$13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 9
+$13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 2 ? 19
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 2 ? 9
+-$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 9
+-$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 3 ? 10
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 9
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 3 ? 2
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 3 ? 2
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 3 ? 2
+$13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 9
+$13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 3 ? 10
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 9
+-$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 10
+-$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 11
+$11{slip} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 10
+-$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 2
+$11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 2
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 2
+$13{m1} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 10
+$13{m1} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 11
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 10
+$15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 9
+$15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 3 ? 10
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 9
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 3 ? 2
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 3 ? 2
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 3 ? 2
+$13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 9
+$13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 3 ? 10
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 3 ? 9
+-$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+-$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+$13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+-$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+-$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+-$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$13{m1} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$13{m1} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $13{m1} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+$13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 4 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$13{m1} &gt;= 0 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $13{m1} == 1 ? 0.
+$13{m1} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 ? 0.
+$13{m1} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $15{m2} == 1 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; $13{m1} == 1 &amp;&amp; $15{m2} == 1 ? 0.
+$13{m1} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 ? 0.
+$13{m1} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; $15{m2} == 1 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$13{m1} &gt;= 0 &amp;&amp; $11{slip} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$13{m1} &gt;= 0 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $13{m1} == 1 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; $11{slip} == 1 &amp;&amp; $13{m1} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; $13{m1} == 1 ? 0.
+$13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$11{slip} &gt;= 0 ? 0.
+$13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; $11{slip} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $13{m1} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 ? 0.
+
+[18:]:
+-$5{x1} &gt;= 3 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 ? 9
+-$5{x1} &gt;= 3 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 ? 19
+$11{slip} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; -$15{m2} &gt;= 0 ? 9
+-$5{x1} &gt;= 3 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 ? 10
+-$5{x1} &gt;= 3 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 ? 20
+$11{slip} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; $15{m2} == 1 ? 10
+$15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; -$11{slip} &gt;= 0 ? 9
+$15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 &amp;&amp; $11{slip} == 1 ? 19
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 3 ? 9
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == -2 ? 27
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == -2 ? 19
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == -2 ? 27
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -2 ? 28
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -2 ? 20
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -2 ? 28
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == -2 ? 27
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == -2 ? 19
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == -2 ? 27
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == -1 ? 18
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == -1 ? 28
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == -1 ? 18
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -1 ? 19
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -1 ? 29
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == -1 ? 19
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == -1 ? 18
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == -1 ? 28
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == -1 ? 18
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 9
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 0 ? 19
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 9
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 10
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 20
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 10
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 9
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 0 ? 19
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 0 ? 9
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 9
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 1 ? 10
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 9
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 10
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 11
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 10
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 9
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 1 ? 10
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 1 ? 9
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 1
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 2 ? 1
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 1
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 1
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 1
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 1
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 1
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 2 ? 1
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 2 ? 1
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 1
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 3 ? 1
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 1
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 1
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 1
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 1
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 1
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 3 ? 1
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 3 ? 1
+$5{x1} &gt;= 4 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 ? 0.
+$5{x1} &gt;= 4 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} &gt;= 4 &amp;&amp; -$15{m2} &gt;= 0 ? 0.
+$5{x1} &gt;= 4 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 ? 0.
+$5{x1} &gt;= 4 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} &gt;= 4 &amp;&amp; $15{m2} == 1 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 4 &amp;&amp; -$11{slip} &gt;= 0 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 4 &amp;&amp; $11{slip} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 4 ? 0.
+
+[19:]:
+-$5{x1} &gt;= 1 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 ? 26
+-$5{x1} &gt;= 1 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 ? 36
+$11{slip} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 1 &amp;&amp; -$15{m2} &gt;= 0 ? 26
+-$5{x1} &gt;= 1 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 ? 27
+-$5{x1} &gt;= 1 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 ? 37
+$11{slip} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 1 &amp;&amp; $15{m2} == 1 ? 27
+$15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 1 &amp;&amp; -$11{slip} &gt;= 0 ? 26
+$15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 1 &amp;&amp; $11{slip} == 1 ? 36
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 1 ? 26
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 26
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 0 ? 36
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 26
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 27
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 37
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 27
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 26
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 0 ? 36
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 0 ? 26
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 17
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 1 ? 27
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 17
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 18
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 28
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 18
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 17
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 1 ? 27
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 1 ? 17
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 8
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 2 ? 18
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 8
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 9
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 19
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 9
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 8
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 2 ? 18
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 2 ? 8
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 8
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 3 ? 9
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 8
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 9
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 10
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 9
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 8
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 3 ? 9
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 3 ? 8
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 4 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; $15{m2} == 1 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$11{slip} &gt;= 0 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; $11{slip} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 ? 0.
+
+[20:]:
+-$5{x1} &gt;= 1 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 ? 26
+-$5{x1} &gt;= 1 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 ? 36
+$11{slip} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 1 &amp;&amp; -$15{m2} &gt;= 0 ? 26
+-$5{x1} &gt;= 1 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 ? 27
+-$5{x1} &gt;= 1 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 ? 37
+$11{slip} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 1 &amp;&amp; $15{m2} == 1 ? 27
+$15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 1 &amp;&amp; -$11{slip} &gt;= 0 ? 26
+$15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 1 &amp;&amp; $11{slip} == 1 ? 36
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 1 ? 26
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 26
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 0 ? 36
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 26
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 27
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 37
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 27
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 26
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 0 ? 36
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 0 ? 26
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 17
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 1 ? 27
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 17
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 18
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 28
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 18
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 17
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 1 ? 27
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 1 ? 17
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 8
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 2 ? 18
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 8
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 9
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 19
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 9
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 8
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 2 ? 18
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 2 ? 8
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 8
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 3 ? 9
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 8
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 9
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 10
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 9
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 8
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 3 ? 9
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 3 ? 8
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 4 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; $15{m2} == 1 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$11{slip} &gt;= 0 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; $11{slip} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 ? 0.
+
+[21:]:
+-$5{x1} &gt;= 1 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 ? 26
+-$5{x1} &gt;= 1 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 ? 36
+$11{slip} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 1 &amp;&amp; -$15{m2} &gt;= 0 ? 26
+-$5{x1} &gt;= 1 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 ? 27
+-$5{x1} &gt;= 1 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 ? 37
+$11{slip} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 1 &amp;&amp; $15{m2} == 1 ? 27
+$15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 1 &amp;&amp; -$11{slip} &gt;= 0 ? 26
+$15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 1 &amp;&amp; $11{slip} == 1 ? 36
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 1 ? 26
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 26
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 0 ? 36
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 26
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 27
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 37
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 27
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 26
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 0 ? 36
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 0 ? 26
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 17
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 1 ? 27
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 17
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 18
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 28
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 18
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 17
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 1 ? 27
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 1 ? 17
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 8
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 2 ? 18
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 8
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 9
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 19
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 9
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 8
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 2 ? 18
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 2 ? 8
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 8
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 3 ? 9
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 8
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 9
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 10
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 9
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 8
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 3 ? 9
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 3 ? 8
+-$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+-$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+-$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} == 1 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $11{slip} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} == 4 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; -$11{slip} &gt;= 0 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 &amp;&amp; $11{slip} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$11{slip} &gt;= 0 &amp;&amp; $15{m2} == 1 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; $11{slip} == 1 &amp;&amp; $15{m2} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; $15{m2} == 1 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; -$11{slip} &gt;= 0 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 &amp;&amp; $11{slip} == 1 ? 0.
+$11{slip} &gt;= 2 &amp;&amp; $15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 ? 0.
+
+[22:]:
+-$5{x1} &gt;= 0 &amp;&amp; -$15{m2} &gt;= 0 ? 35
+-$5{x1} &gt;= 0 &amp;&amp; $15{m2} == 1 ? 36
+$15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 0 ? 35
+-$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 26
+$15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 27
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} == 1 ? 26
+-$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 17
+$15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 18
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} == 2 ? 17
+-$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 8
+$15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 9
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} == 3 ? 8
+-$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 4 ? 0.
+$15{m2} == 1 &amp;&amp; $5{x1} == 4 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} == 4 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; -$15{m2} &gt;= 0 ? 0.
+$5{x1} &gt;= 5 &amp;&amp; $15{m2} == 1 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 5 ? 0.
+
+[23:]:
+-$5{x1} &gt;= 1 &amp;&amp; -$15{m2} &gt;= 0 ? 25
+-$5{x1} &gt;= 1 &amp;&amp; $15{m2} == 1 ? 26
+$15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 1 ? 25
+-$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 25
+$15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 26
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} == 0 ? 25
+-$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 16
+$15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 17
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} == 1 ? 16
+-$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 7
+$15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 8
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} == 2 ? 7
+-$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 7
+$15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 8
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} == 3 ? 7
+$5{x1} &gt;= 4 &amp;&amp; -$15{m2} &gt;= 0 ? 0.
+$5{x1} &gt;= 4 &amp;&amp; $15{m2} == 1 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 4 ? 0.
+
+[24:]:
+-$5{x1} &gt;= 1 &amp;&amp; -$15{m2} &gt;= 0 ? 25
+-$5{x1} &gt;= 1 &amp;&amp; $15{m2} == 1 ? 26
+$15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 1 ? 25
+-$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 25
+$15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 26
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} == 0 ? 25
+-$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 16
+$15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 17
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} == 1 ? 16
+-$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 7
+$15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 8
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} == 2 ? 7
+-$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 7
+$15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 8
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} == 3 ? 7
+$5{x1} &gt;= 4 &amp;&amp; -$15{m2} &gt;= 0 ? 0.
+$5{x1} &gt;= 4 &amp;&amp; $15{m2} == 1 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 4 ? 0.
+
+[25:]:
+-$5{x1} &gt;= 1 &amp;&amp; -$15{m2} &gt;= 0 ? 25
+-$5{x1} &gt;= 1 &amp;&amp; $15{m2} == 1 ? 26
+$15{m2} &gt;= 2 &amp;&amp; -$5{x1} &gt;= 1 ? 25
+-$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 0 ? 25
+$15{m2} == 1 &amp;&amp; $5{x1} == 0 ? 26
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} == 0 ? 25
+-$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 1 ? 16
+$15{m2} == 1 &amp;&amp; $5{x1} == 1 ? 17
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} == 1 ? 16
+-$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 2 ? 7
+$15{m2} == 1 &amp;&amp; $5{x1} == 2 ? 8
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} == 2 ? 7
+-$15{m2} &gt;= 0 &amp;&amp; $5{x1} == 3 ? 7
+$15{m2} == 1 &amp;&amp; $5{x1} == 3 ? 8
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} == 3 ? 7
+$5{x1} &gt;= 4 &amp;&amp; -$15{m2} &gt;= 0 ? 0.
+$5{x1} &gt;= 4 &amp;&amp; $15{m2} == 1 ? 0.
+$15{m2} &gt;= 2 &amp;&amp; $5{x1} &gt;= 4 ? 0.
+
+[26:]:
+-$5{x1} &gt;= 1 ? 25
+$5{x1} == 0 ? 25
+$5{x1} == 1 ? 16
+$5{x1} == 2 ? 7
+$5{x1} == 3 ? 7
+$5{x1} &gt;= 4 ? 0.
+
+[27:]:
+-$5{x1} &gt;= 1 ? 24
+$5{x1} == 0 ? 24
+$5{x1} == 1 ? 15
+$5{x1} == 2 ? 6
+$5{x1} == 3 ? 6
+$5{x1} &gt;= 4 ? 0.
+
+[28:]:
+-$5{x1} &gt;= 1 ? 24
+$5{x1} == 0 ? 24
+$5{x1} == 1 ? 15
+$5{x1} == 2 ? 6
+$5{x1} == 3 ? 6
+$5{x1} &gt;= 4 ? 0.
+
+[29:]:
+-$5{x1} &gt;= 1 ? 24
+$5{x1} == 0 ? 24
+$5{x1} == 1 ? 15
+$5{x1} == 2 ? 6
+$5{x1} == 3 ? 6
+$5{x1} &gt;= 4 ? 0.
+
+[30:]:
+-$5{x1} &gt;= 1 ? 24
+$5{x1} == 0 ? 24
+$5{x1} == 1 ? 15
+$5{x1} == 2 ? 6
+$5{x1} == 3 ? 6
+$5{x1} &gt;= 4 ? 0.
+
+[31:]:
+-$5{x1} &gt;= 1 ? 24
+$5{x1} == 0 ? 24
+$5{x1} == 1 ? 15
+$5{x1} == 2 ? 6
+$5{x1} == 3 ? 6
+$5{x1} &gt;= 4 ? 0.
+
+[32:]:
+-$5{x1} &gt;= 1 ? 24
+$5{x1} == 0 ? 24
+$5{x1} == 1 ? 15
+$5{x1} == 2 ? 6
+$5{x1} == 3 ? 6
+$5{x1} &gt;= 4 ? 0.
+
+[33:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[34:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[35:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[36:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[37:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[38:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[39:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[40:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+[41:]:
+-$5{x1} &gt;= -3 ? bottom
+$5{x1} &gt;= 4 ? 0.
+
+
+ Resulting tree:  
+ -$5{x1} &gt;= -3 ? 26
+$5{x1} &gt;= 4 ? 0.
+
+Time: 6.501834
+Final Analysis Result: TRUE
+{
+  &quot;Config&quot;: {
+    &quot;filename&quot;: &quot;tests/atl/prism_games/robot_coordination.c&quot;,
+    &quot;analysis_type&quot;: &quot;atl-resilience&quot;,
+    &quot;property&quot;: &quot;&lt;r1,r2&gt;F{x1 &gt;= 4}&quot;,
+    &quot;precondition&quot;: &quot;true&quot;,
+    &quot;result&quot;: &quot;TRUE&quot;,
+    &quot;domain&quot;: &quot;polyhedra&quot;,
+    &quot;joinbwd&quot;: 2,
+    &quot;time&quot;: &quot;6.50183300001&quot;
+  },
+  &quot;tree&quot;: {
+    &quot;Node&quot;: {
+      &quot;constraint&quot;: &quot;$5{x1} &gt;= 4&quot;,
+      &quot;left&quot;: { &quot;Leaf&quot;: &quot;0.&quot; },
+      &quot;right&quot;: { &quot;Leaf&quot;: &quot;26&quot; }
+    }
+  },
+  &quot;vulnerability&quot;: &quot;Not analyzed&quot;
+}</code></pre>
+</div>
+<script>hljs.highlightAll();</script>
+</body></html>

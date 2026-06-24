@@ -1,0 +1,1748 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>task_graph</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+:root, html[data-theme="dark"]{
+  --bg:#0f1115; --surface:#171a21; --surface2:#1e222b; --border:#2a2f3a;
+  --text:#e6e8ee; --muted:#9aa3b2; --accent:#5b8def;
+  --true:#3fb950; --true-bg:#10371d;
+  --unknown:#d29922; --unknown-bg:#3a2e0c;
+  --fail:#f85149; --fail-bg:#3a1413;
+  --hero:linear-gradient(135deg,#1b2a4a 0%,#10131a 70%);
+}
+html[data-theme="light"]{
+  --bg:#f4f6fb; --surface:#ffffff; --surface2:#eef1f7; --border:#d8deea;
+  --text:#1b2430; --muted:#5b6675; --accent:#1f6feb;
+  --true:#1a7f37; --true-bg:#d8f3df;
+  --unknown:#9a6700; --unknown-bg:#fdf0d0;
+  --fail:#cf222e; --fail-bg:#ffe0e0;
+  --hero:linear-gradient(135deg,#dbe6ff 0%,#f4f6fb 70%);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px; line-height:1.5;
+}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1200px; margin:0 auto; padding:0 24px 80px}
+header.hero{
+  background:var(--hero);
+  border-bottom:1px solid var(--border); padding:34px 24px; margin-bottom:24px;
+}
+header.hero .inner{max-width:1200px; margin:0 auto; position:relative}
+header.hero h1{margin:0; font-size:30px; font-weight:700; letter-spacing:.3px}
+.theme-toggle{
+  position:absolute; top:0; right:0; cursor:pointer; font-size:13px; font-weight:600;
+  padding:8px 14px; border-radius:999px; background:var(--surface2);
+  border:1px solid var(--border); color:var(--text);
+}
+.theme-toggle:hover{border-color:var(--accent)}
+.stats{margin:4px 0 30px}
+.stats .stat-head{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:12px}
+.stats h2{font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); margin:0}
+.seg{display:inline-flex; border:1px solid var(--border); border-radius:10px; overflow:hidden}
+.seg button{
+  background:var(--surface); color:var(--muted); border:none; padding:7px 16px;
+  font-size:13px; font-weight:600; cursor:pointer;
+}
+.seg button.active{background:var(--accent); color:#fff}
+.stats .chart{background:#fff; border:1px solid var(--border); border-radius:14px; padding:10px; text-align:center}
+.stats .chart img{max-width:100%; height:auto}
+header.hero .sub{color:var(--muted); margin-top:6px; font-size:14px}
+.chips{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px}
+.chip{
+  display:inline-flex; align-items:baseline; gap:8px; padding:7px 14px;
+  border-radius:999px; background:var(--surface2); border:1px solid var(--border);
+  font-size:13px; font-weight:600;
+}
+.chip b{font-size:16px}
+.chip.true{color:var(--true)} .chip.unknown{color:var(--unknown)}
+.chip.fail,.chip.timeout{color:var(--fail)} .chip.total{color:var(--text)}
+.controls{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin:6px 0 22px}
+.controls input[type=search]{
+  flex:1; min-width:220px; padding:10px 14px; border-radius:10px;
+  background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:14px;
+}
+.controls label{color:var(--muted); font-size:14px; display:inline-flex; gap:7px; align-items:center; cursor:pointer}
+section.grp{margin-bottom:30px}
+section.grp h2{
+  font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted);
+  margin:0 0 10px; padding-bottom:8px; border-bottom:1px solid var(--border);
+}
+.card{background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden}
+table{border-collapse:collapse; width:100%; font-size:14px}
+thead th{
+  position:sticky; top:0; background:var(--surface2); color:var(--muted);
+  text-align:left; font-weight:600; padding:11px 16px; border-bottom:1px solid var(--border);
+  font-size:12px; text-transform:uppercase; letter-spacing:.5px;
+}
+tbody td{padding:11px 16px; border-bottom:1px solid var(--border); vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface2)}
+td.c{text-align:center; white-space:nowrap}
+code.mono,td.prop,.mono{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  font-size:13px; color:var(--text)}
+td.prop{color:var(--text); font-weight:500}
+.badge{
+  display:inline-block; padding:3px 11px; border-radius:999px; font-size:12px; font-weight:700;
+  letter-spacing:.3px;
+}
+.badge.true{color:var(--true); background:var(--true-bg)}
+.badge.unknown{color:var(--unknown); background:var(--unknown-bg)}
+.badge.fail,.badge.timeout{color:var(--fail); background:var(--fail-bg)}
+.tag{font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--muted);
+  background:var(--surface2); padding:2px 8px; border-radius:6px}
+.empty{color:var(--muted); text-align:center; padding:40px}
+/* per-test page */
+.meta{display:flex; flex-wrap:wrap; gap:22px; background:var(--surface); border:1px solid var(--border);
+  border-radius:14px; padding:18px 22px; margin-bottom:22px}
+.meta .item{display:flex; flex-direction:column; gap:3px}
+.meta .item .k{font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted)}
+.meta .item .v{font-size:15px; font-family:ui-monospace,Menlo,monospace}
+/* tabs */
+nav.tabs{display:flex; gap:6px; margin:0 0 22px; border-bottom:1px solid var(--border)}
+nav.tabs button{
+  background:none; border:none; border-bottom:2px solid transparent; color:var(--muted);
+  font-size:15px; font-weight:600; padding:10px 18px; cursor:pointer; margin-bottom:-1px;
+}
+nav.tabs button:hover{color:var(--text)}
+nav.tabs button.active{color:var(--accent); border-bottom-color:var(--accent)}
+.panel[hidden]{display:none}
+/* summary table */
+table.summary{margin-bottom:22px}
+table.summary td.num{text-align:right; font-family:ui-monospace,Menlo,monospace}
+.rate{display:inline-block; min-width:46px}
+.bar{height:7px; border-radius:4px; background:var(--surface2); overflow:hidden; margin-top:4px}
+.bar > i{display:block; height:100%; background:var(--true)}
+/* decision tree */
+.treechips{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px}
+.tag.true{color:var(--true); background:var(--true-bg)}
+.treesvg{background:#fff; padding:14px; text-align:center; overflow:auto}
+.treesvg svg{max-width:100%; height:auto}
+ul.guards{margin:6px 0; padding-left:22px}
+ul.guards li{padding:2px 0; font-size:13px}
+h3.sec{font-size:14px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:26px 0 10px}
+pre.block{background:#0b0d12; border:1px solid var(--border); border-radius:12px; padding:16px;
+  overflow:auto; font-size:13px; line-height:1.45; max-height:560px}
+pre.block code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.back{display:inline-block; margin-bottom:18px; font-size:14px}
+</style><script>
+(function(){
+  const root = document.documentElement;
+  function fromUrl(){ try{ return new URLSearchParams(location.search).get('theme'); }catch(e){ return null; } }
+  function fromStore(){ try{ return localStorage.getItem('ftheme'); }catch(e){ return null; } }
+  function persist(t){ try{ localStorage.setItem('ftheme', t); }catch(e){} }
+  // URL param wins (survives file:// where localStorage is not shared across pages).
+  root.setAttribute('data-theme', fromUrl() || fromStore() || 'dark');
+  // Carry the current theme through internal links so navigation keeps it.
+  function propagate(t){
+    document.querySelectorAll('a[href]').forEach(function(a){
+      const href = a.getAttribute('href');
+      if(!href || href.indexOf('://')>=0 || href.charAt(0)==='#') return;
+      if(href.indexOf('.html')<0) return;
+      a.setAttribute('href', href.split('?')[0] + '?theme=' + t);
+    });
+  }
+  function lbl(){ return root.getAttribute('data-theme')==='dark' ? '\u2600 light' : '\u263e dark'; }
+  document.addEventListener('DOMContentLoaded', function(){
+    propagate(root.getAttribute('data-theme'));
+    const btn = document.getElementById('theme');
+    if(!btn) return;
+    btn.textContent = lbl();
+    btn.addEventListener('click', function(){
+      const next = root.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      persist(next);
+      propagate(next);
+      btn.textContent = lbl();
+    });
+  });
+})();
+</script></head><body>
+<header class="hero"><div class="inner">
+<button id="theme" class="theme-toggle"></button>
+<a class="back" href="./index.html">&larr; back to overview</a>
+<h1>task_graph</h1>
+<div class="sub mono">tests/atl/prism_games/task_graph.c</div>
+</div></header>
+<div class="wrap">
+<div class="meta">
+  <div class="item"><span class="k">Group</span><span class="v">atl/</span></div>
+  <div class="item"><span class="k">Property</span><span class="v">&lt;sched&gt;F{done == 1}</span></div>
+  <div class="item"><span class="k">Domain</span><span class="v">polyhedra</span></div>
+  <div class="item"><span class="k">Result</span><span class="v"><span class="badge true">TRUE</span></span></div>
+  <div class="item"><span class="k">Time</span><span class="v">2.784 s</span></div>
+  <div class="item"><span class="k">Wall time</span><span class="v">3.474 s</span></div>
+</div>
+<h3 class="sec">Analyzer config</h3>
+<div class="card"><table><tbody><tr><td class="mono" style="color:var(--muted)">filename</td><td class="mono">tests/atl/prism_games/task_graph.c</td></tr><tr><td class="mono" style="color:var(--muted)">analysis_type</td><td class="mono">atl-resilience</td></tr><tr><td class="mono" style="color:var(--muted)">property</td><td class="mono">&lt;sched&gt;F{done == 1}</td></tr><tr><td class="mono" style="color:var(--muted)">precondition</td><td class="mono">true</td></tr><tr><td class="mono" style="color:var(--muted)">result</td><td class="mono">TRUE</td></tr><tr><td class="mono" style="color:var(--muted)">domain</td><td class="mono">polyhedra</td></tr><tr><td class="mono" style="color:var(--muted)">joinbwd</td><td class="mono">2</td></tr><tr><td class="mono" style="color:var(--muted)">time</td><td class="mono">2.78426700001</td></tr></tbody></table></div>
+<h3 class="sec">Decision tree &amp; preconditions</h3>
+<div class="treechips">
+  <span class="tag">3 leaves</span>
+  <span class="tag true">3 defined region(s)</span>
+  <span class="tag">2 distinct guard(s)</span>
+</div>
+<div class="card treesvg"><svg width="214pt" height="188pt"
+ viewBox="0.00 0.00 213.75 188.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 184)">
+<title>T</title>
+<!-- n0 -->
+<g id="node1" class="node">
+<title>n0</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="83" cy="-162" rx="67" ry="18"/>
+<text text-anchor="middle" x="83" y="-159.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$11{done} &gt;= 2</text>
+</g>
+<!-- n1 -->
+<g id="node2" class="node">
+<title>n1</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M42,-108C42,-108 12,-108 12,-108 6,-108 0,-102 0,-96 0,-96 0,-84 0,-84 0,-78 6,-72 12,-72 12,-72 42,-72 42,-72 48,-72 54,-78 54,-84 54,-84 54,-96 54,-96 54,-102 48,-108 42,-108"/>
+<text text-anchor="middle" x="27" y="-87.2" font-family="monospace" font-size="11.00" fill="#1b2430">43</text>
+</g>
+<!-- n0&#45;&gt;n1 -->
+<g id="edge3" class="edge">
+<title>n0&#45;&gt;n1</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M69.44,-144.05C62.73,-135.67 54.5,-125.38 47.08,-116.1"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="49.8,-113.9 40.82,-108.28 44.33,-118.27 49.8,-113.9"/>
+</g>
+<!-- n2 -->
+<g id="node3" class="node">
+<title>n2</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="139" cy="-90" rx="67" ry="18"/>
+<text text-anchor="middle" x="139" y="-87.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$11{done} &gt;= 1</text>
+</g>
+<!-- n0&#45;&gt;n2 -->
+<g id="edge4" class="edge">
+<title>n0&#45;&gt;n2</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M96.56,-144.05C103.37,-135.54 111.75,-125.07 119.25,-115.68"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="122.05,-117.78 125.57,-107.79 116.59,-113.41 122.05,-117.78"/>
+</g>
+<!-- n3 -->
+<g id="node4" class="node">
+<title>n3</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M118,-36C118,-36 88,-36 88,-36 82,-36 76,-30 76,-24 76,-24 76,-12 76,-12 76,-6 82,0 88,0 88,0 118,0 118,0 124,0 130,-6 130,-12 130,-12 130,-24 130,-24 130,-30 124,-36 118,-36"/>
+<text text-anchor="middle" x="103" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">0.</text>
+</g>
+<!-- n2&#45;&gt;n3 -->
+<g id="edge1" class="edge">
+<title>n2&#45;&gt;n3</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M130.29,-72.05C126.15,-64.01 121.11,-54.2 116.49,-45.23"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="119.57,-43.57 111.88,-36.28 113.35,-46.77 119.57,-43.57"/>
+</g>
+<!-- n4 -->
+<g id="node5" class="node">
+<title>n4</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M190,-36C190,-36 160,-36 160,-36 154,-36 148,-30 148,-24 148,-24 148,-12 148,-12 148,-6 154,0 160,0 160,0 190,0 190,0 196,0 202,-6 202,-12 202,-12 202,-24 202,-24 202,-30 196,-36 190,-36"/>
+<text text-anchor="middle" x="175" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">43</text>
+</g>
+<!-- n2&#45;&gt;n4 -->
+<g id="edge2" class="edge">
+<title>n2&#45;&gt;n4</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M147.71,-72.05C151.85,-64.01 156.89,-54.2 161.51,-45.23"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="164.65,-46.77 166.12,-36.28 158.43,-43.57 164.65,-46.77"/>
+</g>
+</g>
+</svg>
+</div>
+<h3 class="sec">Defined regions (sufficient preconditions)</h3>
+<div class="card"><table><thead><tr><th>#</th><th>Region (conjunction of guards)</th>
+<th>Ranking function</th><th>Status</th></tr></thead><tbody><tr><td class="num">1</td><td class="prop">$11{done} &gt;= 2</td><td class="mono">43</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">2</td><td class="prop">&not;($11{done} &gt;= 2) &and; $11{done} &gt;= 1</td><td class="mono">0.</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">3</td><td class="prop">&not;($11{done} &gt;= 2) &and; &not;($11{done} &gt;= 1)</td><td class="mono">43</td><td class="c"><span class="badge true">defined</span></td></tr></tbody></table></div>
+<h3 class="sec">Distinct guards</h3>
+<div class="card" style="padding:10px 20px"><ul class="guards"><li class="mono">$11{done} &gt;= 1</li><li class="mono">$11{done} &gt;= 2</li></ul></div>
+
+<h3 class="sec">Source</h3>
+<pre class="block"><code class="language-c">// =====================================================================
+// Task-Graph Scheduling -- PRISM-games case study (de-probabilised)
+// ---------------------------------------------------------------------
+// Source : PRISM-games, &quot;Task-graph scheduling&quot;.
+//   https://www.prismmodelchecker.org/games/casestudies/task_graph.php
+// Original model description: see task_graph.txt
+// ---------------------------------------------------------------------
+// A scheduler assigns tasks to processors to complete a job by a deadline.
+// Task durations vary (environment). The scheduler can guarantee finishing
+// all tasks within the time budget.
+//
+//   agent &quot;sched&quot; = input(&quot;sched&quot;)  -&gt; the scheduler (coalition, angelic)
+//   agent &quot;env&quot;   = input(&quot;env&quot;)    -&gt; task duration jitter (adversary)
+//
+// Scheduler completes the job in time (TRUE):
+//   -atl &quot;&lt;sched&gt;F{done == 1}&quot;
+// =====================================================================
+
+int main() {
+    int remaining = 4;     // tasks left to schedule
+    int time = 0;          // elapsed time
+    int budget = 12;       // deadline
+    int done = 0;
+    while (remaining &gt; 0) {
+        int assign = input(&quot;sched&quot;);  // schedule a task on a fast(1)/slow lane
+        int jitter = input(&quot;env&quot;);    // environment adds delay 0..1
+        if (jitter &lt; 0) { jitter = 0; }
+        if (jitter &gt; 1) { jitter = 1; }
+        if (assign == 1) {
+            remaining = remaining - 1;
+            time = time + 2 + jitter;   // worst case 3 per task, 4 tasks &lt;= 12
+        }
+    }
+    if (remaining == 0) { done = 1; }
+    while (1) {}
+}
+</code></pre>
+<h3 class="sec">Analysis log</h3>
+<pre class="block"><code>
+Abstract typed Syntax:
+{
+  {50}
+}
+int main()@
+{
+  {6} int remaining = 4;
+  {8} int time = 0;
+  {10} int budget = 12;
+  {12} int done = 0;
+  {13} while {14} (remaining &gt; 0)
+  {
+    {16} int assign = input(&#x27;sched&#x27;);
+    {18} int jitter = input(&#x27;env&#x27;);
+    {19} if (jitter &lt; 0)
+    {
+      {20} jitter = 0;
+      {21}
+    }
+    else
+    {
+      {22}
+    }
+    {23} if (jitter &gt; 1)
+    {
+      {24} jitter = 1;
+      {25}
+    }
+    else
+    {
+      {26}
+    }
+    {27} if (assign == 1)
+    {
+      {28} remaining = remaining - 1;
+      {29} time = time + 2 + jitter;
+      {30}
+    }
+    else
+    {
+      {31}
+    }
+    {32} delete assign;
+    {33} delete jitter;
+    {34}
+  }
+  {35} break#14:;
+  {36} if (remaining == 0)
+  {
+    {37} done = 1;
+    {38}
+  }
+  else
+  {
+    {39}
+  }
+  {40} while {41} (1 != 0)
+  {
+    {42}
+  }
+  {43} break#41:;
+  {44} return#3:;
+  {45} delete remaining;
+  {46} delete time;
+  {47} delete budget;
+  {48} delete done;
+  {49}
+}
+
+Abstract atl typed Syntax:
+ {
+  {50}
+}
+int main()@
+{
+  {6} int remaining = 4;
+  {8} int time = 0;
+  {10} int budget = 12;
+  {12} int done = 0;
+  {13} while {14} (remaining &gt; 0)
+  {
+    {16} int assign = input(&#x27;sched&#x27;);
+    {18} int jitter = input(&#x27;env&#x27;);
+    {19} if (jitter &lt; 0)
+    {
+      {20} jitter = 0;
+      {21}
+    }
+    else
+    {
+      {22}
+    }
+    {23} if (jitter &gt; 1)
+    {
+      {24} jitter = 1;
+      {25}
+    }
+    else
+    {
+      {26}
+    }
+    {27} if (assign == 1)
+    {
+      {28} remaining = remaining - 1;
+      {29} time = time + 2 + jitter;
+      {30}
+    }
+    else
+    {
+      {31}
+    }
+    {32} delete assign;
+    {33} delete jitter;
+    {34}
+  }
+  {35} break#14:;
+  {36} if (remaining == 0)
+  {
+    {37} done = 1;
+    {38}
+  }
+  else
+  {
+    {39}
+  }
+  {40} while {41} (1 != 0)
+  {
+    {42}
+  }
+  {43} break#41:;
+  {44} return#3:;
+  {45} delete remaining;
+  {46} delete time;
+  {47} delete budget;
+  {48} delete done;
+  {-1} exit:;
+  {49}
+}
+Property: done == 1
+
+[-1:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[6:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[8:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[ 10:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[12:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[13:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[14:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[16:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[18:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[19:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[20:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[21:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[22:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[23:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[24:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[25:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[26:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[27:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[28:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[29:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[30:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[31:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[32:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[33:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[34:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[35:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[36:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[37:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[38:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[39:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[40:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[41:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[42:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[43:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[44:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[45:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[46:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[47:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[48:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[49:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+debug cp 
+schedin if is tainted ?jitter &lt; 0yes! 
+in if is tainted ?jitter &gt; 1yes! 
+in if is tainted ?assign == 1no! 
+in if is tainted ?remaining &gt; 0no! 
+in if is tainted ?remaining == 0no! 
+in if is tainted ?1 != 0no! 
+
+Forward Taint Summary :
+
+Forward Analysis numerical:
+[-1:]: 
+[6:]: 
+[8:]: 
+[ 10:]: 
+[12:]: 
+[13:]: 
+[14:]: 
+[16:]: 
+[18:]: 
+[19:]: jitter -- 
+[20:]: jitter -- 
+[21:]: 
+[22:]: jitter -- 
+[23:]: jitter -- 
+[24:]: jitter -- 
+[25:]: 
+[26:]: jitter -- 
+[27:]: jitter -- 
+[28:]: jitter -- 
+[29:]: jitter -- 
+[30:]: jitter -- time -- 
+[31:]: jitter -- 
+[32:]: jitter -- time -- 
+[33:]: jitter -- time -- 
+[34:]: jitter -- time -- 
+[35:]: 
+[36:]: 
+[37:]: 
+[38:]: 
+[39:]: 
+[40:]: 
+[41:]: 
+[42:]: 
+[43:]: 
+[44:]: 
+[45:]: 
+[46:]: 
+[47:]: 
+[48:]: 
+[49:]: 
+check if is controlled 1 != 0 ? true 
+ check if is controlled 1 != 0 ? true 
+ check if is controlled 1 ? true 
+ check if is controlled remaining == 0 ? true 
+ check if is controlled time + 2 + jitter ? false 
+ check if is controlled remaining - 1 ? true 
+ check if is controlled assign == 1 ? true 
+ check if is controlled 1 ? true 
+ check if is controlled jitter &gt; 1 ? false 
+ check if is controlled 0 ? true 
+ check if is controlled jitter &lt; 0 ? false 
+ check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled input(&#x27;sched&#x27;) ? true 
+ check if is controlled remaining &gt; 0 ? true 
+ check if is controlled time + 2 + jitter ? false 
+ check if is controlled remaining - 1 ? true 
+ check if is controlled assign == 1 ? true 
+ check if is controlled 1 ? true 
+ check if is controlled jitter &gt; 1 ? false 
+ check if is controlled 0 ? true 
+ check if is controlled jitter &lt; 0 ? false 
+ check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled input(&#x27;sched&#x27;) ? true 
+ check if is controlled remaining &gt; 0 ? true 
+ check if is controlled time + 2 + jitter ? false 
+ check if is controlled remaining - 1 ? true 
+ check if is controlled assign == 1 ? true 
+ check if is controlled 1 ? true 
+ check if is controlled jitter &gt; 1 ? false 
+ check if is controlled 0 ? true 
+ check if is controlled jitter &lt; 0 ? false 
+ check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled input(&#x27;sched&#x27;) ? true 
+ check if is controlled remaining &gt; 0 ? true 
+ check if is controlled time + 2 + jitter ? false 
+ check if is controlled remaining - 1 ? true 
+ check if is controlled assign == 1 ? true 
+ check if is controlled 1 ? true 
+ check if is controlled jitter &gt; 1 ? false 
+ check if is controlled 0 ? true 
+ check if is controlled jitter &lt; 0 ? false 
+ check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled input(&#x27;sched&#x27;) ? true 
+ check if is controlled remaining &gt; 0 ? true 
+ check if is controlled 0 ? true 
+ check if is controlled 12 ? true 
+ check if is controlled 0 ? true 
+ check if is controlled 4 ? true 
+ Property: &lt;sched &gt;F{done == 1}
+
+[-1:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[6:]:
+-$11{done} &gt;= 0 ? 43
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? 43
+
+[8:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 6
+$11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 6
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 15
+$11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 15
+$5{remaining} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 ? 6
+$5{remaining} &gt;= 2 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 2 ? 6
+
+[ 10:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 5
+$11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 5
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 14
+$11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 14
+$5{remaining} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 ? 5
+$5{remaining} &gt;= 2 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 2 ? 5
+
+[12:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 4
+$11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 4
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 13
+$11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 13
+$5{remaining} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 ? 4
+$5{remaining} &gt;= 2 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 2 ? 4
+
+[13:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 3
+$11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 3
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 12
+$11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 12
+$5{remaining} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 ? 3
+$5{remaining} &gt;= 2 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 2 ? 3
+
+[14:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 3
+$11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 3
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 12
+$11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 12
+$5{remaining} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 ? 3
+$5{remaining} &gt;= 2 &amp;&amp; $11{done} == 1 ? 0
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 2 ? 3
+
+[16:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 9
+$11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 9
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 11
+$11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 11
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 20
+$11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 2 ? 20
+$5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 ? 2
+$5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 ? 2
+
+[18:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $15{assign} == 1 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 8
+-$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 8
+-$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 8
+$15{assign} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 8
+-$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 17
+-$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 17
+-$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 10
+$11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 10
+$15{assign} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 17
+$15{assign} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 17
+-$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 26
+-$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 26
+-$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 19
+$11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 19
+$15{assign} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 26
+$15{assign} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} == 2 ? 26
+$5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? 8
+$5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 ? 8
+$5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? 1
+$5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $15{assign} == 1 ? 1
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 ? 8
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 ? 8
+
+[19:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; $15{assign} == 1 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= 1 ? bottom
+$17{jitter} &gt;= 0 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$17{jitter} &gt;= 0 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 ? bottom
+$17{jitter} &gt;= 0 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? bottom
+$17{jitter} &gt;= 0 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $15{assign} == 1 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$17{jitter} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 7
+-$17{jitter} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 7
+-$17{jitter} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+-$17{jitter} &gt;= 1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 7
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; $5{remaining} == 0 ? 7
+$17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 6
+$17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 6
+$17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 6
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $5{remaining} == 0 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 7
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 7
+$17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 7
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 7
+-$17{jitter} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 16
+-$17{jitter} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 16
+-$17{jitter} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 9
+-$17{jitter} &gt;= 1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 9
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 16
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; $5{remaining} == 1 ? 16
+$17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 15
+$17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 15
+$17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 8
+$17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 8
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 15
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $5{remaining} == 1 ? 15
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 16
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 16
+$17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 9
+$17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 9
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 16
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 16
+-$17{jitter} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 7
+-$17{jitter} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 7
+-$17{jitter} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 18
+-$17{jitter} &gt;= 1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 18
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 7
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; $5{remaining} == 2 ? 7
+$17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 6
+$17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 6
+$17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 17
+$17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 17
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 6
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $5{remaining} == 2 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 7
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 7
+$17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 18
+$17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 18
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 7
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} == 2 ? 7
+$5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? 7
+$5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 ? 7
+$5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? 0
+$5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; $15{assign} == 1 ? 0
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? 7
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= 1 ? 7
+$17{jitter} &gt;= 0 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? 6
+$17{jitter} &gt;= 0 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 ? 6
+$17{jitter} &gt;= 0 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? -1
+$17{jitter} &gt;= 0 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 ? -1
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 ? 6
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 0 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? 7
+$17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 ? 7
+$17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? 0
+$17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $15{assign} == 1 ? 0
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 ? 7
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 ? 7
+
+[20:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $15{assign} == 1 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 6
+-$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 6
+-$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 6
+$15{assign} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 6
+-$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 15
+-$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 15
+-$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 8
+$11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 8
+$15{assign} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 15
+$15{assign} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 15
+-$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 6
+-$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 6
+-$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 17
+$11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 17
+$15{assign} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 6
+$15{assign} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} == 2 ? 6
+$5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? 6
+$5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 ? 6
+$5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? -1
+$5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $15{assign} == 1 ? -1
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 ? 6
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 ? 6
+
+[21:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $15{assign} == 1 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 5
+-$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 5
+-$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+-$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 5
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $5{remaining} == 0 ? 5
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 6
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 6
+-$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 14
+-$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 14
+-$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 7
+-$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 7
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 14
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $5{remaining} == 1 ? 14
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 15
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 15
+$17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 8
+$17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 8
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 15
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 15
+-$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 5
+-$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 5
+-$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 16
+-$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 16
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 5
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $5{remaining} == 2 ? 5
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 17
+$17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 17
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 6
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} == 2 ? 6
+$5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? 5
+$5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 ? 5
+$5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? -2
+$5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 ? -2
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 ? 5
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 ? 5
+$17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? -1
+$17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $15{assign} == 1 ? -1
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 ? 6
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 ? 6
+
+[22:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $15{assign} == 1 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 5
+-$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 5
+-$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+-$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 5
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $5{remaining} == 0 ? 5
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 6
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 6
+-$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 14
+-$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 14
+-$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 7
+-$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 7
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 14
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $5{remaining} == 1 ? 14
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 15
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 15
+$17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 8
+$17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 8
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 15
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 15
+-$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 5
+-$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 5
+-$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 16
+-$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 16
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 5
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $5{remaining} == 2 ? 5
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 17
+$17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 17
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 6
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} == 2 ? 6
+$5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? 5
+$5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 ? 5
+$5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? -2
+$5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 ? -2
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 ? 5
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 ? 5
+$17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? -1
+$17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $15{assign} == 1 ? -1
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 ? 6
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 ? 6
+
+[23:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$17{jitter} &gt;= -1 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $15{assign} == 1 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 5
+-$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 5
+-$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+-$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 5
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $5{remaining} == 0 ? 5
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 6
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 6
+-$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 14
+-$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 14
+-$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 7
+-$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 7
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 14
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $5{remaining} == 1 ? 14
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 15
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 15
+$17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 8
+$17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 8
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 15
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 15
+-$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 5
+-$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 5
+-$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 16
+-$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 16
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 5
+$15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $5{remaining} == 2 ? 5
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 17
+$17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 17
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 6
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} == 2 ? 6
+$5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? 5
+$5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$15{assign} &gt;= 0 ? 5
+$5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? -2
+$5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $15{assign} == 1 ? -2
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; -$11{done} &gt;= 0 ? 5
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$17{jitter} &gt;= -1 ? 5
+$17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 ? 6
+$17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? -1
+$17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $15{assign} == 1 ? -1
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 ? 6
+$15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $17{jitter} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 ? 6
+
+[24:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $15{assign} == 1 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 5
+-$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 5
+-$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 5
+$15{assign} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 5
+-$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 14
+-$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 14
+-$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 7
+$11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 7
+$15{assign} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 14
+$15{assign} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 14
+-$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 5
+-$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 5
+-$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 16
+$11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 16
+$15{assign} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 5
+$15{assign} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} == 2 ? 5
+$5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? 5
+$5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 ? 5
+$5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? -2
+$5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $15{assign} == 1 ? -2
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 ? 5
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 ? 5
+
+[25:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $15{assign} == 1 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 4
+-$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 4
+-$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 4
+$15{assign} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 4
+-$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 13
+-$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 13
+-$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 6
+$11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 6
+$15{assign} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 13
+$15{assign} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 13
+-$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 4
+-$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 4
+-$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 15
+$11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 15
+$15{assign} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 4
+$15{assign} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} == 2 ? 4
+$5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? 4
+$5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 ? 4
+$5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? -3
+$5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $15{assign} == 1 ? -3
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 ? 4
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 ? 4
+
+[26:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $15{assign} == 1 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 4
+-$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 4
+-$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 4
+$15{assign} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 4
+-$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 13
+-$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 13
+-$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 6
+$11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 6
+$15{assign} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 13
+$15{assign} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 13
+-$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 4
+-$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 4
+-$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 15
+$11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 15
+$15{assign} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 4
+$15{assign} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} == 2 ? 4
+$5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? 4
+$5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 ? 4
+$5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? -3
+$5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $15{assign} == 1 ? -3
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 ? 4
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 ? 4
+
+[27:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$15{assign} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $15{assign} == 1 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 4
+-$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 4
+-$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 0 ? bottom
+$15{assign} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 4
+$15{assign} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 4
+-$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 13
+-$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 13
+-$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 6
+$11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 1 ? 6
+$15{assign} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 13
+$15{assign} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 13
+-$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 4
+-$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 4
+-$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 15
+$11{done} == 1 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} == 1 &amp;&amp; $5{remaining} == 2 ? 15
+$15{assign} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 4
+$15{assign} &gt;= 2 &amp;&amp; $11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} == 2 ? 4
+$5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? 4
+$5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$15{assign} &gt;= 0 ? 4
+$5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 &amp;&amp; $15{assign} == 1 ? -3
+$5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 &amp;&amp; $15{assign} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $15{assign} == 1 ? -3
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 ? 4
+$15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $15{assign} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 ? 4
+
+[28:]:
+-$5{remaining} &gt;= 0 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 0 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 0 ? bottom
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 5
+$11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 5
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 2 ? 14
+$11{done} == 1 &amp;&amp; $5{remaining} == 2 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 2 ? 14
+$5{remaining} &gt;= 3 &amp;&amp; -$11{done} &gt;= 0 ? -4
+$5{remaining} &gt;= 3 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 3 ? -4
+
+[29:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 4
+$11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 4
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 13
+$11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 13
+$5{remaining} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 ? 4
+$5{remaining} &gt;= 2 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 2 ? 4
+
+[30:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 3
+$11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 3
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 12
+$11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 12
+$5{remaining} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 ? 3
+$5{remaining} &gt;= 2 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 2 ? 3
+
+[31:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 3
+$11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 3
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 12
+$11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 12
+$5{remaining} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 ? 3
+$5{remaining} &gt;= 2 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 2 ? 3
+
+[32:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 3
+$11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 3
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 12
+$11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 12
+$5{remaining} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 ? 3
+$5{remaining} &gt;= 2 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 2 ? 3
+
+[33:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 3
+$11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 3
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 12
+$11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 12
+$5{remaining} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 ? 3
+$5{remaining} &gt;= 2 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 2 ? 3
+
+[34:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 3
+$11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 3
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 1 ? 12
+$11{done} == 1 &amp;&amp; $5{remaining} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 1 ? 12
+$5{remaining} &gt;= 2 &amp;&amp; -$11{done} &gt;= 0 ? 3
+$5{remaining} &gt;= 2 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 2 ? 3
+
+[35:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 2
+$11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 2
+$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 1 ? bottom
+
+[36:]:
+-$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+-$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; -$5{remaining} &gt;= 1 ? bottom
+-$11{done} &gt;= 0 &amp;&amp; $5{remaining} == 0 ? 2
+$11{done} == 1 &amp;&amp; $5{remaining} == 0 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} == 0 ? 2
+$5{remaining} &gt;= 1 &amp;&amp; -$11{done} &gt;= 0 ? bottom
+$5{remaining} &gt;= 1 &amp;&amp; $11{done} == 1 ? 0.
+$11{done} &gt;= 2 &amp;&amp; $5{remaining} &gt;= 1 ? bottom
+
+[37:]:
+-$11{done} &gt;= 0 ? 1
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? 1
+
+[38:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[39:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[40:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[41:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[42:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[43:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[44:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[45:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[46:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[47:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[48:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+[49:]:
+-$11{done} &gt;= 0 ? bottom
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? bottom
+
+
+ Resulting tree:  
+ -$11{done} &gt;= 0 ? 43
+$11{done} == 1 ? 0.
+$11{done} &gt;= 2 ? 43
+
+Time: 2.784268
+Final Analysis Result: TRUE
+{
+  &quot;Config&quot;: {
+    &quot;filename&quot;: &quot;tests/atl/prism_games/task_graph.c&quot;,
+    &quot;analysis_type&quot;: &quot;atl-resilience&quot;,
+    &quot;property&quot;: &quot;&lt;sched&gt;F{done == 1}&quot;,
+    &quot;precondition&quot;: &quot;true&quot;,
+    &quot;result&quot;: &quot;TRUE&quot;,
+    &quot;domain&quot;: &quot;polyhedra&quot;,
+    &quot;joinbwd&quot;: 2,
+    &quot;time&quot;: &quot;2.78426700001&quot;
+  },
+  &quot;tree&quot;: {
+    &quot;Node&quot;: {
+      &quot;constraint&quot;: &quot;$11{done} &gt;= 2&quot;,
+      &quot;left&quot;: { &quot;Leaf&quot;: &quot;43&quot; },
+      &quot;right&quot;: {
+        &quot;Node&quot;: {
+          &quot;constraint&quot;: &quot;$11{done} &gt;= 1&quot;,
+          &quot;left&quot;: { &quot;Leaf&quot;: &quot;0.&quot; },
+          &quot;right&quot;: { &quot;Leaf&quot;: &quot;43&quot; }
+        }
+      }
+    }
+  },
+  &quot;vulnerability&quot;: &quot;Not analyzed&quot;
+}</code></pre>
+</div>
+<script>hljs.highlightAll();</script>
+</body></html>
