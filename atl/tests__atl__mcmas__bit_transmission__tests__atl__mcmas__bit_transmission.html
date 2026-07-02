@@ -94,6 +94,13 @@ td.prop{color:var(--text); font-weight:500}
 .badge.unknown{color:var(--unknown); background:var(--unknown-bg)}
 .badge.fail,.badge.timeout{color:var(--fail); background:var(--fail-bg)}
 .badge.info{color:var(--accent); background:rgba(91,141,239,.16)}
+/* one colour per ctl lifting variant (TRUE cells) */
+.badge.v-base{color:#3fb950; background:rgba(63,185,80,.16)}
+.badge.v-resilience{color:#5b8def; background:rgba(91,141,239,.16)}
+.badge.v-resilience_reachability{color:#1ab2a8; background:rgba(26,178,168,.16)}
+.badge.v-robust_reachability{color:#f0883e; background:rgba(240,136,62,.18)}
+.chip.v-base{color:#3fb950} .chip.v-resilience{color:#5b8def}
+.chip.v-resilience_reachability{color:#1ab2a8} .chip.v-robust_reachability{color:#f0883e}
 .tag{font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--muted);
   background:var(--surface2); padding:2px 8px; border-radius:6px}
 .empty{color:var(--muted); text-align:center; padding:40px}
@@ -171,85 +178,85 @@ pre.block code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
 </div></header>
 <div class="wrap">
 <div class="meta">
-  <div class="item"><span class="k">Group</span><span class="v">atl</span></div>
-  <div class="item"><span class="k">Property</span><span class="v">&lt;sender,chan&gt;F{ack == 1}</span></div>
+  <div class="item"><span class="k">Group</span><span class="v">atl/</span></div>
+  <div class="item"><span class="k">Property</span><span class="v">&lt;sender&gt;F{ack == 1}</span></div>
   <div class="item"><span class="k">Domain</span><span class="v">polyhedra</span></div>
-  <div class="item"><span class="k">Result</span><span class="v"><span class="badge true">TRUE</span></span></div>
-  <div class="item"><span class="k">Time</span><span class="v">1.210 s</span></div>
-  <div class="item"><span class="k">Wall time</span><span class="v">1.4 s</span></div>
+  <div class="item"><span class="k">Result</span><span class="v"><span class="badge unknown">UNKNOWN</span></span></div>
+  <div class="item"><span class="k">Time</span><span class="v">0.566 s</span></div>
+  <div class="item"><span class="k">Wall time</span><span class="v">0.808 s</span></div>
 </div>
 <h3 class="sec">Analyzer config</h3>
-<div class="card"><table><tbody><tr><td class="mono" style="color:var(--muted)">filename</td><td class="mono">tests/atl/mcmas/bit_transmission.c</td></tr><tr><td class="mono" style="color:var(--muted)">analysis_type</td><td class="mono">atl-resilience</td></tr><tr><td class="mono" style="color:var(--muted)">property</td><td class="mono">&lt;sender,chan&gt;F{ack == 1}</td></tr><tr><td class="mono" style="color:var(--muted)">precondition</td><td class="mono">true</td></tr><tr><td class="mono" style="color:var(--muted)">result</td><td class="mono">TRUE</td></tr><tr><td class="mono" style="color:var(--muted)">domain</td><td class="mono">polyhedra</td></tr><tr><td class="mono" style="color:var(--muted)">joinbwd</td><td class="mono">2</td></tr><tr><td class="mono" style="color:var(--muted)">time</td><td class="mono">1.20967200001</td></tr></tbody></table></div>
+<div class="card"><table><tbody><tr><td class="mono" style="color:var(--muted)">filename</td><td class="mono">tests/atl/mcmas/bit_transmission.c</td></tr><tr><td class="mono" style="color:var(--muted)">analysis_type</td><td class="mono">atl-resilience</td></tr><tr><td class="mono" style="color:var(--muted)">property</td><td class="mono">&lt;sender&gt;F{ack == 1}</td></tr><tr><td class="mono" style="color:var(--muted)">precondition</td><td class="mono">true</td></tr><tr><td class="mono" style="color:var(--muted)">result</td><td class="mono">UKNOWN</td></tr><tr><td class="mono" style="color:var(--muted)">domain</td><td class="mono">polyhedra</td></tr><tr><td class="mono" style="color:var(--muted)">joinbwd</td><td class="mono">7</td></tr><tr><td class="mono" style="color:var(--muted)">time</td><td class="mono">0.566184000001</td></tr></tbody></table></div>
 <h3 class="sec">Decision tree &amp; preconditions</h3>
 <div class="treechips">
   <span class="tag">3 leaves</span>
-  <span class="tag true">3 defined region(s)</span>
+  <span class="tag true">1 defined region(s)</span>
   <span class="tag">2 distinct guard(s)</span>
 </div>
-<div class="card treesvg"><svg width="202pt" height="188pt"
- viewBox="0.00 0.00 202.00 188.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<div class="card treesvg"><svg width="207pt" height="188pt"
+ viewBox="0.00 0.00 207.00 188.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 184)">
 <title>T</title>
 <!-- n0 -->
 <g id="node1" class="node">
 <title>n0</title>
-<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="79" cy="-162" rx="58.86" ry="18"/>
-<text text-anchor="middle" x="79" y="-159.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$7{ack} &gt;= 2</text>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="80.5" cy="-162" rx="58.86" ry="18"/>
+<text text-anchor="middle" x="80.5" y="-159.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$7{ack} &gt;= 2</text>
 </g>
 <!-- n1 -->
 <g id="node2" class="node">
 <title>n1</title>
-<path fill="#d8f3df" stroke="#bbbbbb" d="M42,-108C42,-108 12,-108 12,-108 6,-108 0,-102 0,-96 0,-96 0,-84 0,-84 0,-78 6,-72 12,-72 12,-72 42,-72 42,-72 48,-72 54,-78 54,-84 54,-84 54,-96 54,-96 54,-102 48,-108 42,-108"/>
-<text text-anchor="middle" x="27" y="-87.2" font-family="monospace" font-size="11.00" fill="#1b2430">11</text>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M45,-108C45,-108 12,-108 12,-108 6,-108 0,-102 0,-96 0,-96 0,-84 0,-84 0,-78 6,-72 12,-72 12,-72 45,-72 45,-72 51,-72 57,-78 57,-84 57,-84 57,-96 57,-96 57,-102 51,-108 45,-108"/>
+<text text-anchor="middle" x="28.5" y="-87.2" font-family="monospace" font-size="11.00" fill="#1b2430">bottom</text>
 </g>
 <!-- n0&#45;&gt;n1 -->
 <g id="edge3" class="edge">
 <title>n0&#45;&gt;n1</title>
-<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M66.41,-144.05C60.24,-135.75 52.69,-125.58 45.85,-116.38"/>
-<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="48.61,-114.22 39.83,-108.28 42.99,-118.39 48.61,-114.22"/>
+<path fill="none" stroke="#aaaaaa" d="M67.91,-144.05C61.74,-135.75 54.19,-125.58 47.35,-116.38"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="50.11,-114.22 41.33,-108.28 44.49,-118.39 50.11,-114.22"/>
 </g>
 <!-- n2 -->
 <g id="node3" class="node">
 <title>n2</title>
-<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="131" cy="-90" rx="58.86" ry="18"/>
-<text text-anchor="middle" x="131" y="-87.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$7{ack} &gt;= 1</text>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="133.5" cy="-90" rx="58.86" ry="18"/>
+<text text-anchor="middle" x="133.5" y="-87.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$7{ack} &gt;= 1</text>
 </g>
 <!-- n0&#45;&gt;n2 -->
 <g id="edge4" class="edge">
 <title>n0&#45;&gt;n2</title>
-<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M91.59,-144.05C97.85,-135.63 105.54,-125.28 112.45,-115.97"/>
-<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="115.37,-117.9 118.53,-107.79 109.76,-113.73 115.37,-117.9"/>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M93.06,-144.41C99.43,-135.99 107.31,-125.58 114.42,-116.2"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="117.42,-118.04 120.66,-107.96 111.83,-113.82 117.42,-118.04"/>
 </g>
 <!-- n3 -->
 <g id="node4" class="node">
 <title>n3</title>
-<path fill="#d8f3df" stroke="#bbbbbb" d="M110,-36C110,-36 80,-36 80,-36 74,-36 68,-30 68,-24 68,-24 68,-12 68,-12 68,-6 74,0 80,0 80,0 110,0 110,0 116,0 122,-6 122,-12 122,-12 122,-24 122,-24 122,-30 116,-36 110,-36"/>
-<text text-anchor="middle" x="95" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">0.</text>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M111.5,-36C111.5,-36 81.5,-36 81.5,-36 75.5,-36 69.5,-30 69.5,-24 69.5,-24 69.5,-12 69.5,-12 69.5,-6 75.5,0 81.5,0 81.5,0 111.5,0 111.5,0 117.5,0 123.5,-6 123.5,-12 123.5,-12 123.5,-24 123.5,-24 123.5,-30 117.5,-36 111.5,-36"/>
+<text text-anchor="middle" x="96.5" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">0.</text>
 </g>
 <!-- n2&#45;&gt;n3 -->
 <g id="edge1" class="edge">
 <title>n2&#45;&gt;n3</title>
-<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M122.29,-72.05C118.15,-64.01 113.11,-54.2 108.49,-45.23"/>
-<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="111.57,-43.57 103.88,-36.28 105.35,-46.77 111.57,-43.57"/>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M124.54,-72.05C120.29,-64.01 115.11,-54.2 110.36,-45.23"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="113.4,-43.48 105.63,-36.28 107.21,-46.75 113.4,-43.48"/>
 </g>
 <!-- n4 -->
 <g id="node5" class="node">
 <title>n4</title>
-<path fill="#d8f3df" stroke="#bbbbbb" d="M182,-36C182,-36 152,-36 152,-36 146,-36 140,-30 140,-24 140,-24 140,-12 140,-12 140,-6 146,0 152,0 152,0 182,0 182,0 188,0 194,-6 194,-12 194,-12 194,-24 194,-24 194,-30 188,-36 182,-36"/>
-<text text-anchor="middle" x="167" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">11</text>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M187,-36C187,-36 154,-36 154,-36 148,-36 142,-30 142,-24 142,-24 142,-12 142,-12 142,-6 148,0 154,0 154,0 187,0 187,0 193,0 199,-6 199,-12 199,-12 199,-24 199,-24 199,-30 193,-36 187,-36"/>
+<text text-anchor="middle" x="170.5" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">bottom</text>
 </g>
 <!-- n2&#45;&gt;n4 -->
 <g id="edge2" class="edge">
 <title>n2&#45;&gt;n4</title>
-<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M139.71,-72.05C143.85,-64.01 148.89,-54.2 153.51,-45.23"/>
-<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="156.65,-46.77 158.12,-36.28 150.43,-43.57 156.65,-46.77"/>
+<path fill="none" stroke="#aaaaaa" d="M142.46,-72.05C146.71,-64.01 151.89,-54.2 156.64,-45.23"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="159.79,-46.75 161.37,-36.28 153.6,-43.48 159.79,-46.75"/>
 </g>
 </g>
 </svg>
 </div>
 <h3 class="sec">Defined regions (sufficient preconditions)</h3>
 <div class="card"><table><thead><tr><th>#</th><th>Region (conjunction of guards)</th>
-<th>Ranking function</th><th>Status</th></tr></thead><tbody><tr><td class="num">1</td><td class="prop">$7{ack} &gt;= 2</td><td class="mono">11</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">2</td><td class="prop">&not;($7{ack} &gt;= 2) &and; $7{ack} &gt;= 1</td><td class="mono">0.</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">3</td><td class="prop">&not;($7{ack} &gt;= 2) &and; &not;($7{ack} &gt;= 1)</td><td class="mono">11</td><td class="c"><span class="badge true">defined</span></td></tr></tbody></table></div>
+<th>Ranking function</th><th>Status</th></tr></thead><tbody><tr><td class="num">1</td><td class="prop">&not;($7{ack} &gt;= 2) &and; $7{ack} &gt;= 1</td><td class="mono">0.</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">2</td><td class="prop">$7{ack} &gt;= 2</td><td class="mono">bottom</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">3</td><td class="prop">&not;($7{ack} &gt;= 2) &and; &not;($7{ack} &gt;= 1)</td><td class="mono">bottom</td><td class="c"><span class="badge fail">undefined</span></td></tr></tbody></table></div>
 <h3 class="sec">Distinct guards</h3>
 <div class="card" style="padding:10px 20px"><ul class="guards"><li class="mono">$7{ack} &gt;= 1</li><li class="mono">$7{ack} &gt;= 2</li></ul></div>
 
@@ -268,7 +275,7 @@ pre.block code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
 // message. The COALITION {sender, channel} can guarantee delivery+ack
 // (the genuine single-agent property of the original model is EPISTEMIC --
 // &quot;the sender comes to KNOW that the receiver received&quot; -- and needs K
-// operators that a purely numeric encoding cannot express; see .txt).
+// operators that a  encoding cannot epurely numericxpress; see .txt).
 //
 //   agents &quot;sender&quot;,&quot;chan&quot; = input(&quot;sender&quot;), input(&quot;chan&quot;)  -&gt; coalition
 //   (no separate adversary: the faulty channel is the only environment)
@@ -279,20 +286,19 @@ pre.block code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
 int main() {
     int recv = 0;          // receiver got the bit?
     int ack = 0;           // sender got the acknowledgement?
-    while (ack == 0) {
+    while (ack == 0) {      
         int send = input(&quot;sender&quot;);   // sender (re)transmits the bit?
         int deliver = input(&quot;chan&quot;);  // channel delivers this round?
         if (send == 1) { if (deliver == 1) { recv = 1; } }
         if (recv == 1) { if (deliver == 1) { ack = 1; } }
     }
-    while (1) {}
 }
 </code></pre>
 <h3 class="sec">Analysis log</h3>
 <pre class="block"><code>
 Abstract typed Syntax:
 {
-  {41}
+  {37}
 }
 int main()@
 {
@@ -341,20 +347,15 @@ int main()@
     {31}
   }
   {32} break#10:;
-  {33} while {34} (1 != 0)
-  {
-    {35}
-  }
-  {36} break#34:;
-  {37} return#3:;
-  {38} delete recv;
-  {39} delete ack;
-  {40}
+  {33} return#3:;
+  {34} delete recv;
+  {35} delete ack;
+  {36}
 }
 
 Abstract atl typed Syntax:
  {
-  {41}
+  {37}
 }
 int main()@
 {
@@ -362,7 +363,7 @@ int main()@
   {8} int ack = 0;
   {9} while {10} (ack == 0)
   {
-    {42} loop:;
+    {38} loop:;
     {12} int send = input(&#x27;sender&#x27;);
     {14} int deliver = input(&#x27;chan&#x27;);
     {15} if (send == 1)
@@ -404,18 +405,87 @@ int main()@
     {31}
   }
   {32} break#10:;
-  {33} while {34} (1 != 0)
-  {
-    {43} loop:;
-    {35}
-  }
-  {36} break#34:;
-  {37} return#3:;
-  {38} delete recv;
-  {39} delete ack;
+  {33} return#3:;
+  {34} delete recv;
+  {35} delete ack;
   {-1} exit:;
-  {40}
+  {36}
 }
+debug cp 
+
+Forward Summary :
+
+Forward Analysis numerical:
+[-1:]: $5{recv} == 1 &amp;&amp; $7{ack} == 1
+[6:]: top
+[8:]: $5{recv} == 0
+[9:]: $5{recv} == 0 &amp;&amp; $7{ack} == 0
+[ 10:]: $5{recv} &gt;= 0 &amp;&amp; -$5{recv} &gt;= -1 &amp;&amp; -$5{recv}+$7{ack} == 0
+[12:]: $5{recv} == 0 &amp;&amp; $7{ack} == 0
+[14:]: $11{send} &gt;= -2147483648 &amp;&amp; -$11{send} &gt;= -2147483647 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0
+[15:]: $11{send} &gt;= -2147483648 &amp;&amp; $13{deliver} &gt;= -2147483648 &amp;&amp; -$13{deliver} &gt;= -2147483647 &amp;&amp; -$11{send} &gt;= -2147483647 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0
+[16:]: $13{deliver} &gt;= -2147483648 &amp;&amp; -$13{deliver} &gt;= -2147483647 &amp;&amp; $11{send} == 1 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0
+[17:]: $11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0
+[18:]: $11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0
+[19:]: $13{deliver} &gt;= -2147483648 &amp;&amp; -$13{deliver} &gt;= -2147483647 &amp;&amp; $11{send} == 1 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0
+[20:]: $13{deliver}-2147483649$5{recv} &gt;= -2147483648 &amp;&amp; $5{recv} &gt;= 0 &amp;&amp; -$13{deliver}-2147483646$5{recv} &gt;= -2147483647 &amp;&amp; $11{send} == 1 &amp;&amp; $7{ack} == 0
+[21:]: $11{send} &gt;= -2147483648 &amp;&amp; $13{deliver} &gt;= -2147483648 &amp;&amp; -$13{deliver} &gt;= -2147483647 &amp;&amp; -$11{send} &gt;= -2147483647 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0
+[22:]: $11{send}-2147483649$5{recv} &gt;= -2147483648 &amp;&amp; $13{deliver}-2147483649$5{recv} &gt;= -2147483648 &amp;&amp; $5{recv} &gt;= 0 &amp;&amp; -$13{deliver}-2147483646$5{recv} &gt;= -2147483647 &amp;&amp; -$11{send}-2147483646$5{recv} &gt;= -2147483647 &amp;&amp; $7{ack} == 0
+[23:]: $11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0
+[24:]: $11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0
+[25:]: $11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1
+[26:]: bottom
+[27:]: $11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1
+[28:]: $11{send} &gt;= -2147483648 &amp;&amp; $13{deliver} &gt;= -2147483648 &amp;&amp; -$13{deliver} &gt;= -2147483647 &amp;&amp; -$11{send} &gt;= -2147483647 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0
+[29:]: $11{send}-2147483649$5{recv} &gt;= -2147483648 &amp;&amp; $13{deliver}-2147483649$5{recv} &gt;= -2147483648 &amp;&amp; $5{recv} &gt;= 0 &amp;&amp; -$13{deliver}-2147483646$5{recv} &gt;= -2147483647 &amp;&amp; -$11{send}-2147483646$5{recv} &gt;= -2147483647 &amp;&amp; -$5{recv}+$7{ack} == 0
+[30:]: $11{send}-2147483649$5{recv} &gt;= -2147483648 &amp;&amp; $13{deliver}-2147483649$5{recv} &gt;= -2147483648 &amp;&amp; $5{recv} &gt;= 0 &amp;&amp; -$13{deliver}-2147483646$5{recv} &gt;= -2147483647 &amp;&amp; -$11{send}-2147483646$5{recv} &gt;= -2147483647 &amp;&amp; -$5{recv}+$7{ack} == 0
+[31:]: $11{send}-2147483649$5{recv} &gt;= -2147483648 &amp;&amp; $13{deliver}-2147483649$5{recv} &gt;= -2147483648 &amp;&amp; $5{recv} &gt;= 0 &amp;&amp; -$13{deliver}-2147483646$5{recv} &gt;= -2147483647 &amp;&amp; -$11{send}-2147483646$5{recv} &gt;= -2147483647 &amp;&amp; -$5{recv}+$7{ack} == 0
+[32:]: $5{recv} == 1 &amp;&amp; $7{ack} == 1
+[33:]: $5{recv} == 1 &amp;&amp; $7{ack} == 1
+[34:]: $5{recv} == 1 &amp;&amp; $7{ack} == 1
+[35:]: $5{recv} == 1 &amp;&amp; $7{ack} == 1
+[36:]: $5{recv} == 1 &amp;&amp; $7{ack} == 1
+[37:]: top
+[38:]: $5{recv} == 0 &amp;&amp; $7{ack} == 0
+in if is tainted ?deliver == 1yes! 
+in if is tainted ?send == 1yes! 
+in if is tainted ?deliver == 1yes! 
+in if is tainted ?recv == 1yes! 
+in if is tainted ?ack == 0no! 
+
+Forward Taint Summary :
+
+Forward Analysis numerical:
+[-1:]: 
+[6:]: 
+[8:]: 
+[9:]: 
+[ 10:]: 
+[12:]: 
+[14:]: send -- 
+[15:]: deliver -- send -- 
+[16:]: deliver -- send -- 
+[17:]: deliver -- send -- 
+[18:]: deliver -- send -- 
+[19:]: deliver -- send -- 
+[20:]: deliver -- send -- recv -- 
+[21:]: deliver -- send -- 
+[22:]: deliver -- send -- recv -- 
+[23:]: deliver -- send -- recv -- 
+[24:]: deliver -- send -- recv -- 
+[25:]: deliver -- send -- recv -- 
+[26:]: deliver -- send -- recv -- 
+[27:]: deliver -- send -- ack -- recv -- 
+[28:]: deliver -- send -- recv -- 
+[29:]: deliver -- send -- ack -- recv -- 
+[30:]: deliver -- send -- ack -- recv -- 
+[31:]: deliver -- send -- ack -- recv -- 
+[32:]: 
+[33:]: 
+[34:]: 
+[35:]: 
+[36:]: 
+[38:]: 
 Property: ack == 1
 
 [-1:]:
@@ -563,44 +633,17 @@ $7{ack} &gt;= 2 ? bottom
 $7{ack} == 1 ? 0.
 $7{ack} &gt;= 2 ? bottom
 
-[37:]:
--$7{ack} &gt;= 0 ? bottom
-$7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 ? bottom
-
 [38:]:
 -$7{ack} &gt;= 0 ? bottom
 $7{ack} == 1 ? 0.
 $7{ack} &gt;= 2 ? bottom
 
-[39:]:
--$7{ack} &gt;= 0 ? bottom
-$7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 ? bottom
-
-[40:]:
--$7{ack} &gt;= 0 ? bottom
-$7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 ? bottom
-
-[42:]:
--$7{ack} &gt;= 0 ? bottom
-$7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 ? bottom
-
-[43:]:
--$7{ack} &gt;= 0 ? bottom
-$7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 ? bottom
-
 debug cp 
-sender
-chanin if is tainted ?deliver == 1no! 
+senderin if is tainted ?deliver == 1yes! 
 in if is tainted ?send == 1no! 
-in if is tainted ?deliver == 1no! 
-in if is tainted ?recv == 1no! 
+in if is tainted ?deliver == 1yes! 
+in if is tainted ?recv == 1yes! 
 in if is tainted ?ack == 0no! 
-in if is tainted ?1 != 0no! 
 
 Forward Taint Summary :
 
@@ -612,750 +655,198 @@ Forward Analysis numerical:
 [ 10:]: 
 [12:]: 
 [14:]: 
-[15:]: 
-[16:]: 
-[17:]: 
-[18:]: 
-[19:]: 
-[20:]: 
-[21:]: 
-[22:]: 
-[23:]: 
-[24:]: 
-[25:]: 
-[26:]: 
-[27:]: 
-[28:]: 
-[29:]: 
-[30:]: 
-[31:]: 
+[15:]: deliver -- 
+[16:]: deliver -- 
+[17:]: deliver -- 
+[18:]: deliver -- 
+[19:]: deliver -- 
+[20:]: deliver -- recv -- 
+[21:]: deliver -- 
+[22:]: deliver -- recv -- 
+[23:]: deliver -- recv -- 
+[24:]: deliver -- recv -- 
+[25:]: deliver -- recv -- 
+[26:]: deliver -- recv -- 
+[27:]: deliver -- ack -- recv -- 
+[28:]: deliver -- recv -- 
+[29:]: deliver -- ack -- recv -- 
+[30:]: deliver -- ack -- recv -- 
+[31:]: deliver -- ack -- recv -- 
 [32:]: 
 [33:]: 
 [34:]: 
 [35:]: 
 [36:]: 
-[37:]: 
 [38:]: 
-[39:]: 
-[40:]: 
-[42:]: 
-[43:]: 
-check if is controlled 1 != 0 ? true 
- check if is controlled 1 != 0 ? true 
- check if is controlled 1 ? true 
- check if is controlled deliver == 1 ? true 
- check if is controlled recv == 1 ? true 
- check if is controlled 1 ? true 
- check if is controlled deliver == 1 ? true 
+
+ debug assign ack= 1
+check if is controlled 1 ? true 
+ check if is controlled deliver == 1 ? false 
+ check if is controlled recv == 1 ? false 
+ 
+ debug assign recv= 1
+check if is controlled 1 ? true 
+ check if is controlled deliver == 1 ? false 
  check if is controlled send == 1 ? true 
- check if is controlled input(&#x27;chan&#x27;) ? true 
+ check if is controlled input(&#x27;chan&#x27;) ? false 
  check if is controlled input(&#x27;sender&#x27;) ? true 
  check if is controlled ack == 0 ? true 
- check if is controlled 1 ? true 
- check if is controlled deliver == 1 ? true 
- check if is controlled recv == 1 ? true 
- check if is controlled 1 ? true 
- check if is controlled deliver == 1 ? true 
+ 
+ debug assign ack= 1
+check if is controlled 1 ? true 
+ check if is controlled deliver == 1 ? false 
+ check if is controlled recv == 1 ? false 
+ 
+ debug assign recv= 1
+check if is controlled 1 ? true 
+ check if is controlled deliver == 1 ? false 
  check if is controlled send == 1 ? true 
- check if is controlled input(&#x27;chan&#x27;) ? true 
+ check if is controlled input(&#x27;chan&#x27;) ? false 
  check if is controlled input(&#x27;sender&#x27;) ? true 
  check if is controlled ack == 0 ? true 
  check if is controlled 0 ? true 
  check if is controlled 0 ? true 
- Property: &lt;sender chan &gt;F{ack == 1}
+ Property: &lt;sender &gt;F{ack == 1}
 
 [-1:]:
--$7{ack} &gt;= 0 ? bottom
-$7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 ? bottom
+$5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
 
 [6:]:
--$7{ack} &gt;= 0 ? 11
+-$7{ack} &gt;= 0 ? bottom
 $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 ? 11
+$7{ack} &gt;= 2 ? bottom
 
 [8:]:
--$7{ack} &gt;= 0 &amp;&amp; -$5{recv} &gt;= 0 ? 10
--$7{ack} &gt;= 0 &amp;&amp; $5{recv} == 1 ? 8
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 0 ? 10
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? 10
-$7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? 8
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? 10
+-$7{ack} &gt;= 0 &amp;&amp; $5{recv} == 0 ? bottom
+$5{recv} == 0 &amp;&amp; $7{ack} == 1 ? 0.
+$7{ack} &gt;= 2 &amp;&amp; $5{recv} == 0 ? bottom
 
 [9:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 9
-$5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 7
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 9
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
+$5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
 
 [ 10:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 9
-$5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 7
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 9
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
+$5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
 $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
 
 [12:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? 8
--$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? 6
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? 8
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 8
-$5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 6
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 8
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? 8
-$7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? 6
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? 8
+$5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
 
 [14:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $11{send} == 1 ? 7
-$11{send} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $5{recv} == 1 ? 5
--$7{ack} &gt;= 1 &amp;&amp; $11{send} == 1 &amp;&amp; $5{recv} == 1 ? 7
-$11{send} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? 5
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$11{send} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $11{send} == 1 ? 7
-$11{send} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$5{recv} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 12
--$5{recv} &gt;= 0 &amp;&amp; $11{send} == 1 &amp;&amp; $7{ack} == 0 ? 7
-$11{send} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 12
--$11{send} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 5
-$11{send} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 7
-$11{send} &gt;= 2 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 5
-$5{recv} &gt;= 2 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 12
-$5{recv} &gt;= 2 &amp;&amp; $11{send} == 1 &amp;&amp; $7{ack} == 0 ? 7
-$11{send} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 12
--$5{recv} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$5{recv} &gt;= 0 &amp;&amp; $11{send} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$11{send} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$11{send} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$11{send} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$11{send} &gt;= 2 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $11{send} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$11{send} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $11{send} == 1 ? 7
-$11{send} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $5{recv} == 1 ? 5
-$7{ack} &gt;= 2 &amp;&amp; $11{send} == 1 &amp;&amp; $5{recv} == 1 ? 7
-$11{send} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? 5
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$11{send} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $11{send} == 1 ? 7
-$11{send} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
+$11{send} &gt;= -2147483648 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
+$11{send} == 1 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
+$11{send} &gt;= 2 &amp;&amp; -$11{send} &gt;= -2147483647 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
 
 [15:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $11{send} == 1 ? bottom
-$11{send} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $11{send} == 1 &amp;&amp; $13{deliver} == 1 ? 6
-$11{send} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $11{send} == 1 ? bottom
-$11{send} &gt;= 2 &amp;&amp; $13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $11{send} == 1 &amp;&amp; $5{recv} == 1 ? bottom
-$11{send} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 4
--$7{ack} &gt;= 1 &amp;&amp; $11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 6
-$11{send} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 4
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $11{send} == 1 &amp;&amp; $5{recv} == 1 ? bottom
-$11{send} &gt;= 2 &amp;&amp; $13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $11{send} == 1 ? bottom
-$11{send} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $11{send} == 1 &amp;&amp; $13{deliver} == 1 ? 6
-$11{send} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$11{send} &gt;= 0 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $11{send} == 1 ? bottom
-$11{send} &gt;= 2 &amp;&amp; $13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 11
--$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $11{send} == 1 &amp;&amp; $7{ack} == 0 ? 12
-$11{send} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 11
--$5{recv} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 11
--$5{recv} &gt;= 0 &amp;&amp; $11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 6
-$11{send} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 11
-$13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 11
-$13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $11{send} == 1 &amp;&amp; $7{ack} == 0 ? 12
-$11{send} &gt;= 2 &amp;&amp; $13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 11
--$13{deliver} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 10
--$13{deliver} &gt;= 0 &amp;&amp; $11{send} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 11
-$11{send} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 10
--$11{send} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 4
-$11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 6
-$11{send} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 4
-$13{deliver} &gt;= 2 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 10
-$13{deliver} &gt;= 2 &amp;&amp; $11{send} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 11
-$11{send} &gt;= 2 &amp;&amp; $13{deliver} &gt;= 2 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 10
-$5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 11
-$5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $11{send} == 1 &amp;&amp; $7{ack} == 0 ? 12
-$11{send} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 11
-$5{recv} &gt;= 2 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 11
-$5{recv} &gt;= 2 &amp;&amp; $11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 6
-$11{send} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 11
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 11
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $11{send} == 1 &amp;&amp; $7{ack} == 0 ? 12
-$11{send} &gt;= 2 &amp;&amp; $13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 11
--$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $11{send} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$11{send} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$5{recv} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
--$5{recv} &gt;= 0 &amp;&amp; $11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$11{send} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $11{send} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$11{send} &gt;= 2 &amp;&amp; $13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$13{deliver} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
--$13{deliver} &gt;= 0 &amp;&amp; $11{send} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$11{send} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
--$11{send} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$11{send} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; $11{send} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$11{send} &gt;= 2 &amp;&amp; $13{deliver} &gt;= 2 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $11{send} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$11{send} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$11{send} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $11{send} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$11{send} &gt;= 2 &amp;&amp; $13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $11{send} == 1 ? bottom
-$11{send} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $11{send} == 1 &amp;&amp; $13{deliver} == 1 ? 6
-$11{send} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $11{send} == 1 ? bottom
-$11{send} &gt;= 2 &amp;&amp; $13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $11{send} == 1 &amp;&amp; $5{recv} == 1 ? bottom
-$11{send} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 4
-$7{ack} &gt;= 2 &amp;&amp; $11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 6
-$11{send} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 4
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $11{send} == 1 &amp;&amp; $5{recv} == 1 ? bottom
-$11{send} &gt;= 2 &amp;&amp; $13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $11{send} == 1 ? bottom
-$11{send} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $11{send} == 1 &amp;&amp; $13{deliver} == 1 ? 6
-$11{send} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$11{send} &gt;= 0 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $11{send} == 1 ? bottom
-$11{send} &gt;= 2 &amp;&amp; $13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
+$11{send} &gt;= -2147483648 &amp;&amp; $13{deliver} &gt;= -2147483648 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
+$13{deliver} &gt;= -2147483648 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $11{send} == 1 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
+$11{send} &gt;= 2 &amp;&amp; $13{deliver} &gt;= -2147483648 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; -$11{send} &gt;= -2147483647 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
+$11{send} &gt;= -2147483648 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
+$11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? 6
+$11{send} &gt;= 2 &amp;&amp; -$11{send} &gt;= -2147483647 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
+$11{send} &gt;= -2147483648 &amp;&amp; $13{deliver} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= -2147483647 &amp;&amp; -$11{send} &gt;= 0 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
+$13{deliver} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= -2147483647 &amp;&amp; $11{send} == 1 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
+$11{send} &gt;= 2 &amp;&amp; $13{deliver} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= -2147483647 &amp;&amp; -$11{send} &gt;= -2147483647 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
 
 [16:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? 5
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 5
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $13{deliver} == 1 ? 5
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 11
--$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 5
-$13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 11
--$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 10
-$13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 5
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 10
-$5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 11
-$5{recv} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 5
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 11
--$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? 5
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 5
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $13{deliver} == 1 ? 5
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
+$13{deliver} &gt;= -2147483648 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $11{send} == 1 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
+$11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? 5
+$13{deliver} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= -2147483647 &amp;&amp; $11{send} == 1 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
 
 [17:]:
--$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; $13{deliver} == 1 ? 4
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
-$13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 4
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 10
--$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; $13{deliver} == 1 ? 4
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
+$11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? 4
 
 [18:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 3
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
--$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 10
-$13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
--$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 9
-$13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 3
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 9
-$5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
-$5{recv} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 10
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 10
--$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 3
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
+$11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 3
 
 [19:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 3
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
--$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 10
-$13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
--$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 9
-$13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 3
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 9
-$5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
-$5{recv} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 10
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 10
--$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 3
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
+$13{deliver} &gt;= -2147483648 &amp;&amp; -$13{deliver} &gt;= -2147483647 &amp;&amp; $11{send} == 1 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
 
 [20:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 3
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
--$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 10
-$13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
--$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 9
-$13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 3
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 9
-$5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
-$5{recv} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 10
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 10
--$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 3
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
+$13{deliver} &gt;= -2147483648 &amp;&amp; -$13{deliver} &gt;= -2147483647 &amp;&amp; $11{send} == 1 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
+$11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 3
 
 [21:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 3
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
--$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 10
-$13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
--$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 9
-$13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 3
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 9
-$5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
-$5{recv} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 10
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 10
--$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 3
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
+$11{send} &gt;= -2147483648 &amp;&amp; $13{deliver} &gt;= -2147483648 &amp;&amp; -$13{deliver} &gt;= -2147483647 &amp;&amp; -$11{send} &gt;= -2147483647 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
 
 [22:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 3
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
--$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 10
-$13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
--$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 9
-$13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 3
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 9
-$5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
-$5{recv} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 10
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 10
--$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 3
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $13{deliver} == 1 ? bottom
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
+$11{send} &gt;= -2147483648 &amp;&amp; $13{deliver} &gt;= -2147483648 &amp;&amp; -$13{deliver} &gt;= -2147483647 &amp;&amp; -$11{send} &gt;= -2147483647 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
+$11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 3
 
 [23:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? 2
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 2
-$13{deliver} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 &amp;&amp; $13{deliver} == 1 ? 2
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
--$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 2
-$13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
--$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 8
-$13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 2
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 8
-$5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 10
-$5{recv} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 0 ? 2
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 10
--$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
--$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 &amp;&amp; $13{deliver} == 1 ? 2
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 &amp;&amp; $5{recv} == 1 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 ? 2
-$13{deliver} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; -$13{deliver} &gt;= 0 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 &amp;&amp; $13{deliver} == 1 ? 2
-$13{deliver} &gt;= 2 &amp;&amp; $5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
+$11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 2
 
 [24:]:
--$7{ack} &gt;= 0 &amp;&amp; -$5{recv} &gt;= 0 ? 1
--$7{ack} &gt;= 0 &amp;&amp; $5{recv} == 1 ? 1
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 0 ? 1
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? 1
-$7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? 1
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? 1
+$11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 1
 
 [25:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 9
-$5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 7
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 9
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
+$11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
 
 [26:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 9
-$5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 7
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 9
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
 
 [27:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 9
-$5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 7
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 9
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
+$11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
 
 [28:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 9
-$5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 7
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 9
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
+$11{send} &gt;= -2147483648 &amp;&amp; $13{deliver} &gt;= -2147483648 &amp;&amp; -$13{deliver} &gt;= -2147483647 &amp;&amp; -$11{send} &gt;= -2147483647 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
 
 [29:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 9
-$5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 7
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 9
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
+$11{send} &gt;= -2147483648 &amp;&amp; $13{deliver} &gt;= -2147483648 &amp;&amp; -$13{deliver} &gt;= -2147483647 &amp;&amp; -$11{send} &gt;= -2147483647 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
+$11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
 
 [30:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 9
-$5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 7
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 9
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
+$11{send} &gt;= -2147483648 &amp;&amp; $13{deliver} &gt;= -2147483648 &amp;&amp; -$13{deliver} &gt;= -2147483647 &amp;&amp; -$11{send} &gt;= -2147483647 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
+$11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
 
 [31:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
--$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? bottom
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 9
-$5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 7
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 9
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? bottom
-$7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? bottom
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? bottom
+$11{send} &gt;= -2147483648 &amp;&amp; $13{deliver} &gt;= -2147483648 &amp;&amp; -$13{deliver} &gt;= -2147483647 &amp;&amp; -$11{send} &gt;= -2147483647 &amp;&amp; $5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
+$11{send} == 1 &amp;&amp; $13{deliver} == 1 &amp;&amp; $5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
 
 [32:]:
--$7{ack} &gt;= 0 ? bottom
-$7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 ? bottom
+$5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
 
 [33:]:
--$7{ack} &gt;= 0 ? bottom
-$7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 ? bottom
+$5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
 
 [34:]:
--$7{ack} &gt;= 0 ? bottom
-$7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 ? bottom
+$5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
 
 [35:]:
--$7{ack} &gt;= 0 ? bottom
-$7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 ? bottom
+$5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
 
 [36:]:
--$7{ack} &gt;= 0 ? bottom
-$7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 ? bottom
-
-[37:]:
--$7{ack} &gt;= 0 ? bottom
-$7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 ? bottom
+$5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
 
 [38:]:
--$7{ack} &gt;= 0 ? bottom
-$7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 ? bottom
-
-[39:]:
--$7{ack} &gt;= 0 ? bottom
-$7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 ? bottom
-
-[40:]:
--$7{ack} &gt;= 0 ? bottom
-$7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 ? bottom
-
-[42:]:
--$7{ack} &gt;= 1 &amp;&amp; -$5{recv} &gt;= 0 ? 8
--$7{ack} &gt;= 1 &amp;&amp; $5{recv} == 1 ? 6
-$5{recv} &gt;= 2 &amp;&amp; -$7{ack} &gt;= 1 ? 8
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 0 ? 8
-$5{recv} == 1 &amp;&amp; $7{ack} == 0 ? 6
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 0 ? 8
--$5{recv} &gt;= 0 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} == 1 &amp;&amp; $7{ack} == 1 ? 0.
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 &amp;&amp; -$5{recv} &gt;= 0 ? 8
-$7{ack} &gt;= 2 &amp;&amp; $5{recv} == 1 ? 6
-$5{recv} &gt;= 2 &amp;&amp; $7{ack} &gt;= 2 ? 8
-
-[43:]:
--$7{ack} &gt;= 0 ? bottom
-$7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 ? bottom
+$5{recv} == 0 &amp;&amp; $7{ack} == 0 ? bottom
 
 
  Resulting tree:  
- -$7{ack} &gt;= 0 ? 11
+ -$7{ack} &gt;= 0 ? bottom
 $7{ack} == 1 ? 0.
-$7{ack} &gt;= 2 ? 11
+$7{ack} &gt;= 2 ? bottom
 
-Time: 1.209673
-Final Analysis Result: TRUE
+Time: 0.566185
+Final Analysis Result: UNKNOWN
 {
   &quot;Config&quot;: {
     &quot;filename&quot;: &quot;tests/atl/mcmas/bit_transmission.c&quot;,
     &quot;analysis_type&quot;: &quot;atl-resilience&quot;,
-    &quot;property&quot;: &quot;&lt;sender,chan&gt;F{ack == 1}&quot;,
+    &quot;property&quot;: &quot;&lt;sender&gt;F{ack == 1}&quot;,
     &quot;precondition&quot;: &quot;true&quot;,
-    &quot;result&quot;: &quot;TRUE&quot;,
+    &quot;result&quot;: &quot;UKNOWN&quot;,
     &quot;domain&quot;: &quot;polyhedra&quot;,
-    &quot;joinbwd&quot;: 2,
-    &quot;time&quot;: &quot;1.20967200001&quot;
+    &quot;joinbwd&quot;: 7,
+    &quot;time&quot;: &quot;0.566184000001&quot;
   },
   &quot;tree&quot;: {
     &quot;Node&quot;: {
       &quot;constraint&quot;: &quot;$7{ack} &gt;= 2&quot;,
-      &quot;left&quot;: { &quot;Leaf&quot;: &quot;11&quot; },
+      &quot;left&quot;: { &quot;Leaf&quot;: &quot;bottom&quot; },
       &quot;right&quot;: {
         &quot;Node&quot;: {
           &quot;constraint&quot;: &quot;$7{ack} &gt;= 1&quot;,
           &quot;left&quot;: { &quot;Leaf&quot;: &quot;0.&quot; },
-          &quot;right&quot;: { &quot;Leaf&quot;: &quot;11&quot; }
+          &quot;right&quot;: { &quot;Leaf&quot;: &quot;bottom&quot; }
         }
       }
     }

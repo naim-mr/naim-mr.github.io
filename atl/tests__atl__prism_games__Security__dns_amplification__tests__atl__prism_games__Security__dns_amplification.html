@@ -1,0 +1,1490 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>dns_amplification</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+:root, html[data-theme="dark"]{
+  --bg:#0f1115; --surface:#171a21; --surface2:#1e222b; --border:#2a2f3a;
+  --text:#e6e8ee; --muted:#9aa3b2; --accent:#5b8def;
+  --true:#3fb950; --true-bg:#10371d;
+  --unknown:#d29922; --unknown-bg:#3a2e0c;
+  --fail:#f85149; --fail-bg:#3a1413;
+  --hero:linear-gradient(135deg,#1b2a4a 0%,#10131a 70%);
+}
+html[data-theme="light"]{
+  --bg:#f4f6fb; --surface:#ffffff; --surface2:#eef1f7; --border:#d8deea;
+  --text:#1b2430; --muted:#5b6675; --accent:#1f6feb;
+  --true:#1a7f37; --true-bg:#d8f3df;
+  --unknown:#9a6700; --unknown-bg:#fdf0d0;
+  --fail:#cf222e; --fail-bg:#ffe0e0;
+  --hero:linear-gradient(135deg,#dbe6ff 0%,#f4f6fb 70%);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px; line-height:1.5;
+}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1200px; margin:0 auto; padding:0 24px 80px}
+header.hero{
+  background:var(--hero);
+  border-bottom:1px solid var(--border); padding:34px 24px; margin-bottom:24px;
+}
+header.hero .inner{max-width:1200px; margin:0 auto; position:relative}
+header.hero h1{margin:0; font-size:30px; font-weight:700; letter-spacing:.3px}
+.theme-toggle{
+  position:absolute; top:0; right:0; cursor:pointer; font-size:13px; font-weight:600;
+  padding:8px 14px; border-radius:999px; background:var(--surface2);
+  border:1px solid var(--border); color:var(--text);
+}
+.theme-toggle:hover{border-color:var(--accent)}
+.stats{margin:4px 0 30px}
+.stats .stat-head{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:12px}
+.stats h2{font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); margin:0}
+.seg{display:inline-flex; border:1px solid var(--border); border-radius:10px; overflow:hidden}
+.seg button{
+  background:var(--surface); color:var(--muted); border:none; padding:7px 16px;
+  font-size:13px; font-weight:600; cursor:pointer;
+}
+.seg button.active{background:var(--accent); color:#fff}
+.stats .chart{background:#fff; border:1px solid var(--border); border-radius:14px; padding:10px; text-align:center}
+.stats .chart img{max-width:100%; height:auto}
+header.hero .sub{color:var(--muted); margin-top:6px; font-size:14px}
+.chips{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px}
+.chip{
+  display:inline-flex; align-items:baseline; gap:8px; padding:7px 14px;
+  border-radius:999px; background:var(--surface2); border:1px solid var(--border);
+  font-size:13px; font-weight:600;
+}
+.chip b{font-size:16px}
+.chip.true{color:var(--true)} .chip.unknown{color:var(--unknown)}
+.chip.fail,.chip.timeout{color:var(--fail)} .chip.total{color:var(--text)}
+.chip.info{color:var(--accent)}
+.controls{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin:6px 0 22px}
+.controls input[type=search]{
+  flex:1; min-width:220px; padding:10px 14px; border-radius:10px;
+  background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:14px;
+}
+.controls label{color:var(--muted); font-size:14px; display:inline-flex; gap:7px; align-items:center; cursor:pointer}
+section.grp{margin-bottom:30px}
+section.grp h2{
+  font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted);
+  margin:0 0 10px; padding-bottom:8px; border-bottom:1px solid var(--border);
+}
+.card{background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden}
+table{border-collapse:collapse; width:100%; font-size:14px}
+thead th{
+  position:sticky; top:0; background:var(--surface2); color:var(--muted);
+  text-align:left; font-weight:600; padding:11px 16px; border-bottom:1px solid var(--border);
+  font-size:12px; text-transform:uppercase; letter-spacing:.5px;
+}
+tbody td{padding:11px 16px; border-bottom:1px solid var(--border); vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface2)}
+td.c{text-align:center; white-space:nowrap}
+code.mono,td.prop,.mono{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  font-size:13px; color:var(--text)}
+td.prop{color:var(--text); font-weight:500}
+.badge{
+  display:inline-block; padding:3px 11px; border-radius:999px; font-size:12px; font-weight:700;
+  letter-spacing:.3px;
+}
+.badge.true{color:var(--true); background:var(--true-bg)}
+.badge.unknown{color:var(--unknown); background:var(--unknown-bg)}
+.badge.fail,.badge.timeout{color:var(--fail); background:var(--fail-bg)}
+.badge.info{color:var(--accent); background:rgba(91,141,239,.16)}
+/* one colour per ctl lifting variant (TRUE cells) */
+.badge.v-base{color:#3fb950; background:rgba(63,185,80,.16)}
+.badge.v-resilience{color:#5b8def; background:rgba(91,141,239,.16)}
+.badge.v-resilience_reachability{color:#1ab2a8; background:rgba(26,178,168,.16)}
+.badge.v-robust_reachability{color:#f0883e; background:rgba(240,136,62,.18)}
+.chip.v-base{color:#3fb950} .chip.v-resilience{color:#5b8def}
+.chip.v-resilience_reachability{color:#1ab2a8} .chip.v-robust_reachability{color:#f0883e}
+.tag{font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--muted);
+  background:var(--surface2); padding:2px 8px; border-radius:6px}
+.empty{color:var(--muted); text-align:center; padding:40px}
+/* per-test page */
+.meta{display:flex; flex-wrap:wrap; gap:22px; background:var(--surface); border:1px solid var(--border);
+  border-radius:14px; padding:18px 22px; margin-bottom:22px}
+.meta .item{display:flex; flex-direction:column; gap:3px}
+.meta .item .k{font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted)}
+.meta .item .v{font-size:15px; font-family:ui-monospace,Menlo,monospace}
+/* tabs */
+nav.tabs{display:flex; gap:6px; margin:0 0 22px; border-bottom:1px solid var(--border)}
+nav.tabs button{
+  background:none; border:none; border-bottom:2px solid transparent; color:var(--muted);
+  font-size:15px; font-weight:600; padding:10px 18px; cursor:pointer; margin-bottom:-1px;
+}
+nav.tabs button:hover{color:var(--text)}
+nav.tabs button.active{color:var(--accent); border-bottom-color:var(--accent)}
+.panel[hidden]{display:none}
+/* summary table */
+table.summary{margin-bottom:22px}
+table.summary td.num{text-align:right; font-family:ui-monospace,Menlo,monospace}
+.rate{display:inline-block; min-width:46px}
+.bar{height:7px; border-radius:4px; background:var(--surface2); overflow:hidden; margin-top:4px}
+.bar > i{display:block; height:100%; background:var(--true)}
+/* decision tree */
+.treechips{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px}
+.tag.true{color:var(--true); background:var(--true-bg)}
+.treesvg{background:#fff; padding:14px; text-align:center; overflow:auto}
+.treesvg svg{max-width:100%; height:auto}
+ul.guards{margin:6px 0; padding-left:22px}
+ul.guards li{padding:2px 0; font-size:13px}
+h3.sec{font-size:14px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:26px 0 10px}
+pre.block{background:#0b0d12; border:1px solid var(--border); border-radius:12px; padding:16px;
+  overflow:auto; font-size:13px; line-height:1.45; max-height:560px}
+pre.block code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.back{display:inline-block; margin-bottom:18px; font-size:14px}
+</style><script>
+(function(){
+  const root = document.documentElement;
+  function fromUrl(){ try{ return new URLSearchParams(location.search).get('theme'); }catch(e){ return null; } }
+  function fromStore(){ try{ return localStorage.getItem('ftheme'); }catch(e){ return null; } }
+  function persist(t){ try{ localStorage.setItem('ftheme', t); }catch(e){} }
+  // URL param wins (survives file:// where localStorage is not shared across pages).
+  root.setAttribute('data-theme', fromUrl() || fromStore() || 'dark');
+  // Carry the current theme through internal links so navigation keeps it.
+  function propagate(t){
+    document.querySelectorAll('a[href]').forEach(function(a){
+      const href = a.getAttribute('href');
+      if(!href || href.indexOf('://')>=0 || href.charAt(0)==='#') return;
+      if(href.indexOf('.html')<0) return;
+      a.setAttribute('href', href.split('?')[0] + '?theme=' + t);
+    });
+  }
+  function lbl(){ return root.getAttribute('data-theme')==='dark' ? '\u2600 light' : '\u263e dark'; }
+  document.addEventListener('DOMContentLoaded', function(){
+    propagate(root.getAttribute('data-theme'));
+    const btn = document.getElementById('theme');
+    if(!btn) return;
+    btn.textContent = lbl();
+    btn.addEventListener('click', function(){
+      const next = root.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      persist(next);
+      propagate(next);
+      btn.textContent = lbl();
+    });
+  });
+})();
+</script></head><body>
+<header class="hero"><div class="inner">
+<button id="theme" class="theme-toggle"></button>
+<a class="back" href="./index.html">&larr; back to overview</a>
+<h1>dns_amplification</h1>
+<div class="sub mono">tests/atl/prism_games/Security/dns_amplification.c</div>
+</div></header>
+<div class="wrap">
+<div class="meta">
+  <div class="item"><span class="k">Group</span><span class="v">atl/</span></div>
+  <div class="item"><span class="k">Property</span><span class="v">&lt;atk&gt;F{bw &gt; BQUL}</span></div>
+  <div class="item"><span class="k">Domain</span><span class="v">polyhedra</span></div>
+  <div class="item"><span class="k">Result</span><span class="v"><span class="badge unknown">UNKNOWN</span></span></div>
+  <div class="item"><span class="k">Time</span><span class="v">5.124 s</span></div>
+  <div class="item"><span class="k">Wall time</span><span class="v">5.239 s</span></div>
+</div>
+<h3 class="sec">Analyzer config</h3>
+<div class="card"><table><tbody><tr><td class="mono" style="color:var(--muted)">filename</td><td class="mono">tests/atl/prism_games/Security/dns_amplification.c</td></tr><tr><td class="mono" style="color:var(--muted)">analysis_type</td><td class="mono">atl-resilience</td></tr><tr><td class="mono" style="color:var(--muted)">property</td><td class="mono">&lt;atk&gt;F{bw &gt; BQUL}</td></tr><tr><td class="mono" style="color:var(--muted)">precondition</td><td class="mono">true</td></tr><tr><td class="mono" style="color:var(--muted)">result</td><td class="mono">UKNOWN</td></tr><tr><td class="mono" style="color:var(--muted)">domain</td><td class="mono">polyhedra</td></tr><tr><td class="mono" style="color:var(--muted)">joinbwd</td><td class="mono">7</td></tr><tr><td class="mono" style="color:var(--muted)">time</td><td class="mono">5.12420800001</td></tr></tbody></table></div>
+<h3 class="sec">Decision tree &amp; preconditions</h3>
+<div class="treechips">
+  <span class="tag">8 leaves</span>
+  <span class="tag true">5 defined region(s)</span>
+  <span class="tag">4 distinct guard(s)</span>
+</div>
+<div class="card treesvg"><svg width="639pt" height="332pt"
+ viewBox="0.00 0.00 639.22 332.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 328)">
+<title>T</title>
+<!-- n0 -->
+<g id="node1" class="node">
+<title>n0</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="209" cy="-306" rx="95.02" ry="18"/>
+<text text-anchor="middle" x="209" y="-303.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$29{bw}&#45;$5{BQUL} &gt;= 1</text>
+</g>
+<!-- n1 -->
+<g id="node2" class="node">
+<title>n1</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="105" cy="-234" rx="95.02" ry="18"/>
+<text text-anchor="middle" x="105" y="-231.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$29{bw} &gt;= 2147483648</text>
+</g>
+<!-- n0&#45;&gt;n1 -->
+<g id="edge13" class="edge">
+<title>n0&#45;&gt;n1</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M184.62,-288.59C170.76,-279.26 153.23,-267.46 138.14,-257.31"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="139.84,-254.23 129.59,-251.55 135.93,-260.04 139.84,-254.23"/>
+</g>
+<!-- n8 -->
+<g id="node9" class="node">
+<title>n8</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="313" cy="-234" rx="95.02" ry="18"/>
+<text text-anchor="middle" x="313" y="-231.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$29{bw} &gt;= 2147483648</text>
+</g>
+<!-- n0&#45;&gt;n8 -->
+<g id="edge14" class="edge">
+<title>n0&#45;&gt;n8</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M233.38,-288.59C247.24,-279.26 264.77,-267.46 279.86,-257.31"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="282.07,-260.04 288.41,-251.55 278.16,-254.23 282.07,-260.04"/>
+</g>
+<!-- n2 -->
+<g id="node3" class="node">
+<title>n2</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M42,-180C42,-180 12,-180 12,-180 6,-180 0,-174 0,-168 0,-168 0,-156 0,-156 0,-150 6,-144 12,-144 12,-144 42,-144 42,-144 48,-144 54,-150 54,-156 54,-156 54,-168 54,-168 54,-174 48,-180 42,-180"/>
+<text text-anchor="middle" x="27" y="-159.2" font-family="monospace" font-size="11.00" fill="#1b2430">0.</text>
+</g>
+<!-- n1&#45;&gt;n2 -->
+<g id="edge5" class="edge">
+<title>n1&#45;&gt;n2</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M86.12,-216.05C76.32,-207.26 64.19,-196.38 53.48,-186.76"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="55.76,-184.11 45.98,-180.03 51.08,-189.32 55.76,-184.11"/>
+</g>
+<!-- n3 -->
+<g id="node4" class="node">
+<title>n3</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="131" cy="-162" rx="58.86" ry="18"/>
+<text text-anchor="middle" x="131" y="-159.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$29{bw} &gt;= 2</text>
+</g>
+<!-- n1&#45;&gt;n3 -->
+<g id="edge6" class="edge">
+<title>n1&#45;&gt;n3</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M111.43,-215.7C114.36,-207.81 117.89,-198.3 121.14,-189.55"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="124.45,-190.7 124.65,-180.1 117.88,-188.26 124.45,-190.7"/>
+</g>
+<!-- n4 -->
+<g id="node5" class="node">
+<title>n4</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M100,-108C100,-108 70,-108 70,-108 64,-108 58,-102 58,-96 58,-96 58,-84 58,-84 58,-78 64,-72 70,-72 70,-72 100,-72 100,-72 106,-72 112,-78 112,-84 112,-84 112,-96 112,-96 112,-102 106,-108 100,-108"/>
+<text text-anchor="middle" x="85" y="-87.2" font-family="monospace" font-size="11.00" fill="#1b2430">0.</text>
+</g>
+<!-- n3&#45;&gt;n4 -->
+<g id="edge3" class="edge">
+<title>n3&#45;&gt;n4</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M119.86,-144.05C114.46,-135.84 107.86,-125.79 101.86,-116.66"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="104.77,-114.71 96.35,-108.28 98.92,-118.55 104.77,-114.71"/>
+</g>
+<!-- n5 -->
+<g id="node6" class="node">
+<title>n5</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="229" cy="-90" rx="99.44" ry="18"/>
+<text text-anchor="middle" x="229" y="-87.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$29{bw} &gt;= &#45;2147483647</text>
+</g>
+<!-- n3&#45;&gt;n5 -->
+<g id="edge4" class="edge">
+<title>n3&#45;&gt;n5</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M153.24,-145.12C166.36,-135.74 183.18,-123.73 197.64,-113.4"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="199.72,-116.21 205.83,-107.55 195.66,-110.52 199.72,-116.21"/>
+</g>
+<!-- n6 -->
+<g id="node7" class="node">
+<title>n6</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M208,-36C208,-36 178,-36 178,-36 172,-36 166,-30 166,-24 166,-24 166,-12 166,-12 166,-6 172,0 178,0 178,0 208,0 208,0 214,0 220,-6 220,-12 220,-12 220,-24 220,-24 220,-30 214,-36 208,-36"/>
+<text text-anchor="middle" x="193" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">0.</text>
+</g>
+<!-- n5&#45;&gt;n6 -->
+<g id="edge1" class="edge">
+<title>n5&#45;&gt;n6</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M220.29,-72.05C216.15,-64.01 211.11,-54.2 206.49,-45.23"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="209.57,-43.57 201.88,-36.28 203.35,-46.77 209.57,-43.57"/>
+</g>
+<!-- n7 -->
+<g id="node8" class="node">
+<title>n7</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M280,-36C280,-36 250,-36 250,-36 244,-36 238,-30 238,-24 238,-24 238,-12 238,-12 238,-6 244,0 250,0 250,0 280,0 280,0 286,0 292,-6 292,-12 292,-12 292,-24 292,-24 292,-30 286,-36 280,-36"/>
+<text text-anchor="middle" x="265" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">0.</text>
+</g>
+<!-- n5&#45;&gt;n7 -->
+<g id="edge2" class="edge">
+<title>n5&#45;&gt;n7</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M237.71,-72.05C241.85,-64.01 246.89,-54.2 251.51,-45.23"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="254.65,-46.77 256.12,-36.28 248.43,-43.57 254.65,-46.77"/>
+</g>
+<!-- n9 -->
+<g id="node10" class="node">
+<title>n9</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M323,-180C323,-180 293,-180 293,-180 287,-180 281,-174 281,-168 281,-168 281,-156 281,-156 281,-150 287,-144 293,-144 293,-144 323,-144 323,-144 329,-144 335,-150 335,-156 335,-156 335,-168 335,-168 335,-174 329,-180 323,-180"/>
+<text text-anchor="middle" x="308" y="-159.2" font-family="monospace" font-size="11.00" fill="#1b2430">1</text>
+</g>
+<!-- n8&#45;&gt;n9 -->
+<g id="edge11" class="edge">
+<title>n8&#45;&gt;n9</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M311.76,-215.7C311.21,-207.98 310.55,-198.71 309.94,-190.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="313.43,-189.83 309.22,-180.1 306.44,-190.33 313.43,-189.83"/>
+</g>
+<!-- n10 -->
+<g id="node11" class="node">
+<title>n10</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="412" cy="-162" rx="58.86" ry="18"/>
+<text text-anchor="middle" x="412" y="-159.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$29{bw} &gt;= 2</text>
+</g>
+<!-- n8&#45;&gt;n10 -->
+<g id="edge12" class="edge">
+<title>n8&#45;&gt;n10</title>
+<path fill="none" stroke="#aaaaaa" d="M336.46,-216.41C349.94,-206.88 367.02,-194.8 381.53,-184.55"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="383.58,-187.38 389.73,-178.75 379.54,-181.66 383.58,-187.38"/>
+</g>
+<!-- n11 -->
+<g id="node12" class="node">
+<title>n11</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M402.5,-108C402.5,-108 369.5,-108 369.5,-108 363.5,-108 357.5,-102 357.5,-96 357.5,-96 357.5,-84 357.5,-84 357.5,-78 363.5,-72 369.5,-72 369.5,-72 402.5,-72 402.5,-72 408.5,-72 414.5,-78 414.5,-84 414.5,-84 414.5,-96 414.5,-96 414.5,-102 408.5,-108 402.5,-108"/>
+<text text-anchor="middle" x="386" y="-87.2" font-family="monospace" font-size="11.00" fill="#1b2430">bottom</text>
+</g>
+<!-- n10&#45;&gt;n11 -->
+<g id="edge9" class="edge">
+<title>n10&#45;&gt;n11</title>
+<path fill="none" stroke="#aaaaaa" d="M405.71,-144.05C402.78,-136.18 399.23,-126.62 395.95,-117.79"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="399.18,-116.43 392.42,-108.28 392.62,-118.87 399.18,-116.43"/>
+</g>
+<!-- n12 -->
+<g id="node13" class="node">
+<title>n12</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="532" cy="-90" rx="99.44" ry="18"/>
+<text text-anchor="middle" x="532" y="-87.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$29{bw} &gt;= &#45;2147483647</text>
+</g>
+<!-- n10&#45;&gt;n12 -->
+<g id="edge10" class="edge">
+<title>n10&#45;&gt;n12</title>
+<path fill="none" stroke="#aaaaaa" d="M438.04,-145.81C454.74,-136.07 476.69,-123.27 495.16,-112.49"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="497.05,-115.44 503.92,-107.38 493.52,-109.4 497.05,-115.44"/>
+</g>
+<!-- n13 -->
+<g id="node14" class="node">
+<title>n13</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M510.5,-36C510.5,-36 477.5,-36 477.5,-36 471.5,-36 465.5,-30 465.5,-24 465.5,-24 465.5,-12 465.5,-12 465.5,-6 471.5,0 477.5,0 477.5,0 510.5,0 510.5,0 516.5,0 522.5,-6 522.5,-12 522.5,-12 522.5,-24 522.5,-24 522.5,-30 516.5,-36 510.5,-36"/>
+<text text-anchor="middle" x="494" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">bottom</text>
+</g>
+<!-- n12&#45;&gt;n13 -->
+<g id="edge7" class="edge">
+<title>n12&#45;&gt;n13</title>
+<path fill="none" stroke="#aaaaaa" d="M522.8,-72.05C518.43,-64.01 513.11,-54.2 508.24,-45.23"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="511.22,-43.39 503.38,-36.28 505.07,-46.73 511.22,-43.39"/>
+</g>
+<!-- n14 -->
+<g id="node15" class="node">
+<title>n14</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M585.5,-36C585.5,-36 552.5,-36 552.5,-36 546.5,-36 540.5,-30 540.5,-24 540.5,-24 540.5,-12 540.5,-12 540.5,-6 546.5,0 552.5,0 552.5,0 585.5,0 585.5,0 591.5,0 597.5,-6 597.5,-12 597.5,-12 597.5,-24 597.5,-24 597.5,-30 591.5,-36 585.5,-36"/>
+<text text-anchor="middle" x="569" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">bottom</text>
+</g>
+<!-- n12&#45;&gt;n14 -->
+<g id="edge8" class="edge">
+<title>n12&#45;&gt;n14</title>
+<path fill="none" stroke="#aaaaaa" d="M540.96,-72.05C545.21,-64.01 550.39,-54.2 555.14,-45.23"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="558.29,-46.75 559.87,-36.28 552.1,-43.48 558.29,-46.75"/>
+</g>
+</g>
+</svg>
+</div>
+<h3 class="sec">Defined regions (sufficient preconditions)</h3>
+<div class="card"><table><thead><tr><th>#</th><th>Region (conjunction of guards)</th>
+<th>Ranking function</th><th>Status</th></tr></thead><tbody><tr><td class="num">1</td><td class="prop">$29{bw}-$5{BQUL} &gt;= 1 &and; $29{bw} &gt;= 2147483648</td><td class="mono">0.</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">2</td><td class="prop">&not;($29{bw}-$5{BQUL} &gt;= 1) &and; $29{bw} &gt;= 2147483648</td><td class="mono">1</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">3</td><td class="prop">$29{bw}-$5{BQUL} &gt;= 1 &and; &not;($29{bw} &gt;= 2147483648) &and; $29{bw} &gt;= 2</td><td class="mono">0.</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">4</td><td class="prop">$29{bw}-$5{BQUL} &gt;= 1 &and; &not;($29{bw} &gt;= 2147483648) &and; &not;($29{bw} &gt;= 2) &and; $29{bw} &gt;= -2147483647</td><td class="mono">0.</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">5</td><td class="prop">$29{bw}-$5{BQUL} &gt;= 1 &and; &not;($29{bw} &gt;= 2147483648) &and; &not;($29{bw} &gt;= 2) &and; &not;($29{bw} &gt;= -2147483647)</td><td class="mono">0.</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">6</td><td class="prop">&not;($29{bw}-$5{BQUL} &gt;= 1) &and; &not;($29{bw} &gt;= 2147483648) &and; $29{bw} &gt;= 2</td><td class="mono">bottom</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">7</td><td class="prop">&not;($29{bw}-$5{BQUL} &gt;= 1) &and; &not;($29{bw} &gt;= 2147483648) &and; &not;($29{bw} &gt;= 2) &and; $29{bw} &gt;= -2147483647</td><td class="mono">bottom</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">8</td><td class="prop">&not;($29{bw}-$5{BQUL} &gt;= 1) &and; &not;($29{bw} &gt;= 2147483648) &and; &not;($29{bw} &gt;= 2) &and; &not;($29{bw} &gt;= -2147483647)</td><td class="mono">bottom</td><td class="c"><span class="badge fail">undefined</span></td></tr></tbody></table></div>
+<h3 class="sec">Distinct guards</h3>
+<div class="card" style="padding:10px 20px"><ul class="guards"><li class="mono">$29{bw} &gt;= -2147483647</li><li class="mono">$29{bw} &gt;= 2</li><li class="mono">$29{bw} &gt;= 2147483648</li><li class="mono">$29{bw}-$5{BQUL} &gt;= 1</li></ul></div>
+
+<h3 class="sec">Source</h3>
+<pre class="block"><code class="language-c">// =====================================================================
+// DNS Bandwidth Amplification Attack -- PRISM case study (de-probabilised)
+// ---------------------------------------------------------------------
+// Source : Deshpande, Katsaros, Basagiannis, Smolka,
+//   &quot;Formal Analysis of the DNS Bandwidth Amplification Attack and its
+//    Countermeasures Using Probabilistic Model Checking&quot;, HASE 2011.
+// Original model description: see dns_amplification.txt
+// ---------------------------------------------------------------------
+// A network of zombies floods a victim DNS server with AMPLIFIED bogus
+// responses: each bogus request consumes EAF (effective amplification factor,
+// ~15) units of the victim&#x27;s bandwidth queue (capacity BQUL). The queue is
+// drained by the server at rate `serve`; a filtering countermeasure blocks up
+// to `fcap` bogus requests per round. Denial of service is reached when the
+// bandwidth queue is exhausted (bw &gt; BQUL).
+//
+// The paper&#x27;s finding is that the attack SUCCEEDS (attack probability -&gt; 1 as
+// the number of zombies grows): with amplification, an attacker with enough
+// volume overwhelms any finite service + bounded filtering. So we model it as
+// the ATTACKER&#x27;s reachability of bandwidth exhaustion, not a defender safety.
+//
+//   agent &quot;atk&quot; = input(&quot;atk&quot;)  -&gt; zombies / attacker (coalition, angelic)
+//   agent &quot;def&quot; = input(&quot;def&quot;)  -&gt; server capacity + filtering (adversary, bounded)
+//
+// The attacker exhausts the victim&#x27;s bandwidth (TRUE):
+//   -atl &quot;&lt;atk&gt;F{bw &gt; BQUL}&quot;
+// =====================================================================
+
+int main() {
+    int BQUL = input(&quot;def&quot;);   // victim bandwidth queue capacity (packets): arbitrary
+    if (BQUL &lt; 1) BQUL = 1;
+    int EAF = input(&quot;def&quot;);    // effective amplification factor: arbitrary, &gt;= 1
+    if (EAF &lt; 1) EAF = 1;
+    int serve = input(&quot;def&quot;);  // server service rate (packets drained per round)
+    if (serve &lt; 0) serve = 0;
+    int fcap = input(&quot;def&quot;);   // filtering capacity (bogus requests blocked per round)
+    if (fcap &lt; 0) fcap = 0;
+    int bw = 0;                // occupied bandwidth queue
+    while (bw &lt;= BQUL) {
+        int z = input(&quot;atk&quot;);      // bogus requests injected by the zombies this round
+        if (z &lt; 0) z = 0;
+        int filtered = z;
+        if (filtered &gt; fcap) filtered = fcap;   // filtering blocks at most fcap of them
+        int bogus = (z - filtered) * EAF;       // the rest arrive AMPLIFIED (x EAF)
+        bw = bw + bogus - serve;                 // queue grows by amplified bogus, drained by serve
+        if (bw &lt; 0) bw = 0;
+    }
+}
+</code></pre>
+<h3 class="sec">Analysis log</h3>
+<pre class="block"><code>
+Abstract typed Syntax:
+{
+  {64}
+}
+int main()@
+{
+  {6} int BQUL = input(&#x27;def&#x27;);
+  {7} if (BQUL &lt; 1)
+  {
+    {8} BQUL = 1;
+    {9}
+  }
+  else
+  {
+    {10}
+  }
+  {12} int EAF = input(&#x27;def&#x27;);
+  {13} if (EAF &lt; 1)
+  {
+    {14} EAF = 1;
+    {15}
+  }
+  else
+  {
+    {16}
+  }
+  {18} int serve = input(&#x27;def&#x27;);
+  {19} if (serve &lt; 0)
+  {
+    {20} serve = 0;
+    {21}
+  }
+  else
+  {
+    {22}
+  }
+  {24} int fcap = input(&#x27;def&#x27;);
+  {25} if (fcap &lt; 0)
+  {
+    {26} fcap = 0;
+    {27}
+  }
+  else
+  {
+    {28}
+  }
+  {30} int bw = 0;
+  {31} while {32} (bw &lt;= BQUL)
+  {
+    {34} int z = input(&#x27;atk&#x27;);
+    {35} if (z &lt; 0)
+    {
+      {36} z = 0;
+      {37}
+    }
+    else
+    {
+      {38}
+    }
+    {40} int filtered = z;
+    {41} if (filtered &gt; fcap)
+    {
+      {42} filtered = fcap;
+      {43}
+    }
+    else
+    {
+      {44}
+    }
+    {46} int bogus = (z - filtered) * EAF;
+    {47} bw = bw + bogus - serve;
+    {48} if (bw &lt; 0)
+    {
+      {49} bw = 0;
+      {50}
+    }
+    else
+    {
+      {51}
+    }
+    {52} delete z;
+    {53} delete filtered;
+    {54} delete bogus;
+    {55}
+  }
+  {56} break#32:;
+  {57} return#3:;
+  {58} delete BQUL;
+  {59} delete EAF;
+  {60} delete serve;
+  {61} delete fcap;
+  {62} delete bw;
+  {63}
+}
+
+Abstract atl typed Syntax:
+ {
+  {64}
+}
+int main()@
+{
+  {6} int BQUL = input(&#x27;def&#x27;);
+  {7} if (BQUL &lt; 1)
+  {
+    {8} BQUL = 1;
+    {9}
+  }
+  else
+  {
+    {10}
+  }
+  {12} int EAF = input(&#x27;def&#x27;);
+  {13} if (EAF &lt; 1)
+  {
+    {14} EAF = 1;
+    {15}
+  }
+  else
+  {
+    {16}
+  }
+  {18} int serve = input(&#x27;def&#x27;);
+  {19} if (serve &lt; 0)
+  {
+    {20} serve = 0;
+    {21}
+  }
+  else
+  {
+    {22}
+  }
+  {24} int fcap = input(&#x27;def&#x27;);
+  {25} if (fcap &lt; 0)
+  {
+    {26} fcap = 0;
+    {27}
+  }
+  else
+  {
+    {28}
+  }
+  {30} int bw = 0;
+  {31} while {32} (bw &lt;= BQUL)
+  {
+    {65} loop:;
+    {34} int z = input(&#x27;atk&#x27;);
+    {35} if (z &lt; 0)
+    {
+      {36} z = 0;
+      {37}
+    }
+    else
+    {
+      {38}
+    }
+    {40} int filtered = z;
+    {41} if (filtered &gt; fcap)
+    {
+      {42} filtered = fcap;
+      {43}
+    }
+    else
+    {
+      {44}
+    }
+    {46} int bogus = (z - filtered) * EAF;
+    {47} bw = bw + bogus - serve;
+    {48} if (bw &lt; 0)
+    {
+      {49} bw = 0;
+      {50}
+    }
+    else
+    {
+      {51}
+    }
+    {52} delete z;
+    {53} delete filtered;
+    {54} delete bogus;
+    {55}
+  }
+  {56} break#32:;
+  {57} return#3:;
+  {58} delete BQUL;
+  {59} delete EAF;
+  {60} delete serve;
+  {61} delete fcap;
+  {62} delete bw;
+  {-1} exit:;
+  {63}
+}
+debug cp 
+
+Forward Summary :
+
+Forward Analysis numerical:
+[-1:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[6:]: top
+[7:]: $5{BQUL} &gt;= -2147483648 &amp;&amp; -$5{BQUL} &gt;= -2147483647
+[8:]: $5{BQUL} &gt;= -2147483648 &amp;&amp; -$5{BQUL} &gt;= 0
+[9:]: $5{BQUL} == 1
+[ 10:]: $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647
+[12:]: $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647
+[13:]: $11{EAF} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[14:]: $11{EAF} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= 0
+[15:]: $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; $11{EAF} == 1
+[16:]: $11{EAF} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[18:]: $11{EAF} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[19:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[20:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= 1 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[21:]: $11{EAF} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $17{serve} == 0
+[22:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[24:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[25:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[26:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= 1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[27:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 0
+[28:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[30:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[31:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $29{bw} == 0
+[32:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[34:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[35:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[36:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= 1 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[37:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 0
+[38:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[40:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[41:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0
+[42:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap}+$33{z} &gt;= 1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0
+[43:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap}+$33{z} &gt;= 1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; -$23{fcap}+$39{filtered} == 0
+[44:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$33{z} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0
+[46:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[47:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; 1073741824$33{z}-1073741824$39{filtered}-$45{bogus} &gt;= -4611686011984936962 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -4611686014132420609 &amp;&amp; -1073741824$33{z}+1073741824$39{filtered}+$45{bogus} &gt;= -4611686011984936962 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[48:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; 1073741824$33{z}-1073741824$39{filtered}-$45{bogus} &gt;= -4611686011984936962 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -4611686014132420609 &amp;&amp; -1073741824$33{z}+1073741824$39{filtered}+$45{bogus} &gt;= -4611686011984936962 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[49:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -1073741824$33{z}+1073741824$39{filtered}+$45{bogus} &gt;= -4611686011984936962 &amp;&amp; -$29{bw} &gt;= 1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[50:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $17{serve}-$45{bogus} &gt;= 1 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -1073741824$33{z}+1073741824$39{filtered}+$45{bogus} &gt;= -4611686011984936962 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $29{bw} == 0
+[51:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; 1073741824$33{z}-1073741824$39{filtered}-$45{bogus} &gt;= -4611686011984936962 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -4611686014132420609 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[52:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; 1073741824$33{z}-1073741824$39{filtered}-$45{bogus} &gt;= -4611686011984936962 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -4611686014132420609 &amp;&amp; -3221225469$29{bw}-2305843009213693952$33{z}+2305843009213693952$39{filtered}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -4294967292$29{bw}+2305843005992468480$33{z}-2305843005992468480$39{filtered}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -4294967293$29{bw}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -6917529017977405443$29{bw}-4951760152529835083316592640$33{z}+4951760152529835083316592640$39{filtered}+4611686014132420610$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647883041052434245033113342181377 &amp;&amp; -9223372023969873924$29{bw}+4951760150223992073029156864$33{z}-4951760150223992073029156864$39{filtered}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -9223372026117357571$29{bw}+4611686014132420610$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647883041052431939190105202229249 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+1073741824$33{z}-1073741824$39{filtered}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1152921504606846976$33{z}-1152921504606846976$39{filtered}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -3221225469$17{serve}-3221225469$29{bw}-2305843008139952128$33{z}+2305843008139952128$39{filtered}+2147483647$45{bogus} &gt;= -9903520302753827154198265857 &amp;&amp; -4294967293$17{serve}-4294967293$29{bw}+2147483647$45{bogus} &gt;= -9903520305059670162338217985 &amp;&amp; -6917529017977405443$17{serve}-6917529017977405443$29{bw}-4951760150223992075176640512$33{z}+4951760150223992075176640512$39{filtered}+4611686011984936963$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647887992812582163182181452611584 &amp;&amp; -9223372026117357571$17{serve}-9223372026117357571$29{bw}+4611686011984936963$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647892944572732387174255555510272 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[53:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; 1073741824$33{z}-1073741824$39{filtered}-$45{bogus} &gt;= -4611686011984936962 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -4611686014132420609 &amp;&amp; -3221225469$29{bw}-2305843009213693952$33{z}+2305843009213693952$39{filtered}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -4294967292$29{bw}+2305843005992468480$33{z}-2305843005992468480$39{filtered}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -4294967293$29{bw}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -6917529017977405443$29{bw}-4951760152529835083316592640$33{z}+4951760152529835083316592640$39{filtered}+4611686014132420610$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647883041052434245033113342181377 &amp;&amp; -9223372023969873924$29{bw}+4951760150223992073029156864$33{z}-4951760150223992073029156864$39{filtered}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -9223372026117357571$29{bw}+4611686014132420610$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647883041052431939190105202229249 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+1073741824$33{z}-1073741824$39{filtered}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1152921504606846976$33{z}-1152921504606846976$39{filtered}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -3221225469$17{serve}-3221225469$29{bw}-2305843008139952128$33{z}+2305843008139952128$39{filtered}+2147483647$45{bogus} &gt;= -9903520302753827154198265857 &amp;&amp; -4294967293$17{serve}-4294967293$29{bw}+2147483647$45{bogus} &gt;= -9903520305059670162338217985 &amp;&amp; -6917529017977405443$17{serve}-6917529017977405443$29{bw}-4951760150223992075176640512$33{z}+4951760150223992075176640512$39{filtered}+4611686011984936963$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647887992812582163182181452611584 &amp;&amp; -9223372026117357571$17{serve}-9223372026117357571$29{bw}+4611686011984936963$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647892944572732387174255555510272 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[54:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; 1073741824$33{z}-1073741824$39{filtered}-$45{bogus} &gt;= -4611686011984936962 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -4611686014132420609 &amp;&amp; -3221225469$29{bw}-2305843009213693952$33{z}+2305843009213693952$39{filtered}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -4294967292$29{bw}+2305843005992468480$33{z}-2305843005992468480$39{filtered}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -4294967293$29{bw}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -6917529017977405443$29{bw}-4951760152529835083316592640$33{z}+4951760152529835083316592640$39{filtered}+4611686014132420610$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647883041052434245033113342181377 &amp;&amp; -9223372023969873924$29{bw}+4951760150223992073029156864$33{z}-4951760150223992073029156864$39{filtered}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -9223372026117357571$29{bw}+4611686014132420610$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647883041052431939190105202229249 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+1073741824$33{z}-1073741824$39{filtered}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1152921504606846976$33{z}-1152921504606846976$39{filtered}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -3221225469$17{serve}-3221225469$29{bw}-2305843008139952128$33{z}+2305843008139952128$39{filtered}+2147483647$45{bogus} &gt;= -9903520302753827154198265857 &amp;&amp; -4294967293$17{serve}-4294967293$29{bw}+2147483647$45{bogus} &gt;= -9903520305059670162338217985 &amp;&amp; -6917529017977405443$17{serve}-6917529017977405443$29{bw}-4951760150223992075176640512$33{z}+4951760150223992075176640512$39{filtered}+4611686011984936963$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647887992812582163182181452611584 &amp;&amp; -9223372026117357571$17{serve}-9223372026117357571$29{bw}+4611686011984936963$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647892944572732387174255555510272 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[55:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; 1073741824$33{z}-1073741824$39{filtered}-$45{bogus} &gt;= -4611686011984936962 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -4611686014132420609 &amp;&amp; -3221225469$29{bw}-2305843009213693952$33{z}+2305843009213693952$39{filtered}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -4294967292$29{bw}+2305843005992468480$33{z}-2305843005992468480$39{filtered}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -4294967293$29{bw}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -6917529017977405443$29{bw}-4951760152529835083316592640$33{z}+4951760152529835083316592640$39{filtered}+4611686014132420610$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647883041052434245033113342181377 &amp;&amp; -9223372023969873924$29{bw}+4951760150223992073029156864$33{z}-4951760150223992073029156864$39{filtered}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -9223372026117357571$29{bw}+4611686014132420610$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647883041052431939190105202229249 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+1073741824$33{z}-1073741824$39{filtered}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1152921504606846976$33{z}-1152921504606846976$39{filtered}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -3221225469$17{serve}-3221225469$29{bw}-2305843008139952128$33{z}+2305843008139952128$39{filtered}+2147483647$45{bogus} &gt;= -9903520302753827154198265857 &amp;&amp; -4294967293$17{serve}-4294967293$29{bw}+2147483647$45{bogus} &gt;= -9903520305059670162338217985 &amp;&amp; -6917529017977405443$17{serve}-6917529017977405443$29{bw}-4951760150223992075176640512$33{z}+4951760150223992075176640512$39{filtered}+4611686011984936963$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647887992812582163182181452611584 &amp;&amp; -9223372026117357571$17{serve}-9223372026117357571$29{bw}+4611686011984936963$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647892944572732387174255555510272 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[56:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[57:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[58:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[59:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[60:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[61:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[62:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[63:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+[64:]: top
+[65:]: $11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647
+in if is tainted ?BQUL &lt; 1yes! 
+in if is tainted ?EAF &lt; 1yes! 
+in if is tainted ?serve &lt; 0yes! 
+in if is tainted ?fcap &lt; 0yes! 
+in if is tainted ?z &lt; 0yes! 
+in if is tainted ?filtered &gt; fcapyes! 
+in if is tainted ?bw &lt; 0yes! 
+in if is tainted ?bw &lt;= BQULyes! 
+
+Forward Taint Summary :
+
+Forward Analysis numerical:
+[-1:]: fcap -- serve -- EAF -- BQUL -- 
+[6:]: 
+[7:]: BQUL -- 
+[8:]: BQUL -- 
+[9:]: 
+[ 10:]: BQUL -- 
+[12:]: BQUL -- 
+[13:]: EAF -- BQUL -- 
+[14:]: EAF -- BQUL -- 
+[15:]: BQUL -- 
+[16:]: EAF -- BQUL -- 
+[18:]: EAF -- BQUL -- 
+[19:]: serve -- EAF -- BQUL -- 
+[20:]: serve -- EAF -- BQUL -- 
+[21:]: EAF -- BQUL -- 
+[22:]: serve -- EAF -- BQUL -- 
+[24:]: serve -- EAF -- BQUL -- 
+[25:]: fcap -- serve -- EAF -- BQUL -- 
+[26:]: fcap -- serve -- EAF -- BQUL -- 
+[27:]: serve -- EAF -- BQUL -- 
+[28:]: fcap -- serve -- EAF -- BQUL -- 
+[30:]: fcap -- serve -- EAF -- BQUL -- 
+[31:]: fcap -- serve -- EAF -- BQUL -- 
+[32:]: fcap -- serve -- EAF -- BQUL -- 
+[34:]: fcap -- serve -- EAF -- BQUL -- 
+[35:]: z -- fcap -- serve -- EAF -- BQUL -- 
+[36:]: z -- fcap -- serve -- EAF -- BQUL -- 
+[37:]: fcap -- serve -- EAF -- BQUL -- 
+[38:]: z -- fcap -- serve -- EAF -- BQUL -- 
+[40:]: z -- fcap -- serve -- EAF -- BQUL -- 
+[41:]: filtered -- z -- fcap -- serve -- EAF -- BQUL -- 
+[42:]: filtered -- z -- fcap -- serve -- EAF -- BQUL -- 
+[43:]: filtered -- z -- fcap -- serve -- EAF -- BQUL -- 
+[44:]: filtered -- z -- fcap -- serve -- EAF -- BQUL -- 
+[46:]: filtered -- z -- fcap -- serve -- EAF -- BQUL -- 
+[47:]: bogus -- filtered -- z -- fcap -- serve -- EAF -- BQUL -- 
+[48:]: bogus -- filtered -- z -- bw -- fcap -- serve -- EAF -- BQUL -- 
+[49:]: bogus -- filtered -- z -- bw -- fcap -- serve -- EAF -- BQUL -- 
+[50:]: bogus -- filtered -- z -- fcap -- serve -- EAF -- BQUL -- 
+[51:]: bogus -- filtered -- z -- bw -- fcap -- serve -- EAF -- BQUL -- 
+[52:]: bogus -- filtered -- z -- bw -- fcap -- serve -- EAF -- BQUL -- 
+[53:]: bogus -- filtered -- z -- bw -- fcap -- serve -- EAF -- BQUL -- 
+[54:]: bogus -- filtered -- z -- bw -- fcap -- serve -- EAF -- BQUL -- 
+[55:]: bogus -- filtered -- z -- bw -- fcap -- serve -- EAF -- BQUL -- 
+[56:]: fcap -- serve -- EAF -- BQUL -- 
+[57:]: fcap -- serve -- EAF -- BQUL -- 
+[58:]: fcap -- serve -- EAF -- BQUL -- 
+[59:]: fcap -- serve -- EAF -- BQUL -- 
+[60:]: fcap -- serve -- EAF -- BQUL -- 
+[61:]: fcap -- serve -- EAF -- BQUL -- 
+[62:]: fcap -- serve -- EAF -- BQUL -- 
+[63:]: fcap -- serve -- EAF -- BQUL -- 
+[65:]: fcap -- serve -- EAF -- BQUL -- 
+Property: bw &gt; BQUL
+
+[-1:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[6:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[7:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[8:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[9:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[ 10:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[12:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[13:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[14:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[15:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[16:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[18:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[19:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[20:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[21:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[22:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[24:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[25:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[26:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[27:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[28:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[30:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[31:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[32:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[34:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[35:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[36:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[37:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[38:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[40:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[41:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[42:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[43:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[44:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[46:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[47:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[48:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[49:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[50:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[51:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[52:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[53:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[54:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[55:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[56:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[57:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[58:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[59:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[60:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[61:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[62:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[63:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[65:]:
+-$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+debug cp 
+atkin if is tainted ?BQUL &lt; 1yes! 
+in if is tainted ?EAF &lt; 1yes! 
+in if is tainted ?serve &lt; 0yes! 
+in if is tainted ?fcap &lt; 0yes! 
+in if is tainted ?z &lt; 0no! 
+in if is tainted ?filtered &gt; fcapyes! 
+in if is tainted ?bw &lt; 0yes! 
+in if is tainted ?bw &lt;= BQULyes! 
+
+Forward Taint Summary :
+
+Forward Analysis numerical:
+[-1:]: fcap -- serve -- EAF -- BQUL -- 
+[6:]: 
+[7:]: BQUL -- 
+[8:]: BQUL -- 
+[9:]: 
+[ 10:]: BQUL -- 
+[12:]: BQUL -- 
+[13:]: EAF -- BQUL -- 
+[14:]: EAF -- BQUL -- 
+[15:]: BQUL -- 
+[16:]: EAF -- BQUL -- 
+[18:]: EAF -- BQUL -- 
+[19:]: serve -- EAF -- BQUL -- 
+[20:]: serve -- EAF -- BQUL -- 
+[21:]: EAF -- BQUL -- 
+[22:]: serve -- EAF -- BQUL -- 
+[24:]: serve -- EAF -- BQUL -- 
+[25:]: fcap -- serve -- EAF -- BQUL -- 
+[26:]: fcap -- serve -- EAF -- BQUL -- 
+[27:]: serve -- EAF -- BQUL -- 
+[28:]: fcap -- serve -- EAF -- BQUL -- 
+[30:]: fcap -- serve -- EAF -- BQUL -- 
+[31:]: fcap -- serve -- EAF -- BQUL -- 
+[32:]: fcap -- serve -- EAF -- BQUL -- 
+[34:]: fcap -- serve -- EAF -- BQUL -- 
+[35:]: fcap -- serve -- EAF -- BQUL -- 
+[36:]: fcap -- serve -- EAF -- BQUL -- 
+[37:]: fcap -- serve -- EAF -- BQUL -- 
+[38:]: fcap -- serve -- EAF -- BQUL -- 
+[40:]: fcap -- serve -- EAF -- BQUL -- 
+[41:]: fcap -- serve -- EAF -- BQUL -- 
+[42:]: fcap -- serve -- EAF -- BQUL -- 
+[43:]: filtered -- fcap -- serve -- EAF -- BQUL -- 
+[44:]: fcap -- serve -- EAF -- BQUL -- 
+[46:]: filtered -- fcap -- serve -- EAF -- BQUL -- 
+[47:]: bogus -- filtered -- fcap -- serve -- EAF -- BQUL -- 
+[48:]: bogus -- filtered -- bw -- fcap -- serve -- EAF -- BQUL -- 
+[49:]: bogus -- filtered -- bw -- fcap -- serve -- EAF -- BQUL -- 
+[50:]: bogus -- filtered -- fcap -- serve -- EAF -- BQUL -- 
+[51:]: bogus -- filtered -- bw -- fcap -- serve -- EAF -- BQUL -- 
+[52:]: bogus -- filtered -- bw -- fcap -- serve -- EAF -- BQUL -- 
+[53:]: bogus -- filtered -- bw -- fcap -- serve -- EAF -- BQUL -- 
+[54:]: bogus -- filtered -- bw -- fcap -- serve -- EAF -- BQUL -- 
+[55:]: bogus -- filtered -- bw -- fcap -- serve -- EAF -- BQUL -- 
+[56:]: fcap -- serve -- EAF -- BQUL -- 
+[57:]: fcap -- serve -- EAF -- BQUL -- 
+[58:]: fcap -- serve -- EAF -- BQUL -- 
+[59:]: fcap -- serve -- EAF -- BQUL -- 
+[60:]: fcap -- serve -- EAF -- BQUL -- 
+[61:]: fcap -- serve -- EAF -- BQUL -- 
+[62:]: fcap -- serve -- EAF -- BQUL -- 
+[63:]: fcap -- serve -- EAF -- BQUL -- 
+[65:]: fcap -- serve -- EAF -- BQUL -- 
+
+ debug assign bw= 0
+check if is controlled 0 ? true 
+ check if is controlled bw &lt; 0 ? false 
+ 
+ debug assign bw= bw + bogus - serve
+check if is controlled bw + bogus - serve ? false 
+ check if is controlled (z - filtered) * EAF ? false 
+ 
+ debug assign filtered= fcap
+check if is controlled fcap ? false 
+ check if is controlled filtered &gt; fcap ? false 
+ check if is controlled z ? true 
+ 
+ debug assign z= 0
+check if is controlled 0 ? true 
+ check if is controlled z &lt; 0 ? true 
+ check if is controlled input(&#x27;atk&#x27;) ? true 
+ check if is controlled bw &lt;= BQUL ? false 
+ 
+ debug assign bw= 0
+check if is controlled 0 ? true 
+ check if is controlled bw &lt; 0 ? false 
+ 
+ debug assign bw= bw + bogus - serve
+check if is controlled bw + bogus - serve ? false 
+ check if is controlled (z - filtered) * EAF ? false 
+ 
+ debug assign filtered= fcap
+check if is controlled fcap ? false 
+ check if is controlled filtered &gt; fcap ? false 
+ check if is controlled z ? true 
+ 
+ debug assign z= 0
+check if is controlled 0 ? true 
+ check if is controlled z &lt; 0 ? true 
+ check if is controlled input(&#x27;atk&#x27;) ? true 
+ check if is controlled bw &lt;= BQUL ? false 
+ check if is controlled 0 ? true 
+ 
+ debug assign fcap= 0
+check if is controlled 0 ? true 
+ check if is controlled fcap &lt; 0 ? false 
+ check if is controlled input(&#x27;def&#x27;) ? false 
+ 
+ debug assign serve= 0
+check if is controlled 0 ? true 
+ check if is controlled serve &lt; 0 ? false 
+ check if is controlled input(&#x27;def&#x27;) ? false 
+ 
+ debug assign EAF= 1
+check if is controlled 1 ? true 
+ check if is controlled EAF &lt; 1 ? false 
+ check if is controlled input(&#x27;def&#x27;) ? false 
+ 
+ debug assign BQUL= 1
+check if is controlled 1 ? true 
+ check if is controlled BQUL &lt; 1 ? false 
+ check if is controlled input(&#x27;def&#x27;) ? false 
+ Property: &lt;atk &gt;F{bw &gt; BQUL}
+
+[-1:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[6:]:
+-$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$29{bw} &gt;= 2147483648 ? bottom
+$29{bw} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$29{bw} &gt;= -1 ? bottom
+$29{bw} &gt;= 2 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$29{bw} &gt;= -2147483647 ? bottom
+$29{bw} &gt;= 2147483648 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 ? 1
+$29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; -$29{bw} &gt;= 2147483648 ? 0.
+$29{bw} &gt;= -2147483647 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; -$29{bw} &gt;= -1 ? 0.
+$29{bw} &gt;= 2 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; -$29{bw} &gt;= -2147483647 ? 0.
+$29{bw} &gt;= 2147483648 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+[7:]:
+$5{BQUL} &gt;= -2147483648 &amp;&amp; -$5{BQUL} &gt;= 0 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= -2147483648 &amp;&amp; -$29{bw} &gt;= -1 ? 0.
+$29{bw} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= -2147483648 &amp;&amp; -$5{BQUL} &gt;= 0 ? 0.
+$5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 ? 0.
+
+[8:]:
+$5{BQUL} &gt;= -2147483648 &amp;&amp; -$5{BQUL} &gt;= 0 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= -2147483648 &amp;&amp; -$29{bw} &gt;= -1 ? 0.
+$29{bw} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= -2147483648 &amp;&amp; -$5{BQUL} &gt;= 0 ? 0.
+
+[9:]:
+-$29{bw} &gt;= -1 &amp;&amp; $5{BQUL} == 1 ? bottom
+$29{bw} &gt;= 2 &amp;&amp; $5{BQUL} == 1 ? 0.
+
+[ 10:]:
+$5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 ? 0.
+
+[12:]:
+$5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 ? 0.
+
+[13:]:
+$11{EAF} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= -2147483648 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= 0 ? 0.
+$11{EAF} &gt;= 1 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[14:]:
+$11{EAF} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= 0 ? bottom
+$11{EAF} &gt;= -2147483648 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= 0 ? 0.
+
+[15:]:
+$5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; $11{EAF} == 1 ? bottom
+$29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; $11{EAF} == 1 ? 0.
+
+[16:]:
+$11{EAF} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[18:]:
+$11{EAF} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[19:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= 1 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= -2147483648 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= 1 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[20:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= 1 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= -2147483648 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= 1 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[21:]:
+$11{EAF} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $17{serve} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $17{serve} == 0 ? 0.
+
+[22:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[24:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[25:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= 1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= -2147483648 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= 1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 ? 0.
+
+[26:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= 1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= -2147483648 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= 1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[27:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 0 ? 0.
+
+[28:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 ? 0.
+
+[30:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 ? 0.
+
+[31:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $29{bw} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $29{bw} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; $29{bw} == 0 ? bottom
+
+[32:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[34:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 ? bottom
+
+[35:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= 1 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= 1 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= 1 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; $33{z} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 0 &amp;&amp; $33{z} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 1 &amp;&amp; $33{z} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; $33{z} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap}+$33{z} &gt;= 1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$33{z} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 ? bottom
+
+[36:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= 1 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= 1 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= -2147483648 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= 1 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 ? bottom
+
+[37:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; $33{z} == 0 ? bottom
+
+[38:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; $33{z} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 0 &amp;&amp; $33{z} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 1 &amp;&amp; $33{z} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; $33{z} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap}+$33{z} &gt;= 1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$33{z} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 ? bottom
+
+[40:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; $33{z} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 0 &amp;&amp; $33{z} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 1 &amp;&amp; $33{z} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; $33{z} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap}+$33{z} &gt;= 1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$33{z} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 ? bottom
+
+[41:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 0 &amp;&amp; $39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 0 &amp;&amp; $39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; $33{z} == 0 &amp;&amp; $39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 0 &amp;&amp; $33{z} == 1 &amp;&amp; $39{filtered} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 1 &amp;&amp; $33{z} == 1 &amp;&amp; $39{filtered} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 1 &amp;&amp; $39{filtered} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; $33{z} == 1 &amp;&amp; $39{filtered} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap}+$33{z} &gt;= 1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$33{z} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+
+[42:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap}+$33{z} &gt;= 1 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap}+$33{z} &gt;= 1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+
+[43:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap}+$33{z} &gt;= 1 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; -$23{fcap}+$39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap}+$33{z} &gt;= 1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; -$23{fcap}+$39{filtered} == 0 ? bottom
+
+[44:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 0 &amp;&amp; $39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 0 &amp;&amp; $39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; $33{z} == 0 &amp;&amp; $39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 1 &amp;&amp; $33{z} == 1 &amp;&amp; $39{filtered} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 1 &amp;&amp; $39{filtered} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; $33{z} == 1 &amp;&amp; $39{filtered} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$33{z} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+
+[46:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 0 &amp;&amp; $39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $33{z} == 0 &amp;&amp; $39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; $33{z} == 0 &amp;&amp; $39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 1 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 1 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$39{filtered} &gt;= -1 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; $33{z} == 1 &amp;&amp; $39{filtered} == 1 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 2 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+
+[47:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= 2147483648 &amp;&amp; -1073741824$33{z}+1073741824$39{filtered}+$45{bogus} &gt;= -4611686011984936962 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= 2147483648 &amp;&amp; -1073741824$33{z}+1073741824$39{filtered}+$45{bogus} &gt;= -4611686011984936962 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $45{bogus} &gt;= -4611686011984936962 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= 2147483648 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -2147483646 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve}+$29{bw}+$45{bogus}-$5{BQUL} &gt;= 1 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 1
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $17{serve}-$29{bw}-$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -2147483646 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve}+$29{bw}+$45{bogus} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $17{serve}-$29{bw}-$45{bogus} &gt;= 1 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $45{bogus} &gt;= -2147483647 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -2147483646 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve}+$29{bw}+$45{bogus}-$5{BQUL} &gt;= 1 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 1
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $17{serve}-$29{bw}-$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -2147483646 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve}+$29{bw}+$45{bogus} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $17{serve}-$29{bw}-$45{bogus} &gt;= 1 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $45{bogus} &gt;= -2147483647 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -2147483646 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve}+$29{bw}+$45{bogus}-$5{BQUL} &gt;= 1 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? 1
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $17{serve}-$29{bw}-$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -2147483646 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve}+$29{bw}+$45{bogus} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $17{serve}-$29{bw}-$45{bogus} &gt;= 1 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $45{bogus} &gt;= -2147483647 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; 1073741824$33{z}-1073741824$39{filtered}-$45{bogus} &gt;= -4611686011984936962 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $45{bogus} &gt;= 2147483647 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -4611686014132420609 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve}+$29{bw}+$45{bogus}-$5{BQUL} &gt;= 1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 1
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}-$29{bw}-$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $45{bogus} &gt;= 2147483647 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; 1073741824$33{z}-1073741824$39{filtered}-$45{bogus} &gt;= -4611686011984936962 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $45{bogus} &gt;= 2147483647 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -4611686014132420609 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve}+$29{bw}+$45{bogus}-$5{BQUL} &gt;= 1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 1
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}-$29{bw}-$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $45{bogus} &gt;= 2147483647 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $45{bogus} &gt;= 2147483647 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -4611686011984936962 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve}+$29{bw}+$45{bogus}-$5{BQUL} &gt;= 1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? 1
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}-$29{bw}-$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $45{bogus} &gt;= 2147483647 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+
+[48:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= 2147483648 &amp;&amp; -1073741824$33{z}+1073741824$39{filtered}+$45{bogus} &gt;= -4611686011984936962 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= 2147483648 &amp;&amp; -1073741824$33{z}+1073741824$39{filtered}+$45{bogus} &gt;= -4611686011984936962 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $45{bogus} &gt;= -4611686011984936962 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= 2147483648 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $45{bogus} &gt;= -2147483647 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw} &gt;= 1 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $45{bogus} &gt;= -2147483647 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw} &gt;= 1 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $45{bogus} &gt;= -2147483647 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw} &gt;= 1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -2147483646 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -2147483646 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -2147483646 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $45{bogus} &gt;= 2147483647 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $45{bogus} &gt;= 2147483647 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $45{bogus} &gt;= 2147483647 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; 1073741824$33{z}-1073741824$39{filtered}-$45{bogus} &gt;= -4611686011984936962 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $45{bogus} &gt;= 2147483647 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -4611686014132420609 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[49:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -1073741824$33{z}+1073741824$39{filtered}+$45{bogus} &gt;= -4611686011984936962 &amp;&amp; -$29{bw} &gt;= 1 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -1073741824$33{z}+1073741824$39{filtered}+$45{bogus} &gt;= -4611686011984936962 &amp;&amp; -$29{bw} &gt;= 1 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $45{bogus} &gt;= -4611686011984936962 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw} &gt;= 1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+
+[50:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $17{serve}-$45{bogus} &gt;= 1 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -1073741824$33{z}+1073741824$39{filtered}+$45{bogus} &gt;= -4611686011984936962 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $29{bw} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $17{serve}-$45{bogus} &gt;= 1 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -1073741824$33{z}+1073741824$39{filtered}+$45{bogus} &gt;= -4611686011984936962 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $29{bw} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $17{serve}-$45{bogus} &gt;= 1 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $45{bogus} &gt;= -4611686011984936962 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; $29{bw} == 0 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+
+[51:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; 1073741824$33{z}-1073741824$39{filtered}-$45{bogus} &gt;= -4611686011984936962 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -4611686014132420609 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$17{serve}-$29{bw}+$45{bogus}+$5{BQUL} &gt;= 0 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[52:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -3221225469$29{bw}-2305843009213693952$33{z}+2305843009213693952$39{filtered}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -4294967292$29{bw}+2305843005992468480$33{z}-2305843005992468480$39{filtered}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -4294967293$29{bw}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -6917529017977405443$29{bw}-4951760152529835083316592640$33{z}+4951760152529835083316592640$39{filtered}+4611686014132420610$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647883041052434245033113342181377 &amp;&amp; -9223372023969873924$29{bw}+4951760150223992073029156864$33{z}-4951760150223992073029156864$39{filtered}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -9223372026117357571$29{bw}+4611686014132420610$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647883041052431939190105202229249 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+1073741824$33{z}-1073741824$39{filtered}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1152921504606846976$33{z}-1152921504606846976$39{filtered}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -3221225469$17{serve}-3221225469$29{bw}-2305843008139952128$33{z}+2305843008139952128$39{filtered}+2147483647$45{bogus} &gt;= -9903520302753827154198265857 &amp;&amp; -4294967293$17{serve}-4294967293$29{bw}+2147483647$45{bogus} &gt;= -9903520305059670162338217985 &amp;&amp; -6917529017977405443$17{serve}-6917529017977405443$29{bw}-4951760150223992075176640512$33{z}+4951760150223992075176640512$39{filtered}+4611686011984936963$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647887992812582163182181452611584 &amp;&amp; -9223372026117357571$17{serve}-9223372026117357571$29{bw}+4611686011984936963$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647892944572732387174255555510272 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -3221225469$29{bw}-2305843009213693952$33{z}+2305843009213693952$39{filtered}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -4294967292$29{bw}+2305843005992468480$33{z}-2305843005992468480$39{filtered}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -4294967293$29{bw}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -6917529017977405443$29{bw}-4951760152529835083316592640$33{z}+4951760152529835083316592640$39{filtered}+4611686014132420610$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647883041052434245033113342181377 &amp;&amp; -9223372023969873924$29{bw}+4951760150223992073029156864$33{z}-4951760150223992073029156864$39{filtered}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -9223372026117357571$29{bw}+4611686014132420610$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647883041052431939190105202229249 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+1073741824$33{z}-1073741824$39{filtered}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1152921504606846976$33{z}-1152921504606846976$39{filtered}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -3221225469$17{serve}-3221225469$29{bw}-2305843008139952128$33{z}+2305843008139952128$39{filtered}+2147483647$45{bogus} &gt;= -9903520302753827154198265857 &amp;&amp; -4294967293$17{serve}-4294967293$29{bw}+2147483647$45{bogus} &gt;= -9903520305059670162338217985 &amp;&amp; -6917529017977405443$17{serve}-6917529017977405443$29{bw}-4951760150223992075176640512$33{z}+4951760150223992075176640512$39{filtered}+4611686011984936963$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647887992812582163182181452611584 &amp;&amp; -9223372026117357571$17{serve}-9223372026117357571$29{bw}+4611686011984936963$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647892944572732387174255555510272 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -4294967292$29{bw}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -9223372023969873924$29{bw}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; 1073741824$33{z}-1073741824$39{filtered}-$45{bogus} &gt;= -4611686011984936962 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -4611686014132420609 &amp;&amp; -3221225469$29{bw}-2305843009213693952$33{z}+2305843009213693952$39{filtered}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -4294967292$29{bw}+2305843005992468480$33{z}-2305843005992468480$39{filtered}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -4294967293$29{bw}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -6917529017977405443$29{bw}-4951760152529835083316592640$33{z}+4951760152529835083316592640$39{filtered}+4611686014132420610$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647883041052434245033113342181377 &amp;&amp; -9223372023969873924$29{bw}+4951760150223992073029156864$33{z}-4951760150223992073029156864$39{filtered}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -9223372026117357571$29{bw}+4611686014132420610$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647883041052431939190105202229249 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+1073741824$33{z}-1073741824$39{filtered}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1152921504606846976$33{z}-1152921504606846976$39{filtered}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -3221225469$17{serve}-3221225469$29{bw}-2305843008139952128$33{z}+2305843008139952128$39{filtered}+2147483647$45{bogus} &gt;= -9903520302753827154198265857 &amp;&amp; -4294967293$17{serve}-4294967293$29{bw}+2147483647$45{bogus} &gt;= -9903520305059670162338217985 &amp;&amp; -6917529017977405443$17{serve}-6917529017977405443$29{bw}-4951760150223992075176640512$33{z}+4951760150223992075176640512$39{filtered}+4611686011984936963$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647887992812582163182181452611584 &amp;&amp; -9223372026117357571$17{serve}-9223372026117357571$29{bw}+4611686011984936963$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647892944572732387174255555510272 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[53:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -3221225469$29{bw}-2305843009213693952$33{z}+2305843009213693952$39{filtered}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -4294967292$29{bw}+2305843005992468480$33{z}-2305843005992468480$39{filtered}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -4294967293$29{bw}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -6917529017977405443$29{bw}-4951760152529835083316592640$33{z}+4951760152529835083316592640$39{filtered}+4611686014132420610$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647883041052434245033113342181377 &amp;&amp; -9223372023969873924$29{bw}+4951760150223992073029156864$33{z}-4951760150223992073029156864$39{filtered}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -9223372026117357571$29{bw}+4611686014132420610$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647883041052431939190105202229249 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+1073741824$33{z}-1073741824$39{filtered}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1152921504606846976$33{z}-1152921504606846976$39{filtered}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -3221225469$17{serve}-3221225469$29{bw}-2305843008139952128$33{z}+2305843008139952128$39{filtered}+2147483647$45{bogus} &gt;= -9903520302753827154198265857 &amp;&amp; -4294967293$17{serve}-4294967293$29{bw}+2147483647$45{bogus} &gt;= -9903520305059670162338217985 &amp;&amp; -6917529017977405443$17{serve}-6917529017977405443$29{bw}-4951760150223992075176640512$33{z}+4951760150223992075176640512$39{filtered}+4611686011984936963$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647887992812582163182181452611584 &amp;&amp; -9223372026117357571$17{serve}-9223372026117357571$29{bw}+4611686011984936963$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647892944572732387174255555510272 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -3221225469$29{bw}-2305843009213693952$33{z}+2305843009213693952$39{filtered}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -4294967292$29{bw}+2305843005992468480$33{z}-2305843005992468480$39{filtered}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -4294967293$29{bw}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -6917529017977405443$29{bw}-4951760152529835083316592640$33{z}+4951760152529835083316592640$39{filtered}+4611686014132420610$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647883041052434245033113342181377 &amp;&amp; -9223372023969873924$29{bw}+4951760150223992073029156864$33{z}-4951760150223992073029156864$39{filtered}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -9223372026117357571$29{bw}+4611686014132420610$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647883041052431939190105202229249 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+1073741824$33{z}-1073741824$39{filtered}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1152921504606846976$33{z}-1152921504606846976$39{filtered}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -3221225469$17{serve}-3221225469$29{bw}-2305843008139952128$33{z}+2305843008139952128$39{filtered}+2147483647$45{bogus} &gt;= -9903520302753827154198265857 &amp;&amp; -4294967293$17{serve}-4294967293$29{bw}+2147483647$45{bogus} &gt;= -9903520305059670162338217985 &amp;&amp; -6917529017977405443$17{serve}-6917529017977405443$29{bw}-4951760150223992075176640512$33{z}+4951760150223992075176640512$39{filtered}+4611686011984936963$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647887992812582163182181452611584 &amp;&amp; -9223372026117357571$17{serve}-9223372026117357571$29{bw}+4611686011984936963$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647892944572732387174255555510272 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -4294967292$29{bw}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -9223372023969873924$29{bw}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; 1073741824$33{z}-1073741824$39{filtered}-$45{bogus} &gt;= -4611686011984936962 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -4611686014132420609 &amp;&amp; -3221225469$29{bw}-2305843009213693952$33{z}+2305843009213693952$39{filtered}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -4294967292$29{bw}+2305843005992468480$33{z}-2305843005992468480$39{filtered}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -4294967293$29{bw}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -6917529017977405443$29{bw}-4951760152529835083316592640$33{z}+4951760152529835083316592640$39{filtered}+4611686014132420610$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647883041052434245033113342181377 &amp;&amp; -9223372023969873924$29{bw}+4951760150223992073029156864$33{z}-4951760150223992073029156864$39{filtered}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -9223372026117357571$29{bw}+4611686014132420610$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647883041052431939190105202229249 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+1073741824$33{z}-1073741824$39{filtered}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1152921504606846976$33{z}-1152921504606846976$39{filtered}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -3221225469$17{serve}-3221225469$29{bw}-2305843008139952128$33{z}+2305843008139952128$39{filtered}+2147483647$45{bogus} &gt;= -9903520302753827154198265857 &amp;&amp; -4294967293$17{serve}-4294967293$29{bw}+2147483647$45{bogus} &gt;= -9903520305059670162338217985 &amp;&amp; -6917529017977405443$17{serve}-6917529017977405443$29{bw}-4951760150223992075176640512$33{z}+4951760150223992075176640512$39{filtered}+4611686011984936963$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647887992812582163182181452611584 &amp;&amp; -9223372026117357571$17{serve}-9223372026117357571$29{bw}+4611686011984936963$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647892944572732387174255555510272 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[54:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -3221225469$29{bw}-2305843009213693952$33{z}+2305843009213693952$39{filtered}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -4294967292$29{bw}+2305843005992468480$33{z}-2305843005992468480$39{filtered}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -4294967293$29{bw}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -6917529017977405443$29{bw}-4951760152529835083316592640$33{z}+4951760152529835083316592640$39{filtered}+4611686014132420610$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647883041052434245033113342181377 &amp;&amp; -9223372023969873924$29{bw}+4951760150223992073029156864$33{z}-4951760150223992073029156864$39{filtered}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -9223372026117357571$29{bw}+4611686014132420610$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647883041052431939190105202229249 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+1073741824$33{z}-1073741824$39{filtered}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1152921504606846976$33{z}-1152921504606846976$39{filtered}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -3221225469$17{serve}-3221225469$29{bw}-2305843008139952128$33{z}+2305843008139952128$39{filtered}+2147483647$45{bogus} &gt;= -9903520302753827154198265857 &amp;&amp; -4294967293$17{serve}-4294967293$29{bw}+2147483647$45{bogus} &gt;= -9903520305059670162338217985 &amp;&amp; -6917529017977405443$17{serve}-6917529017977405443$29{bw}-4951760150223992075176640512$33{z}+4951760150223992075176640512$39{filtered}+4611686011984936963$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647887992812582163182181452611584 &amp;&amp; -9223372026117357571$17{serve}-9223372026117357571$29{bw}+4611686011984936963$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647892944572732387174255555510272 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -3221225469$29{bw}-2305843009213693952$33{z}+2305843009213693952$39{filtered}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -4294967292$29{bw}+2305843005992468480$33{z}-2305843005992468480$39{filtered}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -4294967293$29{bw}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -6917529017977405443$29{bw}-4951760152529835083316592640$33{z}+4951760152529835083316592640$39{filtered}+4611686014132420610$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647883041052434245033113342181377 &amp;&amp; -9223372023969873924$29{bw}+4951760150223992073029156864$33{z}-4951760150223992073029156864$39{filtered}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -9223372026117357571$29{bw}+4611686014132420610$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647883041052431939190105202229249 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+1073741824$33{z}-1073741824$39{filtered}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1152921504606846976$33{z}-1152921504606846976$39{filtered}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -3221225469$17{serve}-3221225469$29{bw}-2305843008139952128$33{z}+2305843008139952128$39{filtered}+2147483647$45{bogus} &gt;= -9903520302753827154198265857 &amp;&amp; -4294967293$17{serve}-4294967293$29{bw}+2147483647$45{bogus} &gt;= -9903520305059670162338217985 &amp;&amp; -6917529017977405443$17{serve}-6917529017977405443$29{bw}-4951760150223992075176640512$33{z}+4951760150223992075176640512$39{filtered}+4611686011984936963$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647887992812582163182181452611584 &amp;&amp; -9223372026117357571$17{serve}-9223372026117357571$29{bw}+4611686011984936963$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647892944572732387174255555510272 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -4294967292$29{bw}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -9223372023969873924$29{bw}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; 1073741824$33{z}-1073741824$39{filtered}-$45{bogus} &gt;= -4611686011984936962 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -4611686014132420609 &amp;&amp; -3221225469$29{bw}-2305843009213693952$33{z}+2305843009213693952$39{filtered}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -4294967292$29{bw}+2305843005992468480$33{z}-2305843005992468480$39{filtered}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -4294967293$29{bw}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -6917529017977405443$29{bw}-4951760152529835083316592640$33{z}+4951760152529835083316592640$39{filtered}+4611686014132420610$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647883041052434245033113342181377 &amp;&amp; -9223372023969873924$29{bw}+4951760150223992073029156864$33{z}-4951760150223992073029156864$39{filtered}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -9223372026117357571$29{bw}+4611686014132420610$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647883041052431939190105202229249 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+1073741824$33{z}-1073741824$39{filtered}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1152921504606846976$33{z}-1152921504606846976$39{filtered}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -3221225469$17{serve}-3221225469$29{bw}-2305843008139952128$33{z}+2305843008139952128$39{filtered}+2147483647$45{bogus} &gt;= -9903520302753827154198265857 &amp;&amp; -4294967293$17{serve}-4294967293$29{bw}+2147483647$45{bogus} &gt;= -9903520305059670162338217985 &amp;&amp; -6917529017977405443$17{serve}-6917529017977405443$29{bw}-4951760150223992075176640512$33{z}+4951760150223992075176640512$39{filtered}+4611686011984936963$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647887992812582163182181452611584 &amp;&amp; -9223372026117357571$17{serve}-9223372026117357571$29{bw}+4611686011984936963$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647892944572732387174255555510272 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[55:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -3221225469$29{bw}-2305843009213693952$33{z}+2305843009213693952$39{filtered}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -4294967292$29{bw}+2305843005992468480$33{z}-2305843005992468480$39{filtered}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -4294967293$29{bw}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -6917529017977405443$29{bw}-4951760152529835083316592640$33{z}+4951760152529835083316592640$39{filtered}+4611686014132420610$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647883041052434245033113342181377 &amp;&amp; -9223372023969873924$29{bw}+4951760150223992073029156864$33{z}-4951760150223992073029156864$39{filtered}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -9223372026117357571$29{bw}+4611686014132420610$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647883041052431939190105202229249 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+1073741824$33{z}-1073741824$39{filtered}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1152921504606846976$33{z}-1152921504606846976$39{filtered}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -3221225469$17{serve}-3221225469$29{bw}-2305843008139952128$33{z}+2305843008139952128$39{filtered}+2147483647$45{bogus} &gt;= -9903520302753827154198265857 &amp;&amp; -4294967293$17{serve}-4294967293$29{bw}+2147483647$45{bogus} &gt;= -9903520305059670162338217985 &amp;&amp; -6917529017977405443$17{serve}-6917529017977405443$29{bw}-4951760150223992075176640512$33{z}+4951760150223992075176640512$39{filtered}+4611686011984936963$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647887992812582163182181452611584 &amp;&amp; -9223372026117357571$17{serve}-9223372026117357571$29{bw}+4611686011984936963$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647892944572732387174255555510272 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -3221225469$29{bw}-2305843009213693952$33{z}+2305843009213693952$39{filtered}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -4294967292$29{bw}+2305843005992468480$33{z}-2305843005992468480$39{filtered}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -4294967293$29{bw}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -6917529017977405443$29{bw}-4951760152529835083316592640$33{z}+4951760152529835083316592640$39{filtered}+4611686014132420610$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647883041052434245033113342181377 &amp;&amp; -9223372023969873924$29{bw}+4951760150223992073029156864$33{z}-4951760150223992073029156864$39{filtered}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -9223372026117357571$29{bw}+4611686014132420610$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647883041052431939190105202229249 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+1073741824$33{z}-1073741824$39{filtered}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1152921504606846976$33{z}-1152921504606846976$39{filtered}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -3221225469$17{serve}-3221225469$29{bw}-2305843008139952128$33{z}+2305843008139952128$39{filtered}+2147483647$45{bogus} &gt;= -9903520302753827154198265857 &amp;&amp; -4294967293$17{serve}-4294967293$29{bw}+2147483647$45{bogus} &gt;= -9903520305059670162338217985 &amp;&amp; -6917529017977405443$17{serve}-6917529017977405443$29{bw}-4951760150223992075176640512$33{z}+4951760150223992075176640512$39{filtered}+4611686011984936963$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647887992812582163182181452611584 &amp;&amp; -9223372026117357571$17{serve}-9223372026117357571$29{bw}+4611686011984936963$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647892944572732387174255555510272 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $33{z} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$33{z} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -4294967292$29{bw}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -9223372023969873924$29{bw}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 &amp;&amp; -$33{z}+$39{filtered} == 0 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve}+$29{bw}-$45{bogus} &gt;= 0 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap}-$39{filtered} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; 1073741824$33{z}-1073741824$39{filtered}-$45{bogus} &gt;= -4611686011984936962 &amp;&amp; $33{z}-$39{filtered} &gt;= 0 &amp;&amp; $39{filtered} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$45{bogus} &gt;= -4611686014132420609 &amp;&amp; -3221225469$29{bw}-2305843009213693952$33{z}+2305843009213693952$39{filtered}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -4294967292$29{bw}+2305843005992468480$33{z}-2305843005992468480$39{filtered}+2147483647$45{bogus} &gt;= -9903520295836298136220860414 &amp;&amp; -4294967293$29{bw}+2147483648$45{bogus} &gt;= -9903520300447984148205797376 &amp;&amp; -6917529017977405443$29{bw}-4951760152529835083316592640$33{z}+4951760152529835083316592640$39{filtered}+4611686014132420610$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647883041052434245033113342181377 &amp;&amp; -9223372023969873924$29{bw}+4951760150223992073029156864$33{z}-4951760150223992073029156864$39{filtered}+4611686011984936963$45{bogus}+9223372023969873924$5{BQUL} &gt;= -21267647873137532136102891971128852482 &amp;&amp; -9223372026117357571$29{bw}+4611686014132420610$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647883041052431939190105202229249 &amp;&amp; -$23{fcap}-$33{z}+$39{filtered} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -2$17{serve}-2$29{bw}+1073741824$33{z}-1073741824$39{filtered}+$45{bogus} &gt;= -4611686016279904256 &amp;&amp; -2147483647$17{serve}-2147483647$29{bw}+1152921504606846976$33{z}-1152921504606846976$39{filtered}+1073741823$45{bogus}+2147483647$5{BQUL} &gt;= -4951760150223992074102898688 &amp;&amp; -3221225469$17{serve}-3221225469$29{bw}-2305843008139952128$33{z}+2305843008139952128$39{filtered}+2147483647$45{bogus} &gt;= -9903520302753827154198265857 &amp;&amp; -4294967293$17{serve}-4294967293$29{bw}+2147483647$45{bogus} &gt;= -9903520305059670162338217985 &amp;&amp; -6917529017977405443$17{serve}-6917529017977405443$29{bw}-4951760150223992075176640512$33{z}+4951760150223992075176640512$39{filtered}+4611686011984936963$45{bogus}+6917529017977405443$5{BQUL} &gt;= -21267647887992812582163182181452611584 &amp;&amp; -9223372026117357571$17{serve}-9223372026117357571$29{bw}+4611686011984936963$45{bogus}+9223372026117357571$5{BQUL} &gt;= -21267647892944572732387174255555510272 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[56:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[57:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[58:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[59:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[60:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[61:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[62:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[63:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$23{fcap} &gt;= -2147483647 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? 0.
+
+[65:]:
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -1 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $23{fcap} &gt;= 2 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$23{fcap} &gt;= -2147483646 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 ? bottom
+$11{EAF} &gt;= 1 &amp;&amp; $17{serve} &gt;= 0 &amp;&amp; $29{bw} &gt;= 0 &amp;&amp; $5{BQUL} &gt;= 1 &amp;&amp; -$5{BQUL} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$17{serve} &gt;= -2147483647 &amp;&amp; -$11{EAF} &gt;= -2147483647 &amp;&amp; $23{fcap} == 2147483647 ? bottom
+
+
+ Resulting tree:  
+ -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$29{bw} &gt;= 2147483648 ? bottom
+$29{bw} &gt;= -2147483647 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$29{bw} &gt;= -1 ? bottom
+$29{bw} &gt;= 2 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 &amp;&amp; -$29{bw} &gt;= -2147483647 ? bottom
+$29{bw} &gt;= 2147483648 &amp;&amp; -$29{bw}+$5{BQUL} &gt;= 0 ? 1
+$29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; -$29{bw} &gt;= 2147483648 ? 0.
+$29{bw} &gt;= -2147483647 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; -$29{bw} &gt;= -1 ? 0.
+$29{bw} &gt;= 2 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 &amp;&amp; -$29{bw} &gt;= -2147483647 ? 0.
+$29{bw} &gt;= 2147483648 &amp;&amp; $29{bw}-$5{BQUL} &gt;= 1 ? 0.
+
+Time: 5.124209
+Final Analysis Result: UNKNOWN
+{
+  &quot;Config&quot;: {
+    &quot;filename&quot;: &quot;tests/atl/prism_games/Security/dns_amplification.c&quot;,
+    &quot;analysis_type&quot;: &quot;atl-resilience&quot;,
+    &quot;property&quot;: &quot;&lt;atk&gt;F{bw &gt; BQUL}&quot;,
+    &quot;precondition&quot;: &quot;true&quot;,
+    &quot;result&quot;: &quot;UKNOWN&quot;,
+    &quot;domain&quot;: &quot;polyhedra&quot;,
+    &quot;joinbwd&quot;: 7,
+    &quot;time&quot;: &quot;5.12420800001&quot;
+  },
+  &quot;tree&quot;: {
+    &quot;Node&quot;: {
+      &quot;constraint&quot;: &quot;$29{bw}-$5{BQUL} &gt;= 1&quot;,
+      &quot;left&quot;: {
+        &quot;Node&quot;: {
+          &quot;constraint&quot;: &quot;$29{bw} &gt;= 2147483648&quot;,
+          &quot;left&quot;: { &quot;Leaf&quot;: &quot;0.&quot; },
+          &quot;right&quot;: {
+            &quot;Node&quot;: {
+              &quot;constraint&quot;: &quot;$29{bw} &gt;= 2&quot;,
+              &quot;left&quot;: { &quot;Leaf&quot;: &quot;0.&quot; },
+              &quot;right&quot;: {
+                &quot;Node&quot;: {
+                  &quot;constraint&quot;: &quot;$29{bw} &gt;= -2147483647&quot;,
+                  &quot;left&quot;: { &quot;Leaf&quot;: &quot;0.&quot; },
+                  &quot;right&quot;: { &quot;Leaf&quot;: &quot;0.&quot; }
+                }
+              }
+            }
+          }
+        }
+      },
+      &quot;right&quot;: {
+        &quot;Node&quot;: {
+          &quot;constraint&quot;: &quot;$29{bw} &gt;= 2147483648&quot;,
+          &quot;left&quot;: { &quot;Leaf&quot;: &quot;1&quot; },
+          &quot;right&quot;: {
+            &quot;Node&quot;: {
+              &quot;constraint&quot;: &quot;$29{bw} &gt;= 2&quot;,
+              &quot;left&quot;: { &quot;Leaf&quot;: &quot;bottom&quot; },
+              &quot;right&quot;: {
+                &quot;Node&quot;: {
+                  &quot;constraint&quot;: &quot;$29{bw} &gt;= -2147483647&quot;,
+                  &quot;left&quot;: { &quot;Leaf&quot;: &quot;bottom&quot; },
+                  &quot;right&quot;: { &quot;Leaf&quot;: &quot;bottom&quot; }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  &quot;vulnerability&quot;: &quot;Not analyzed&quot;
+}</code></pre>
+</div>
+<script>hljs.highlightAll();</script>
+</body></html>

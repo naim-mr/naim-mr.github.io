@@ -94,6 +94,13 @@ td.prop{color:var(--text); font-weight:500}
 .badge.unknown{color:var(--unknown); background:var(--unknown-bg)}
 .badge.fail,.badge.timeout{color:var(--fail); background:var(--fail-bg)}
 .badge.info{color:var(--accent); background:rgba(91,141,239,.16)}
+/* one colour per ctl lifting variant (TRUE cells) */
+.badge.v-base{color:#3fb950; background:rgba(63,185,80,.16)}
+.badge.v-resilience{color:#5b8def; background:rgba(91,141,239,.16)}
+.badge.v-resilience_reachability{color:#1ab2a8; background:rgba(26,178,168,.16)}
+.badge.v-robust_reachability{color:#f0883e; background:rgba(240,136,62,.18)}
+.chip.v-base{color:#3fb950} .chip.v-resilience{color:#5b8def}
+.chip.v-resilience_reachability{color:#1ab2a8} .chip.v-robust_reachability{color:#f0883e}
 .tag{font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--muted);
   background:var(--surface2); padding:2px 8px; border-radius:6px}
 .empty{color:var(--muted); text-align:center; padding:40px}
@@ -171,16 +178,87 @@ pre.block code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
 </div></header>
 <div class="wrap">
 <div class="meta">
-  <div class="item"><span class="k">Group</span><span class="v">atl</span></div>
+  <div class="item"><span class="k">Group</span><span class="v">atl/</span></div>
   <div class="item"><span class="k">Property</span><span class="v">&lt;me&gt;F{win == 0}</span></div>
-  <div class="item"><span class="k">Domain</span><span class="v">polyhedra</span></div>
-  <div class="item"><span class="k">Result</span><span class="v"><span class="badge timeout">TO</span></span></div>
-  <div class="item"><span class="k">Time</span><span class="v">60.084 s</span></div>
-  <div class="item"><span class="k">Wall time</span><span class="v">60.084 s</span></div>
+  <div class="item"><span class="k">Domain</span><span class="v">boxes</span></div>
+  <div class="item"><span class="k">Result</span><span class="v"><span class="badge unknown">UNKNOWN</span></span></div>
+  <div class="item"><span class="k">Time</span><span class="v">1.566 s</span></div>
+  <div class="item"><span class="k">Wall time</span><span class="v">1.686 s</span></div>
 </div>
 <h3 class="sec">Analyzer config</h3>
-<div class="card"><table><tbody><tr><td colspan="2">(no JSON produced)</td></tr></tbody></table></div>
-
+<div class="card"><table><tbody><tr><td class="mono" style="color:var(--muted)">filename</td><td class="mono">tests/atl/classic/nim.c</td></tr><tr><td class="mono" style="color:var(--muted)">analysis_type</td><td class="mono">atl-resilience</td></tr><tr><td class="mono" style="color:var(--muted)">property</td><td class="mono">&lt;me&gt;F{win == 0}</td></tr><tr><td class="mono" style="color:var(--muted)">precondition</td><td class="mono">true</td></tr><tr><td class="mono" style="color:var(--muted)">result</td><td class="mono">UKNOWN</td></tr><tr><td class="mono" style="color:var(--muted)">domain</td><td class="mono">boxes</td></tr><tr><td class="mono" style="color:var(--muted)">joinbwd</td><td class="mono">7</td></tr><tr><td class="mono" style="color:var(--muted)">time</td><td class="mono">1.56577300001</td></tr></tbody></table></div>
+<h3 class="sec">Decision tree &amp; preconditions</h3>
+<div class="treechips">
+  <span class="tag">3 leaves</span>
+  <span class="tag true">1 defined region(s)</span>
+  <span class="tag">2 distinct guard(s)</span>
+</div>
+<div class="card treesvg"><svg width="207pt" height="188pt"
+ viewBox="0.00 0.00 207.00 188.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 184)">
+<title>T</title>
+<!-- n0 -->
+<g id="node1" class="node">
+<title>n0</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="80.5" cy="-162" rx="58.86" ry="18"/>
+<text text-anchor="middle" x="80.5" y="-159.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$9{win} &gt;= 1</text>
+</g>
+<!-- n1 -->
+<g id="node2" class="node">
+<title>n1</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M45,-108C45,-108 12,-108 12,-108 6,-108 0,-102 0,-96 0,-96 0,-84 0,-84 0,-78 6,-72 12,-72 12,-72 45,-72 45,-72 51,-72 57,-78 57,-84 57,-84 57,-96 57,-96 57,-102 51,-108 45,-108"/>
+<text text-anchor="middle" x="28.5" y="-87.2" font-family="monospace" font-size="11.00" fill="#1b2430">bottom</text>
+</g>
+<!-- n0&#45;&gt;n1 -->
+<g id="edge3" class="edge">
+<title>n0&#45;&gt;n1</title>
+<path fill="none" stroke="#aaaaaa" d="M67.91,-144.05C61.74,-135.75 54.19,-125.58 47.35,-116.38"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="50.11,-114.22 41.33,-108.28 44.49,-118.39 50.11,-114.22"/>
+</g>
+<!-- n2 -->
+<g id="node3" class="node">
+<title>n2</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="133.5" cy="-90" rx="58.86" ry="18"/>
+<text text-anchor="middle" x="133.5" y="-87.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$9{win} &gt;= 0</text>
+</g>
+<!-- n0&#45;&gt;n2 -->
+<g id="edge4" class="edge">
+<title>n0&#45;&gt;n2</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M93.06,-144.41C99.43,-135.99 107.31,-125.58 114.42,-116.2"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="117.42,-118.04 120.66,-107.96 111.83,-113.82 117.42,-118.04"/>
+</g>
+<!-- n3 -->
+<g id="node4" class="node">
+<title>n3</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M111.5,-36C111.5,-36 81.5,-36 81.5,-36 75.5,-36 69.5,-30 69.5,-24 69.5,-24 69.5,-12 69.5,-12 69.5,-6 75.5,0 81.5,0 81.5,0 111.5,0 111.5,0 117.5,0 123.5,-6 123.5,-12 123.5,-12 123.5,-24 123.5,-24 123.5,-30 117.5,-36 111.5,-36"/>
+<text text-anchor="middle" x="96.5" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">0.</text>
+</g>
+<!-- n2&#45;&gt;n3 -->
+<g id="edge1" class="edge">
+<title>n2&#45;&gt;n3</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M124.54,-72.05C120.29,-64.01 115.11,-54.2 110.36,-45.23"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="113.4,-43.48 105.63,-36.28 107.21,-46.75 113.4,-43.48"/>
+</g>
+<!-- n4 -->
+<g id="node5" class="node">
+<title>n4</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M187,-36C187,-36 154,-36 154,-36 148,-36 142,-30 142,-24 142,-24 142,-12 142,-12 142,-6 148,0 154,0 154,0 187,0 187,0 193,0 199,-6 199,-12 199,-12 199,-24 199,-24 199,-30 193,-36 187,-36"/>
+<text text-anchor="middle" x="170.5" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">bottom</text>
+</g>
+<!-- n2&#45;&gt;n4 -->
+<g id="edge2" class="edge">
+<title>n2&#45;&gt;n4</title>
+<path fill="none" stroke="#aaaaaa" d="M142.46,-72.05C146.71,-64.01 151.89,-54.2 156.64,-45.23"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="159.79,-46.75 161.37,-36.28 153.6,-43.48 159.79,-46.75"/>
+</g>
+</g>
+</svg>
+</div>
+<h3 class="sec">Defined regions (sufficient preconditions)</h3>
+<div class="card"><table><thead><tr><th>#</th><th>Region (conjunction of guards)</th>
+<th>Ranking function</th><th>Status</th></tr></thead><tbody><tr><td class="num">1</td><td class="prop">&not;($9{win} &gt;= 1) &and; $9{win} &gt;= 0</td><td class="mono">0.</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">2</td><td class="prop">$9{win} &gt;= 1</td><td class="mono">bottom</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">3</td><td class="prop">&not;($9{win} &gt;= 1) &and; &not;($9{win} &gt;= 0)</td><td class="mono">bottom</td><td class="c"><span class="badge fail">undefined</span></td></tr></tbody></table></div>
+<h3 class="sec">Distinct guards</h3>
+<div class="card" style="padding:10px 20px"><ul class="guards"><li class="mono">$9{win} &gt;= 0</li><li class="mono">$9{win} &gt;= 1</li></ul></div>
 
 <h3 class="sec">Source</h3>
 <pre class="block"><code class="language-c">// =====================================================================
@@ -189,13 +267,16 @@ pre.block code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
 // Background : turn-based zero-sum game, standard textbook ATL/synthesis
 //              example. P-positions are the multiples of 4 (last to move
 //              wins). With 7 tokens the first mover (&quot;me&quot;) has a winning
-//              strategy: take 3, leaving 4, then mirror the opponent.
+//              strategy: take 3, leaving 4, then always restore a multiple
+//              of 4 by taking 4 - (opponent&#x27;s last move).
 // Original model: see originals/nim.txt
 // ---------------------------------------------------------------------
 //   agent &quot;me&quot;  = input(&quot;me&quot;)   -&gt; coalition (angelic), moves first
 //   agent &quot;opp&quot; = input(&quot;opp&quot;)  -&gt; adversary
 //
-// First mover has a winning strategy (TRUE):
+// First mover has a winning strategy (TRUE in the game; the analyzer may
+// report UNKNOWN -- proving it needs relational precision the abstract
+// domain lacks):
 //   -atl &quot;&lt;me&gt;F{win == 0}&quot;
 // =====================================================================
 
@@ -206,25 +287,2067 @@ int main() {
     while (tokens &gt; 0) {
         int take;
         if (turn == 0) {
-            take = input(&quot;me&quot;);    // angelic
+            take = input(&quot;me&quot;);    // angelic: me chooses how much to take
         } else {
             take = input(&quot;opp&quot;);   // adversary
         }
-        if (take &lt; 1) { take = 1; }
-        if (take &gt; 3) { take = 3; }
+        if (take &lt; 1) { take = 1; }       // a legal move removes 1..3 tokens,
+        if (take &gt; 3) { take = 3; }       // never more than what remains
         if (take &gt; tokens) { take = tokens; }
         tokens = tokens - take;
         if (tokens == 0) {
             win = turn;            // whoever took the last token wins
         }
-        turn = 1 - turn;
+        turn = 1 - turn;           // hand over to the other player
     }
-    while (1) {}                // observe the winner
+
 }
 </code></pre>
 <h3 class="sec">Analysis log</h3>
-<pre class="block"><code>TIMEOUT
-</code></pre>
+<pre class="block"><code>
+Abstract typed Syntax:
+{
+  {46}
+}
+int main()@
+{
+  {6} int tokens = 7;
+  {8} int turn = 0;
+  {10} int win = - 1;
+  {11} while {12} (tokens &gt; 0)
+  {
+    {14} int take;
+    {15} if (turn == 0)
+    {
+      {16} take = input(&#x27;me&#x27;);
+      {17}
+    }
+    else
+    {
+      {18} take = input(&#x27;opp&#x27;);
+      {19}
+    }
+    {20} if (take &lt; 1)
+    {
+      {21} take = 1;
+      {22}
+    }
+    else
+    {
+      {23}
+    }
+    {24} if (take &gt; 3)
+    {
+      {25} take = 3;
+      {26}
+    }
+    else
+    {
+      {27}
+    }
+    {28} if (take &gt; tokens)
+    {
+      {29} take = tokens;
+      {30}
+    }
+    else
+    {
+      {31}
+    }
+    {32} tokens = tokens - take;
+    {33} if (tokens == 0)
+    {
+      {34} win = turn;
+      {35}
+    }
+    else
+    {
+      {36}
+    }
+    {37} turn = 1 - turn;
+    {38} delete take;
+    {39}
+  }
+  {40} break#12:;
+  {41} return#3:;
+  {42} delete tokens;
+  {43} delete turn;
+  {44} delete win;
+  {45}
+}
+
+Abstract atl typed Syntax:
+ {
+  {46}
+}
+int main()@
+{
+  {6} int tokens = 7;
+  {8} int turn = 0;
+  {10} int win = - 1;
+  {11} while {12} (tokens &gt; 0)
+  {
+    {47} loop:;
+    {14} int take;
+    {15} if (turn == 0)
+    {
+      {16} take = input(&#x27;me&#x27;);
+      {17}
+    }
+    else
+    {
+      {18} take = input(&#x27;opp&#x27;);
+      {19}
+    }
+    {20} if (take &lt; 1)
+    {
+      {21} take = 1;
+      {22}
+    }
+    else
+    {
+      {23}
+    }
+    {24} if (take &gt; 3)
+    {
+      {25} take = 3;
+      {26}
+    }
+    else
+    {
+      {27}
+    }
+    {28} if (take &gt; tokens)
+    {
+      {29} take = tokens;
+      {30}
+    }
+    else
+    {
+      {31}
+    }
+    {32} tokens = tokens - take;
+    {33} if (tokens == 0)
+    {
+      {34} win = turn;
+      {35}
+    }
+    else
+    {
+      {36}
+    }
+    {37} turn = 1 - turn;
+    {38} delete take;
+    {39}
+  }
+  {40} break#12:;
+  {41} return#3:;
+  {42} delete tokens;
+  {43} delete turn;
+  {44} delete win;
+  {-1} exit:;
+  {45}
+}
+debug cp 
+
+Forward Summary :
+
+Forward Analysis numerical:
+[-1:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0
+[6:]: top
+[8:]: $5{tokens} == 7
+[ 10:]: $7{turn} == 0 &amp;&amp; $5{tokens} == 7
+[11:]: $9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7
+[12:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -7
+[14:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 1
+[15:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 1
+[16:]: $9{win} &gt;= -1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 1
+[17:]: $9{win} &gt;= -1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= -2147483648
+[18:]: $9{win} &gt;= -1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 1
+[19:]: $9{win} &gt;= -1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= -2147483648
+[20:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= -2147483648
+[21:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648
+[22:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 1 &amp;&amp; $13{take} == 1
+[23:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 1
+[24:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 1
+[25:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4
+[26:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 1 &amp;&amp; $13{take} == 3
+[27:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1
+[28:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1
+[29:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -2 &amp;&amp; $5{tokens} &gt;= 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2
+[30:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -2 &amp;&amp; $5{tokens} &gt;= 1 &amp;&amp; -$13{take} &gt;= -2 &amp;&amp; $13{take} &gt;= 1
+[31:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1
+[32:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1
+[33:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1
+[34:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; $5{tokens} == 0 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1
+[35:]: -$9{win} &gt;= -1 &amp;&amp; $9{win} &gt;= 0 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; $5{tokens} == 0 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1
+[36:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1
+[37:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1
+[38:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1
+[39:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1
+[40:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0
+[41:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0
+[42:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0
+[43:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0
+[44:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0
+[45:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0
+[46:]: top
+[47:]: $9{win} &gt;= -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 1
+in if is tainted ?turn == 0no! 
+in if is tainted ?take &lt; 1yes! 
+in if is tainted ?take &gt; 3yes! 
+in if is tainted ?take &gt; tokensyes! 
+in if is tainted ?tokens == 0yes! 
+in if is tainted ?tokens &gt; 0no! 
+
+Forward Taint Summary :
+
+Forward Analysis numerical:
+[-1:]: 
+[6:]: 
+[8:]: 
+[ 10:]: 
+[11:]: 
+[12:]: 
+[14:]: 
+[15:]: 
+[16:]: 
+[17:]: take -- 
+[18:]: 
+[19:]: take -- 
+[20:]: take -- 
+[21:]: take -- 
+[22:]: 
+[23:]: take -- 
+[24:]: take -- 
+[25:]: take -- 
+[26:]: 
+[27:]: take -- 
+[28:]: take -- 
+[29:]: take -- 
+[30:]: 
+[31:]: take -- 
+[32:]: take -- 
+[33:]: take -- tokens -- 
+[34:]: take -- tokens -- 
+[35:]: take -- tokens -- 
+[36:]: take -- tokens -- 
+[37:]: take -- win -- tokens -- 
+[38:]: take -- win -- tokens -- 
+[39:]: take -- win -- tokens -- 
+[40:]: 
+[41:]: 
+[42:]: 
+[43:]: 
+[44:]: 
+[45:]: 
+[47:]: 
+Property: win == 0
+
+[-1:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[6:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[8:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[ 10:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[11:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[12:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[14:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[15:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[16:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[17:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[18:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[19:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[20:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[21:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[22:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[23:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[24:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[25:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[26:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[27:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[28:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[29:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[30:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[31:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[32:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[33:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[34:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[35:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[36:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[37:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[38:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[39:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[40:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[41:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[42:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[43:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[44:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[45:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[47:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+debug cp 
+mein if is tainted ?turn == 0no! 
+in if is tainted ?take &lt; 1yes! 
+in if is tainted ?take &gt; 3yes! 
+in if is tainted ?take &gt; tokensyes! 
+in if is tainted ?tokens == 0yes! 
+in if is tainted ?tokens &gt; 0no! 
+
+Forward Taint Summary :
+
+Forward Analysis numerical:
+[-1:]: 
+[6:]: 
+[8:]: 
+[ 10:]: 
+[11:]: 
+[12:]: 
+[14:]: 
+[15:]: 
+[16:]: 
+[17:]: 
+[18:]: 
+[19:]: take -- 
+[20:]: take -- 
+[21:]: take -- 
+[22:]: 
+[23:]: take -- 
+[24:]: take -- 
+[25:]: take -- 
+[26:]: 
+[27:]: take -- 
+[28:]: take -- 
+[29:]: take -- 
+[30:]: 
+[31:]: take -- 
+[32:]: take -- 
+[33:]: take -- tokens -- 
+[34:]: take -- tokens -- 
+[35:]: take -- tokens -- 
+[36:]: take -- tokens -- 
+[37:]: take -- win -- tokens -- 
+[38:]: take -- win -- tokens -- 
+[39:]: take -- win -- tokens -- 
+[40:]: 
+[41:]: 
+[42:]: 
+[43:]: 
+[44:]: 
+[45:]: 
+[47:]: 
+
+ debug assign turn= 1 - turn
+check if is controlled 1 - turn ? true 
+ 
+ debug assign win= turn
+check if is controlled turn ? true 
+ check if is controlled tokens == 0 ? false 
+ 
+ debug assign tokens= tokens - take
+check if is controlled tokens - take ? false 
+ 
+ debug assign take= tokens
+check if is controlled tokens ? true 
+ check if is controlled take &gt; tokens ? false 
+ 
+ debug assign take= 3
+check if is controlled 3 ? true 
+ check if is controlled take &gt; 3 ? false 
+ 
+ debug assign take= 1
+check if is controlled 1 ? true 
+ check if is controlled take &lt; 1 ? false 
+ 
+ debug assign take= input(&#x27;me&#x27;)
+check if is controlled input(&#x27;me&#x27;) ? true 
+ 
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+ debug assign take= input(&#x27;opp&#x27;)
+check if is controlled input(&#x27;opp&#x27;) ? false 
+ check if is controlled turn == 0 ? true 
+ check if is controlled tokens &gt; 0 ? true 
+ 
+ debug assign turn= 1 - turn
+check if is controlled 1 - turn ? true 
+ 
+ debug assign win= turn
+check if is controlled turn ? true 
+ check if is controlled tokens == 0 ? false 
+ 
+ debug assign tokens= tokens - take
+check if is controlled tokens - take ? false 
+ 
+ debug assign take= tokens
+check if is controlled tokens ? true 
+ check if is controlled take &gt; tokens ? false 
+ 
+ debug assign take= 3
+check if is controlled 3 ? true 
+ check if is controlled take &gt; 3 ? false 
+ 
+ debug assign take= 1
+check if is controlled 1 ? true 
+ check if is controlled take &lt; 1 ? false 
+ 
+ debug assign take= input(&#x27;me&#x27;)
+check if is controlled input(&#x27;me&#x27;) ? true 
+ 
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+raise top 
+ 
+
+ debug assign take= input(&#x27;opp&#x27;)
+check if is controlled input(&#x27;opp&#x27;) ? false 
+ check if is controlled turn == 0 ? true 
+ check if is controlled tokens &gt; 0 ? true 
+ check if is controlled - 1 ? true 
+ check if is controlled 0 ? true 
+ check if is controlled 7 ? true 
+ Property: &lt;me &gt;F{win == 0}
+
+[-1:]:
+$9{win} == -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? bottom
+$9{win} == 0 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? 0.
+$9{win} &gt;= 1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? bottom
+
+[6:]:
+-$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+[8:]:
+-$9{win} &gt;= 1 &amp;&amp; $5{tokens} == 7 ? bottom
+$9{win} == 0 &amp;&amp; $5{tokens} == 7 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $5{tokens} == 7 ? bottom
+
+[ 10:]:
+-$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 ? bottom
+
+[11:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 ? bottom
+
+[12:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= 0 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= 0 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 4 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= 0 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= 0 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 4 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= 0 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= 0 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -7 &amp;&amp; $5{tokens} &gt;= 4 ? bottom
+
+[14:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 ? bottom
+
+[15:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 ? bottom
+
+[16:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 ? bottom
+
+[17:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+
+[18:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 ? bottom
+
+[19:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+0 == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+
+[20:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+
+[21:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= 0 &amp;&amp; $13{take} &gt;= -2147483648 ? bottom
+
+[22:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; $13{take} == 1 ? bottom
+
+[23:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+
+[24:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+
+[25:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -2147483647 &amp;&amp; $13{take} &gt;= 4 ? bottom
+
+[26:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; $13{take} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; $13{take} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; $13{take} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; $13{take} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; $13{take} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; $13{take} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; $13{take} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; $13{take} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; $13{take} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; $13{take} == 3 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; $13{take} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; $13{take} == 3 ? bottom
+
+[27:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+
+[28:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; $13{take} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+
+[29:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 2 ? bottom
+
+[30:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -2 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -2 &amp;&amp; $13{take} &gt;= 1 ? bottom
+
+[31:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+
+[32:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+
+[33:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= 1 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 0 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 2
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= 1 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 0 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= 1 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 0 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= 1 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 0 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= 1 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 0 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 2
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= 1 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 0 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+
+[34:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 0 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 1
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 0 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 0 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 0 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 0 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 1
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 0 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+
+[35:]:
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 0 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 0 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 0 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 0 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+
+[36:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+
+[37:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+
+[38:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+
+[39:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= 0 &amp;&amp; $5{tokens} &gt;= -2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; -$5{tokens} &gt;= -6 &amp;&amp; $5{tokens} &gt;= 4 &amp;&amp; -$13{take} &gt;= -3 &amp;&amp; $13{take} &gt;= 1 ? bottom
+
+[40:]:
+$9{win} == -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? bottom
+$9{win} == 0 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? 0.
+$9{win} &gt;= 1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? bottom
+
+[41:]:
+$9{win} == -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? bottom
+$9{win} == 0 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? 0.
+$9{win} &gt;= 1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? bottom
+
+[42:]:
+$9{win} == -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? bottom
+$9{win} == 0 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? 0.
+$9{win} &gt;= 1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? bottom
+
+[43:]:
+$9{win} == -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? bottom
+$9{win} == 0 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? 0.
+$9{win} &gt;= 1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? bottom
+
+[44:]:
+$9{win} == -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? bottom
+$9{win} == 0 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? 0.
+$9{win} &gt;= 1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? bottom
+
+[45:]:
+$9{win} == -1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? bottom
+$9{win} == 0 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? 0.
+$9{win} &gt;= 1 &amp;&amp; -$7{turn} &gt;= -1 &amp;&amp; $7{turn} &gt;= 0 &amp;&amp; -$5{tokens} &gt;= 0 ? bottom
+
+[47:]:
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 ? bottom
+$9{win} == -1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 ? bottom
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 ? 0.
+$9{win} == 0 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 ? 0.
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 5 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 6 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 0 &amp;&amp; $5{tokens} == 7 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 1 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 2 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 3 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 4 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 5 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 6 ? bottom
+$9{win} &gt;= 1 &amp;&amp; $7{turn} == 1 &amp;&amp; $5{tokens} == 7 ? bottom
+
+
+ Resulting tree:  
+ -$9{win} &gt;= 1 ? bottom
+$9{win} == 0 ? 0.
+$9{win} &gt;= 1 ? bottom
+
+Time: 1.565774
+Final Analysis Result: UNKNOWN
+{
+  &quot;Config&quot;: {
+    &quot;filename&quot;: &quot;tests/atl/classic/nim.c&quot;,
+    &quot;analysis_type&quot;: &quot;atl-resilience&quot;,
+    &quot;property&quot;: &quot;&lt;me&gt;F{win == 0}&quot;,
+    &quot;precondition&quot;: &quot;true&quot;,
+    &quot;result&quot;: &quot;UKNOWN&quot;,
+    &quot;domain&quot;: &quot;boxes&quot;,
+    &quot;joinbwd&quot;: 7,
+    &quot;time&quot;: &quot;1.56577300001&quot;
+  },
+  &quot;tree&quot;: {
+    &quot;Node&quot;: {
+      &quot;constraint&quot;: &quot;$9{win} &gt;= 1&quot;,
+      &quot;left&quot;: { &quot;Leaf&quot;: &quot;bottom&quot; },
+      &quot;right&quot;: {
+        &quot;Node&quot;: {
+          &quot;constraint&quot;: &quot;$9{win} &gt;= 0&quot;,
+          &quot;left&quot;: { &quot;Leaf&quot;: &quot;0.&quot; },
+          &quot;right&quot;: { &quot;Leaf&quot;: &quot;bottom&quot; }
+        }
+      }
+    }
+  },
+  &quot;vulnerability&quot;: &quot;Not analyzed&quot;
+}</code></pre>
 </div>
 <script>hljs.highlightAll();</script>
 </body></html>

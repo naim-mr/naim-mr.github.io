@@ -94,6 +94,13 @@ td.prop{color:var(--text); font-weight:500}
 .badge.unknown{color:var(--unknown); background:var(--unknown-bg)}
 .badge.fail,.badge.timeout{color:var(--fail); background:var(--fail-bg)}
 .badge.info{color:var(--accent); background:rgba(91,141,239,.16)}
+/* one colour per ctl lifting variant (TRUE cells) */
+.badge.v-base{color:#3fb950; background:rgba(63,185,80,.16)}
+.badge.v-resilience{color:#5b8def; background:rgba(91,141,239,.16)}
+.badge.v-resilience_reachability{color:#1ab2a8; background:rgba(26,178,168,.16)}
+.badge.v-robust_reachability{color:#f0883e; background:rgba(240,136,62,.18)}
+.chip.v-base{color:#3fb950} .chip.v-resilience{color:#5b8def}
+.chip.v-resilience_reachability{color:#1ab2a8} .chip.v-robust_reachability{color:#f0883e}
 .tag{font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--muted);
   background:var(--surface2); padding:2px 8px; border-radius:6px}
 .empty{color:var(--muted); text-align:center; padding:40px}
@@ -171,15 +178,15 @@ pre.block code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
 </div></header>
 <div class="wrap">
 <div class="meta">
-  <div class="item"><span class="k">Group</span><span class="v">atl</span></div>
+  <div class="item"><span class="k">Group</span><span class="v">atl/</span></div>
   <div class="item"><span class="k">Property</span><span class="v">&lt;p1&gt;F{gain1 == 1}</span></div>
   <div class="item"><span class="k">Domain</span><span class="v">polyhedra</span></div>
   <div class="item"><span class="k">Result</span><span class="v"><span class="badge unknown">UNKNOWN</span></span></div>
-  <div class="item"><span class="k">Time</span><span class="v">0.113 s</span></div>
-  <div class="item"><span class="k">Wall time</span><span class="v">0.208 s</span></div>
+  <div class="item"><span class="k">Time</span><span class="v">0.333 s</span></div>
+  <div class="item"><span class="k">Wall time</span><span class="v">0.458 s</span></div>
 </div>
 <h3 class="sec">Analyzer config</h3>
-<div class="card"><table><tbody><tr><td class="mono" style="color:var(--muted)">filename</td><td class="mono">tests/atl/classic/matching_pennies.c</td></tr><tr><td class="mono" style="color:var(--muted)">analysis_type</td><td class="mono">atl-resilience</td></tr><tr><td class="mono" style="color:var(--muted)">property</td><td class="mono">&lt;p1&gt;F{gain1 == 1}</td></tr><tr><td class="mono" style="color:var(--muted)">precondition</td><td class="mono">true</td></tr><tr><td class="mono" style="color:var(--muted)">result</td><td class="mono">UKNOWN</td></tr><tr><td class="mono" style="color:var(--muted)">domain</td><td class="mono">polyhedra</td></tr><tr><td class="mono" style="color:var(--muted)">joinbwd</td><td class="mono">2</td></tr><tr><td class="mono" style="color:var(--muted)">time</td><td class="mono">0.112653000001</td></tr></tbody></table></div>
+<div class="card"><table><tbody><tr><td class="mono" style="color:var(--muted)">filename</td><td class="mono">tests/atl/classic/matching_pennies.c</td></tr><tr><td class="mono" style="color:var(--muted)">analysis_type</td><td class="mono">atl-resilience</td></tr><tr><td class="mono" style="color:var(--muted)">property</td><td class="mono">&lt;p1&gt;F{gain1 == 1}</td></tr><tr><td class="mono" style="color:var(--muted)">precondition</td><td class="mono">true</td></tr><tr><td class="mono" style="color:var(--muted)">result</td><td class="mono">UKNOWN</td></tr><tr><td class="mono" style="color:var(--muted)">domain</td><td class="mono">polyhedra</td></tr><tr><td class="mono" style="color:var(--muted)">joinbwd</td><td class="mono">7</td></tr><tr><td class="mono" style="color:var(--muted)">time</td><td class="mono">0.333401000001</td></tr></tbody></table></div>
 <h3 class="sec">Decision tree &amp; preconditions</h3>
 <div class="treechips">
   <span class="tag">3 leaves</span>
@@ -264,7 +271,6 @@ pre.block code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
 //    person 1 pays person 2 a dollar; if they are the SAME, person 2 pays
 //    person 1 a dollar.&quot;  -&gt; person 1 wins on a match, person 2 on a mismatch.
 // We expose BOTH payoffs (gain1, gain2 = +/-1), as in the payoff matrix.
-// It is NOT named in the AHK paper; used here as the minimal witness that
 // ATL differs from CTL (no single agent can force its preferred outcome).
 // Game structure: see matching_pennies.cgs.txt
 // ---------------------------------------------------------------------
@@ -411,6 +417,86 @@ int main()@
   {-1} exit:;
   {39}
 }
+debug cp 
+
+Forward Summary :
+
+Forward Analysis numerical:
+[-1:]: bottom
+[6:]: top
+[8:]: $5{a} &gt;= -2147483648 &amp;&amp; -$5{a} &gt;= -2147483647
+[9:]: $5{a} &gt;= -2147483648 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$5{a} &gt;= -2147483647
+[ 10:]: $5{a} &gt;= 1 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$5{a} &gt;= -2147483647
+[11:]: $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; $5{a} == 1
+[12:]: $5{a} &gt;= -2147483648 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$5{a} &gt;= 0
+[13:]: $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; $5{a} == 0
+[14:]: $5{a} &gt;= 0 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$5{a} &gt;= -1
+[15:]: $5{a} &gt;= 0 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$5{a} &gt;= -1
+[16:]: $5{a} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $7{b} == 1
+[17:]: $5{a} &gt;= 0 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1
+[18:]: $5{a} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $7{b} == 0
+[20:]: $5{a} &gt;= 0 &amp;&amp; $7{b} &gt;= 0 &amp;&amp; -$7{b} &gt;= -1 &amp;&amp; -$5{a} &gt;= -1
+[22:]: $5{a} &gt;= 0 &amp;&amp; $7{b} &gt;= 0 &amp;&amp; -$7{b} &gt;= -1 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $19{gain1} == 0
+[23:]: $5{a} &gt;= 0 &amp;&amp; $7{b} &gt;= 0 &amp;&amp; -$7{b} &gt;= -1 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $19{gain1} == 0 &amp;&amp; $21{gain2} == 0
+[24:]: $5{a} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $19{gain1} == 0 &amp;&amp; $21{gain2} == 0 &amp;&amp; -$5{a}+$7{b} == 0
+[25:]: $5{a} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $19{gain1} == 1 &amp;&amp; $21{gain2} == 0 &amp;&amp; -$5{a}+$7{b} == 0
+[26:]: $5{a} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $19{gain1} == 1 &amp;&amp; $21{gain2} == -1 &amp;&amp; -$5{a}+$7{b} == 0
+[27:]: $5{a} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $19{gain1} == 0 &amp;&amp; $21{gain2} == 0 &amp;&amp; $5{a}+$7{b} == 1
+[28:]: $5{a} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $19{gain1} == -1 &amp;&amp; $21{gain2} == 0 &amp;&amp; $5{a}+$7{b} == 1
+[29:]: $5{a} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $19{gain1} == -1 &amp;&amp; $21{gain2} == 1 &amp;&amp; $5{a}+$7{b} == 1
+[30:]: $19{gain1}+2$5{a}+2$7{b} &gt;= 1 &amp;&amp; $19{gain1}-2$5{a}-2$7{b} &gt;= -3 &amp;&amp; -$19{gain1}+2$5{a}-2$7{b} &gt;= -1 &amp;&amp; -$19{gain1}-2$5{a}+2$7{b} &gt;= -1 &amp;&amp; $19{gain1}+$21{gain2} == 0
+[31:]: $19{gain1}+2$5{a}+2$7{b} &gt;= 1 &amp;&amp; $19{gain1}-2$5{a}-2$7{b} &gt;= -3 &amp;&amp; -$19{gain1}+2$5{a}-2$7{b} &gt;= -1 &amp;&amp; -$19{gain1}-2$5{a}+2$7{b} &gt;= -1 &amp;&amp; $19{gain1}+$21{gain2} == 0
+[32:]: $19{gain1}+2$5{a}+2$7{b} &gt;= 1 &amp;&amp; $19{gain1}-2$5{a}-2$7{b} &gt;= -3 &amp;&amp; -$19{gain1}+2$5{a}-2$7{b} &gt;= -1 &amp;&amp; -$19{gain1}-2$5{a}+2$7{b} &gt;= -1 &amp;&amp; $19{gain1}+$21{gain2} == 0
+[33:]: bottom
+[34:]: bottom
+[35:]: bottom
+[36:]: bottom
+[37:]: bottom
+[38:]: bottom
+[39:]: bottom
+[40:]: top
+[41:]: $19{gain1}+2$5{a}+2$7{b} &gt;= 1 &amp;&amp; $19{gain1}-2$5{a}-2$7{b} &gt;= -3 &amp;&amp; -$19{gain1}+2$5{a}-2$7{b} &gt;= -1 &amp;&amp; -$19{gain1}-2$5{a}+2$7{b} &gt;= -1 &amp;&amp; $19{gain1}+$21{gain2} == 0
+in if is tainted ?a &gt; 0yes! 
+in if is tainted ?b &gt; 0yes! 
+in if is tainted ?a == byes! 
+in if is tainted ?1 != 0no! 
+
+Forward Taint Summary :
+
+Forward Analysis numerical:
+[-1:]: gain2 -- gain1 -- b -- a -- 
+[6:]: 
+[8:]: a -- 
+[9:]: b -- a -- 
+[ 10:]: b -- a -- 
+[11:]: b -- 
+[12:]: b -- a -- 
+[13:]: b -- 
+[14:]: b -- a -- 
+[15:]: b -- a -- 
+[16:]: a -- 
+[17:]: b -- a -- 
+[18:]: a -- 
+[20:]: b -- a -- 
+[22:]: b -- a -- 
+[23:]: b -- a -- 
+[24:]: b -- a -- 
+[25:]: b -- a -- 
+[26:]: b -- a -- 
+[27:]: b -- a -- 
+[28:]: b -- a -- 
+[29:]: b -- a -- 
+[30:]: gain2 -- gain1 -- b -- a -- 
+[31:]: gain2 -- gain1 -- b -- a -- 
+[32:]: gain2 -- gain1 -- b -- a -- 
+[33:]: gain2 -- gain1 -- b -- a -- 
+[34:]: gain2 -- gain1 -- b -- a -- 
+[35:]: gain2 -- gain1 -- b -- a -- 
+[36:]: gain2 -- gain1 -- b -- a -- 
+[37:]: gain2 -- gain1 -- b -- a -- 
+[38:]: gain2 -- gain1 -- b -- a -- 
+[39:]: gain2 -- gain1 -- b -- a -- 
+[41:]: gain2 -- gain1 -- b -- a -- 
 Property: gain1 == 1
 
 [-1:]:
@@ -622,27 +708,40 @@ Forward Analysis numerical:
 [41:]: gain2 -- gain1 -- b -- 
 check if is controlled 1 != 0 ? true 
  check if is controlled 1 != 0 ? true 
- check if is controlled - 1 ? true 
- check if is controlled 1 ? true 
- check if is controlled 1 ? true 
- check if is controlled - 1 ? true 
+ 
+ debug assign gain2= - 1
+check if is controlled - 1 ? true 
+ 
+ debug assign gain1= 1
+check if is controlled 1 ? true 
+ 
+ debug assign gain2= 1
+check if is controlled 1 ? true 
+ 
+ debug assign gain1= - 1
+check if is controlled - 1 ? true 
  check if is controlled a == b ? false 
  check if is controlled 0 ? true 
  check if is controlled 0 ? true 
- check if is controlled 1 ? true 
- check if is controlled 0 ? true 
+ 
+ debug assign b= 1
+check if is controlled 1 ? true 
+ 
+ debug assign b= 0
+check if is controlled 0 ? true 
  check if is controlled b &gt; 0 ? false 
- check if is controlled 1 ? true 
- check if is controlled 0 ? true 
+ 
+ debug assign a= 1
+check if is controlled 1 ? true 
+ 
+ debug assign a= 0
+check if is controlled 0 ? true 
  check if is controlled a &gt; 0 ? true 
  check if is controlled input(&#x27;p2&#x27;) ? false 
  check if is controlled input(&#x27;p1&#x27;) ? true 
  Property: &lt;p1 &gt;F{gain1 == 1}
 
 [-1:]:
--$19{gain1} &gt;= 0 ? bottom
-$19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 ? bottom
 
 [6:]:
 -$19{gain1} &gt;= 0 ? bottom
@@ -650,264 +749,178 @@ $19{gain1} == 1 ? 0.
 $19{gain1} &gt;= 2 ? bottom
 
 [8:]:
--$5{a} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
--$5{a} &gt;= 0 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$5{a} &gt;= 0 ? bottom
-$5{a} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$5{a} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= 1 ? bottom
+$5{a} &gt;= -2147483648 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
+$5{a} &gt;= -2147483648 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; $19{gain1} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= -2147483648 &amp;&amp; -$5{a} &gt;= 0 ? bottom
+$5{a} &gt;= 1 &amp;&amp; -$5{a} &gt;= -2147483647 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
+$5{a} &gt;= 1 &amp;&amp; -$5{a} &gt;= -2147483647 &amp;&amp; $19{gain1} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= 1 &amp;&amp; -$5{a} &gt;= -2147483647 ? bottom
 
 [9:]:
--$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 ? 8
--$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= 0 ? 8
-$5{a} &gt;= 1 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$5{a} &gt;= 1 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= 1 &amp;&amp; -$7{b} &gt;= 0 ? bottom
-$7{b} &gt;= 1 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$7{b} &gt;= 1 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$5{a} &gt;= 0 ? bottom
-$5{a} &gt;= 1 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? 8
-$5{a} &gt;= 1 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= 1 &amp;&amp; $7{b} &gt;= 1 ? 8
+$5{a} &gt;= -2147483648 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 ? 8
+$5{a} &gt;= -2147483648 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; $19{gain1} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= -2147483648 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= 0 ? 8
+$5{a} &gt;= 1 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= -2147483647 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
+$5{a} &gt;= 1 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= -2147483647 &amp;&amp; $19{gain1} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= 1 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= -2147483647 ? bottom
+$5{a} &gt;= -2147483648 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
+$5{a} &gt;= -2147483648 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; $19{gain1} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= -2147483648 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$5{a} &gt;= 0 ? bottom
+$5{a} &gt;= 1 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$5{a} &gt;= -2147483647 &amp;&amp; -$19{gain1} &gt;= 0 ? 8
+$5{a} &gt;= 1 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$5{a} &gt;= -2147483647 &amp;&amp; $19{gain1} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= 1 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$5{a} &gt;= -2147483647 ? 8
 
 [ 10:]:
--$7{b} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
--$7{b} &gt;= 0 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$7{b} &gt;= 0 ? bottom
-$7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? 7
-$7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 ? 7
+$5{a} &gt;= 1 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= -2147483647 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
+$5{a} &gt;= 1 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= -2147483647 &amp;&amp; $19{gain1} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= 1 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= -2147483647 ? bottom
+$5{a} &gt;= 1 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$5{a} &gt;= -2147483647 &amp;&amp; -$19{gain1} &gt;= 0 ? 7
+$5{a} &gt;= 1 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$5{a} &gt;= -2147483647 &amp;&amp; $19{gain1} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= 1 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$5{a} &gt;= -2147483647 ? 7
 
 [11:]:
--$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
--$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= 1 ? bottom
--$7{b} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 0 ? 6
--$7{b} &gt;= 0 &amp;&amp; $19{gain1} == 1 &amp;&amp; $5{a} == 0 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $5{a} == 0 ? 6
-$5{a} &gt;= 1 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$5{a} &gt;= 1 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= 1 &amp;&amp; -$7{b} &gt;= 0 ? bottom
-$7{b} &gt;= 1 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$7{b} &gt;= 1 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$5{a} &gt;= 0 ? bottom
-$7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 1 ? 6
-$7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 &amp;&amp; $5{a} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; $5{a} == 1 ? 6
-$5{a} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$5{a} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 ? bottom
+$7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 1 ? bottom
+$7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $19{gain1} == 1 &amp;&amp; $5{a} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $5{a} == 1 ? bottom
+$7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 1 ? 6
+$7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; $19{gain1} == 1 &amp;&amp; $5{a} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; $5{a} == 1 ? 6
 
 [12:]:
--$7{b} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 ? 7
--$7{b} &gt;= 0 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$7{b} &gt;= 0 ? 7
-$7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 ? bottom
+$5{a} &gt;= -2147483648 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 ? 7
+$5{a} &gt;= -2147483648 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; $19{gain1} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= -2147483648 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= 0 ? 7
+$5{a} &gt;= -2147483648 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
+$5{a} &gt;= -2147483648 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; $19{gain1} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= -2147483648 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$5{a} &gt;= 0 ? bottom
 
 [13:]:
--$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
--$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= 1 ? bottom
--$7{b} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 0 ? 6
--$7{b} &gt;= 0 &amp;&amp; $19{gain1} == 1 &amp;&amp; $5{a} == 0 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $5{a} == 0 ? 6
-$5{a} &gt;= 1 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$5{a} &gt;= 1 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= 1 &amp;&amp; -$7{b} &gt;= 0 ? bottom
-$7{b} &gt;= 1 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$7{b} &gt;= 1 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$5{a} &gt;= 0 ? bottom
-$7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 1 ? 6
-$7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 &amp;&amp; $5{a} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; $5{a} == 1 ? 6
-$5{a} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$5{a} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 ? bottom
+$7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 0 ? 6
+$7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $19{gain1} == 1 &amp;&amp; $5{a} == 0 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $5{a} == 0 ? 6
+$7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 0 ? bottom
+$7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; $19{gain1} == 1 &amp;&amp; $5{a} == 0 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; $5{a} == 0 ? bottom
 
 [14:]:
--$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
--$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$5{a} &gt;= 1 ? bottom
--$7{b} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 0 ? 6
--$7{b} &gt;= 0 &amp;&amp; $19{gain1} == 1 &amp;&amp; $5{a} == 0 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $5{a} == 0 ? 6
-$5{a} &gt;= 1 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$5{a} &gt;= 1 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= 1 &amp;&amp; -$7{b} &gt;= 0 ? bottom
-$7{b} &gt;= 1 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$7{b} &gt;= 1 &amp;&amp; -$5{a} &gt;= 0 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$5{a} &gt;= 0 ? bottom
-$7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 1 ? 6
-$7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 &amp;&amp; $5{a} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; $5{a} == 1 ? 6
-$5{a} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$5{a} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 ? bottom
+$7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 0 ? 6
+$7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $19{gain1} == 1 &amp;&amp; $5{a} == 0 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $5{a} == 0 ? 6
+$7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 1 ? bottom
+$7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $19{gain1} == 1 &amp;&amp; $5{a} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $5{a} == 1 ? bottom
+$7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 0 ? bottom
+$7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; $19{gain1} == 1 &amp;&amp; $5{a} == 0 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; $5{a} == 0 ? bottom
+$7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 1 ? 6
+$7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; $19{gain1} == 1 &amp;&amp; $5{a} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; $5{a} == 1 ? 6
 
 [15:]:
--$5{a} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
--$5{a} &gt;= 0 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$5{a} &gt;= 0 ? bottom
--$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 1 ? 5
-$19{gain1} == 1 &amp;&amp; $5{a} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $5{a} == 1 ? 5
-$5{a} &gt;= 2 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$5{a} &gt;= 2 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= 2 ? bottom
+$7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 0 ? bottom
+$7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; $19{gain1} == 1 &amp;&amp; $5{a} == 0 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; $5{a} == 0 ? bottom
+$7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 1 ? 5
+$7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; $19{gain1} == 1 &amp;&amp; $5{a} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= 1 &amp;&amp; -$7{b} &gt;= -2147483647 &amp;&amp; $5{a} == 1 ? 5
 
 [16:]:
--$5{a}+$7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
--$5{a}+$7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$5{a}+$7{b} &gt;= 1 ? bottom
--$19{gain1} &gt;= 0 &amp;&amp; -$5{a}+$7{b} == 0 ? 4
-$19{gain1} == 1 &amp;&amp; -$5{a}+$7{b} == 0 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$5{a}+$7{b} == 0 ? 4
-$5{a}-$7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$5{a}-$7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $5{a}-$7{b} &gt;= 1 ? bottom
+-$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 0 &amp;&amp; $7{b} == 1 ? bottom
+$19{gain1} == 1 &amp;&amp; $5{a} == 0 &amp;&amp; $7{b} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $5{a} == 0 &amp;&amp; $7{b} == 1 ? bottom
+-$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 1 &amp;&amp; $7{b} == 1 ? 4
+$19{gain1} == 1 &amp;&amp; $5{a} == 1 &amp;&amp; $7{b} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $5{a} == 1 &amp;&amp; $7{b} == 1 ? 4
 
 [17:]:
--$5{a} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
--$5{a} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$5{a} &gt;= 1 ? bottom
--$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 0 ? 5
-$19{gain1} == 1 &amp;&amp; $5{a} == 0 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $5{a} == 0 ? 5
-$5{a} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$5{a} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $5{a} &gt;= 1 ? bottom
+$7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 0 ? 5
+$7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $19{gain1} == 1 &amp;&amp; $5{a} == 0 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $5{a} == 0 ? 5
+$7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 1 ? bottom
+$7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $19{gain1} == 1 &amp;&amp; $5{a} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $7{b} &gt;= -2147483648 &amp;&amp; -$7{b} &gt;= 0 &amp;&amp; $5{a} == 1 ? bottom
 
 [18:]:
--$5{a}+$7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
--$5{a}+$7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$5{a}+$7{b} &gt;= 1 ? bottom
--$19{gain1} &gt;= 0 &amp;&amp; -$5{a}+$7{b} == 0 ? 4
-$19{gain1} == 1 &amp;&amp; -$5{a}+$7{b} == 0 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$5{a}+$7{b} == 0 ? 4
-$5{a}-$7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$5{a}-$7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $5{a}-$7{b} &gt;= 1 ? bottom
+-$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 0 &amp;&amp; $7{b} == 0 ? 4
+$19{gain1} == 1 &amp;&amp; $5{a} == 0 &amp;&amp; $7{b} == 0 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $5{a} == 0 &amp;&amp; $7{b} == 0 ? 4
+-$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 1 &amp;&amp; $7{b} == 0 ? bottom
+$19{gain1} == 1 &amp;&amp; $5{a} == 1 &amp;&amp; $7{b} == 0 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $5{a} == 1 &amp;&amp; $7{b} == 0 ? bottom
 
 [20:]:
--$5{a}+$7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
--$5{a}+$7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$5{a}+$7{b} &gt;= 1 ? bottom
--$19{gain1} &gt;= 0 &amp;&amp; -$5{a}+$7{b} == 0 ? 4
-$19{gain1} == 1 &amp;&amp; -$5{a}+$7{b} == 0 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$5{a}+$7{b} == 0 ? 4
-$5{a}-$7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$5{a}-$7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $5{a}-$7{b} &gt;= 1 ? bottom
+-$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 0 &amp;&amp; $7{b} == 0 ? 4
+$19{gain1} == 1 &amp;&amp; $5{a} == 0 &amp;&amp; $7{b} == 0 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $5{a} == 0 &amp;&amp; $7{b} == 0 ? 4
+-$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 1 &amp;&amp; $7{b} == 0 ? bottom
+$19{gain1} == 1 &amp;&amp; $5{a} == 1 &amp;&amp; $7{b} == 0 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $5{a} == 1 &amp;&amp; $7{b} == 0 ? bottom
+-$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 0 &amp;&amp; $7{b} == 1 ? bottom
+$19{gain1} == 1 &amp;&amp; $5{a} == 0 &amp;&amp; $7{b} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $5{a} == 0 &amp;&amp; $7{b} == 1 ? bottom
+-$19{gain1} &gt;= 0 &amp;&amp; $5{a} == 1 &amp;&amp; $7{b} == 1 ? 4
+$19{gain1} == 1 &amp;&amp; $5{a} == 1 &amp;&amp; $7{b} == 1 ? 0.
+$19{gain1} &gt;= 2 &amp;&amp; $5{a} == 1 &amp;&amp; $7{b} == 1 ? 4
 
 [22:]:
--$5{a}+$7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
--$5{a}+$7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$5{a}+$7{b} &gt;= 1 ? bottom
--$19{gain1} &gt;= 0 &amp;&amp; -$5{a}+$7{b} == 0 ? 3
-$19{gain1} == 1 &amp;&amp; -$5{a}+$7{b} == 0 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$5{a}+$7{b} == 0 ? 3
-$5{a}-$7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$5{a}-$7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $5{a}-$7{b} &gt;= 1 ? bottom
+$19{gain1} == 0 &amp;&amp; $5{a} == 0 &amp;&amp; $7{b} == 0 ? 3
+$19{gain1} == 0 &amp;&amp; $5{a} == 1 &amp;&amp; $7{b} == 0 ? bottom
+$19{gain1} == 0 &amp;&amp; $5{a} == 0 &amp;&amp; $7{b} == 1 ? bottom
+$19{gain1} == 0 &amp;&amp; $5{a} == 1 &amp;&amp; $7{b} == 1 ? 3
 
 [23:]:
--$5{a}+$7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
--$5{a}+$7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$5{a}+$7{b} &gt;= 1 ? bottom
--$19{gain1} &gt;= 0 &amp;&amp; -$5{a}+$7{b} == 0 ? 2
-$19{gain1} == 1 &amp;&amp; -$5{a}+$7{b} == 0 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; -$5{a}+$7{b} == 0 ? 2
-$5{a}-$7{b} &gt;= 1 &amp;&amp; -$19{gain1} &gt;= 0 ? bottom
-$5{a}-$7{b} &gt;= 1 &amp;&amp; $19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 &amp;&amp; $5{a}-$7{b} &gt;= 1 ? bottom
+$19{gain1} == 0 &amp;&amp; $21{gain2} == 0 &amp;&amp; $5{a} == 0 &amp;&amp; $7{b} == 0 ? 2
+$19{gain1} == 0 &amp;&amp; $21{gain2} == 0 &amp;&amp; $5{a} == 1 &amp;&amp; $7{b} == 0 ? bottom
+$19{gain1} == 0 &amp;&amp; $21{gain2} == 0 &amp;&amp; $5{a} == 0 &amp;&amp; $7{b} == 1 ? bottom
+$19{gain1} == 0 &amp;&amp; $21{gain2} == 0 &amp;&amp; $5{a} == 1 &amp;&amp; $7{b} == 1 ? 2
 
 [24:]:
--$19{gain1} &gt;= 0 ? 1
-$19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 ? 1
+$5{a} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $19{gain1} == 0 &amp;&amp; $21{gain2} == 0 &amp;&amp; -$5{a}+$7{b} == 0 ? 1
 
 [25:]:
--$19{gain1} &gt;= 0 ? bottom
-$19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 ? bottom
+$5{a} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $19{gain1} == 1 &amp;&amp; $21{gain2} == 0 &amp;&amp; -$5{a}+$7{b} == 0 ? 0.
 
 [26:]:
--$19{gain1} &gt;= 0 ? bottom
-$19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 ? bottom
+$5{a} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $19{gain1} == 1 &amp;&amp; $21{gain2} == -1 &amp;&amp; -$5{a}+$7{b} == 0 ? 0.
 
 [27:]:
--$19{gain1} &gt;= 0 ? bottom
-$19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 ? bottom
+$5{a} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $19{gain1} == 0 &amp;&amp; $21{gain2} == 0 &amp;&amp; $5{a}+$7{b} == 1 ? bottom
 
 [28:]:
--$19{gain1} &gt;= 0 ? bottom
-$19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 ? bottom
+$5{a} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $19{gain1} == -1 &amp;&amp; $21{gain2} == 0 &amp;&amp; $5{a}+$7{b} == 1 ? bottom
 
 [29:]:
--$19{gain1} &gt;= 0 ? bottom
-$19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 ? bottom
+$5{a} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $19{gain1} == -1 &amp;&amp; $21{gain2} == 1 &amp;&amp; $5{a}+$7{b} == 1 ? bottom
 
 [30:]:
--$19{gain1} &gt;= 0 ? bottom
-$19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 ? bottom
+$19{gain1}+2$5{a}+2$7{b} &gt;= 1 &amp;&amp; $19{gain1}-2$5{a}-2$7{b} &gt;= -3 &amp;&amp; -$19{gain1}+2$5{a}-2$7{b} &gt;= -1 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; -$19{gain1}-2$5{a}+2$7{b} &gt;= -1 &amp;&amp; $19{gain1}+$21{gain2} == 0 ? bottom
+$5{a} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $19{gain1} == 1 &amp;&amp; $21{gain2} == -1 &amp;&amp; -$5{a}+$7{b} == 0 ? 0.
 
 [31:]:
--$19{gain1} &gt;= 0 ? bottom
-$19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 ? bottom
+$19{gain1}+2$5{a}+2$7{b} &gt;= 1 &amp;&amp; $19{gain1}-2$5{a}-2$7{b} &gt;= -3 &amp;&amp; -$19{gain1}+2$5{a}-2$7{b} &gt;= -1 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; -$19{gain1}-2$5{a}+2$7{b} &gt;= -1 &amp;&amp; $19{gain1}+$21{gain2} == 0 ? bottom
+$5{a} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $19{gain1} == 1 &amp;&amp; $21{gain2} == -1 &amp;&amp; -$5{a}+$7{b} == 0 ? 0.
 
 [32:]:
--$19{gain1} &gt;= 0 ? bottom
-$19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 ? bottom
+$19{gain1}+2$5{a}+2$7{b} &gt;= 1 &amp;&amp; $19{gain1}-2$5{a}-2$7{b} &gt;= -3 &amp;&amp; -$19{gain1}+2$5{a}-2$7{b} &gt;= -1 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; -$19{gain1}-2$5{a}+2$7{b} &gt;= -1 &amp;&amp; $19{gain1}+$21{gain2} == 0 ? bottom
+$5{a} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $19{gain1} == 1 &amp;&amp; $21{gain2} == -1 &amp;&amp; -$5{a}+$7{b} == 0 ? 0.
 
 [33:]:
--$19{gain1} &gt;= 0 ? bottom
-$19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 ? bottom
 
 [34:]:
--$19{gain1} &gt;= 0 ? bottom
-$19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 ? bottom
 
 [35:]:
--$19{gain1} &gt;= 0 ? bottom
-$19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 ? bottom
 
 [36:]:
--$19{gain1} &gt;= 0 ? bottom
-$19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 ? bottom
 
 [37:]:
--$19{gain1} &gt;= 0 ? bottom
-$19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 ? bottom
 
 [38:]:
--$19{gain1} &gt;= 0 ? bottom
-$19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 ? bottom
 
 [39:]:
--$19{gain1} &gt;= 0 ? bottom
-$19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 ? bottom
 
 [41:]:
--$19{gain1} &gt;= 0 ? bottom
-$19{gain1} == 1 ? 0.
-$19{gain1} &gt;= 2 ? bottom
+$19{gain1}+2$5{a}+2$7{b} &gt;= 1 &amp;&amp; $19{gain1}-2$5{a}-2$7{b} &gt;= -3 &amp;&amp; -$19{gain1}+2$5{a}-2$7{b} &gt;= -1 &amp;&amp; -$19{gain1} &gt;= 0 &amp;&amp; -$19{gain1}-2$5{a}+2$7{b} &gt;= -1 &amp;&amp; $19{gain1}+$21{gain2} == 0 ? bottom
+$5{a} &gt;= 0 &amp;&amp; -$5{a} &gt;= -1 &amp;&amp; $19{gain1} == 1 &amp;&amp; $21{gain2} == -1 &amp;&amp; -$5{a}+$7{b} == 0 ? 0.
 
 
  Resulting tree:  
@@ -915,7 +928,7 @@ $19{gain1} &gt;= 2 ? bottom
 $19{gain1} == 1 ? 0.
 $19{gain1} &gt;= 2 ? bottom
 
-Time: 0.112654
+Time: 0.333402
 Final Analysis Result: UNKNOWN
 {
   &quot;Config&quot;: {
@@ -925,8 +938,8 @@ Final Analysis Result: UNKNOWN
     &quot;precondition&quot;: &quot;true&quot;,
     &quot;result&quot;: &quot;UKNOWN&quot;,
     &quot;domain&quot;: &quot;polyhedra&quot;,
-    &quot;joinbwd&quot;: 2,
-    &quot;time&quot;: &quot;0.112653000001&quot;
+    &quot;joinbwd&quot;: 7,
+    &quot;time&quot;: &quot;0.333401000001&quot;
   },
   &quot;tree&quot;: {
     &quot;Node&quot;: {

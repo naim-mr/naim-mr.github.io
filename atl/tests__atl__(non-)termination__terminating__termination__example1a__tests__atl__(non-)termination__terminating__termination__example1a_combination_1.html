@@ -1,0 +1,865 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>example1a</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+:root, html[data-theme="dark"]{
+  --bg:#0f1115; --surface:#171a21; --surface2:#1e222b; --border:#2a2f3a;
+  --text:#e6e8ee; --muted:#9aa3b2; --accent:#5b8def;
+  --true:#3fb950; --true-bg:#10371d;
+  --unknown:#d29922; --unknown-bg:#3a2e0c;
+  --fail:#f85149; --fail-bg:#3a1413;
+  --hero:linear-gradient(135deg,#1b2a4a 0%,#10131a 70%);
+}
+html[data-theme="light"]{
+  --bg:#f4f6fb; --surface:#ffffff; --surface2:#eef1f7; --border:#d8deea;
+  --text:#1b2430; --muted:#5b6675; --accent:#1f6feb;
+  --true:#1a7f37; --true-bg:#d8f3df;
+  --unknown:#9a6700; --unknown-bg:#fdf0d0;
+  --fail:#cf222e; --fail-bg:#ffe0e0;
+  --hero:linear-gradient(135deg,#dbe6ff 0%,#f4f6fb 70%);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px; line-height:1.5;
+}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1200px; margin:0 auto; padding:0 24px 80px}
+header.hero{
+  background:var(--hero);
+  border-bottom:1px solid var(--border); padding:34px 24px; margin-bottom:24px;
+}
+header.hero .inner{max-width:1200px; margin:0 auto; position:relative}
+header.hero h1{margin:0; font-size:30px; font-weight:700; letter-spacing:.3px}
+.theme-toggle{
+  position:absolute; top:0; right:0; cursor:pointer; font-size:13px; font-weight:600;
+  padding:8px 14px; border-radius:999px; background:var(--surface2);
+  border:1px solid var(--border); color:var(--text);
+}
+.theme-toggle:hover{border-color:var(--accent)}
+.stats{margin:4px 0 30px}
+.stats .stat-head{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:12px}
+.stats h2{font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); margin:0}
+.seg{display:inline-flex; border:1px solid var(--border); border-radius:10px; overflow:hidden}
+.seg button{
+  background:var(--surface); color:var(--muted); border:none; padding:7px 16px;
+  font-size:13px; font-weight:600; cursor:pointer;
+}
+.seg button.active{background:var(--accent); color:#fff}
+.stats .chart{background:#fff; border:1px solid var(--border); border-radius:14px; padding:10px; text-align:center}
+.stats .chart img{max-width:100%; height:auto}
+header.hero .sub{color:var(--muted); margin-top:6px; font-size:14px}
+.chips{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px}
+.chip{
+  display:inline-flex; align-items:baseline; gap:8px; padding:7px 14px;
+  border-radius:999px; background:var(--surface2); border:1px solid var(--border);
+  font-size:13px; font-weight:600;
+}
+.chip b{font-size:16px}
+.chip.true{color:var(--true)} .chip.unknown{color:var(--unknown)}
+.chip.fail,.chip.timeout{color:var(--fail)} .chip.total{color:var(--text)}
+.chip.info{color:var(--accent)}
+.controls{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin:6px 0 22px}
+.controls input[type=search]{
+  flex:1; min-width:220px; padding:10px 14px; border-radius:10px;
+  background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:14px;
+}
+.controls label{color:var(--muted); font-size:14px; display:inline-flex; gap:7px; align-items:center; cursor:pointer}
+section.grp{margin-bottom:30px}
+section.grp h2{
+  font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted);
+  margin:0 0 10px; padding-bottom:8px; border-bottom:1px solid var(--border);
+}
+.card{background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden}
+table{border-collapse:collapse; width:100%; font-size:14px}
+thead th{
+  position:sticky; top:0; background:var(--surface2); color:var(--muted);
+  text-align:left; font-weight:600; padding:11px 16px; border-bottom:1px solid var(--border);
+  font-size:12px; text-transform:uppercase; letter-spacing:.5px;
+}
+tbody td{padding:11px 16px; border-bottom:1px solid var(--border); vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface2)}
+td.c{text-align:center; white-space:nowrap}
+code.mono,td.prop,.mono{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  font-size:13px; color:var(--text)}
+td.prop{color:var(--text); font-weight:500}
+.badge{
+  display:inline-block; padding:3px 11px; border-radius:999px; font-size:12px; font-weight:700;
+  letter-spacing:.3px;
+}
+.badge.true{color:var(--true); background:var(--true-bg)}
+.badge.unknown{color:var(--unknown); background:var(--unknown-bg)}
+.badge.fail,.badge.timeout{color:var(--fail); background:var(--fail-bg)}
+.badge.info{color:var(--accent); background:rgba(91,141,239,.16)}
+/* one colour per ctl lifting variant (TRUE cells) */
+.badge.v-base{color:#3fb950; background:rgba(63,185,80,.16)}
+.badge.v-resilience{color:#5b8def; background:rgba(91,141,239,.16)}
+.badge.v-resilience_reachability{color:#1ab2a8; background:rgba(26,178,168,.16)}
+.badge.v-robust_reachability{color:#f0883e; background:rgba(240,136,62,.18)}
+.chip.v-base{color:#3fb950} .chip.v-resilience{color:#5b8def}
+.chip.v-resilience_reachability{color:#1ab2a8} .chip.v-robust_reachability{color:#f0883e}
+.tag{font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--muted);
+  background:var(--surface2); padding:2px 8px; border-radius:6px}
+.empty{color:var(--muted); text-align:center; padding:40px}
+/* per-test page */
+.meta{display:flex; flex-wrap:wrap; gap:22px; background:var(--surface); border:1px solid var(--border);
+  border-radius:14px; padding:18px 22px; margin-bottom:22px}
+.meta .item{display:flex; flex-direction:column; gap:3px}
+.meta .item .k{font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted)}
+.meta .item .v{font-size:15px; font-family:ui-monospace,Menlo,monospace}
+/* tabs */
+nav.tabs{display:flex; gap:6px; margin:0 0 22px; border-bottom:1px solid var(--border)}
+nav.tabs button{
+  background:none; border:none; border-bottom:2px solid transparent; color:var(--muted);
+  font-size:15px; font-weight:600; padding:10px 18px; cursor:pointer; margin-bottom:-1px;
+}
+nav.tabs button:hover{color:var(--text)}
+nav.tabs button.active{color:var(--accent); border-bottom-color:var(--accent)}
+.panel[hidden]{display:none}
+/* summary table */
+table.summary{margin-bottom:22px}
+table.summary td.num{text-align:right; font-family:ui-monospace,Menlo,monospace}
+.rate{display:inline-block; min-width:46px}
+.bar{height:7px; border-radius:4px; background:var(--surface2); overflow:hidden; margin-top:4px}
+.bar > i{display:block; height:100%; background:var(--true)}
+/* decision tree */
+.treechips{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px}
+.tag.true{color:var(--true); background:var(--true-bg)}
+.treesvg{background:#fff; padding:14px; text-align:center; overflow:auto}
+.treesvg svg{max-width:100%; height:auto}
+ul.guards{margin:6px 0; padding-left:22px}
+ul.guards li{padding:2px 0; font-size:13px}
+h3.sec{font-size:14px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:26px 0 10px}
+pre.block{background:#0b0d12; border:1px solid var(--border); border-radius:12px; padding:16px;
+  overflow:auto; font-size:13px; line-height:1.45; max-height:560px}
+pre.block code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.back{display:inline-block; margin-bottom:18px; font-size:14px}
+</style><script>
+(function(){
+  const root = document.documentElement;
+  function fromUrl(){ try{ return new URLSearchParams(location.search).get('theme'); }catch(e){ return null; } }
+  function fromStore(){ try{ return localStorage.getItem('ftheme'); }catch(e){ return null; } }
+  function persist(t){ try{ localStorage.setItem('ftheme', t); }catch(e){} }
+  // URL param wins (survives file:// where localStorage is not shared across pages).
+  root.setAttribute('data-theme', fromUrl() || fromStore() || 'dark');
+  // Carry the current theme through internal links so navigation keeps it.
+  function propagate(t){
+    document.querySelectorAll('a[href]').forEach(function(a){
+      const href = a.getAttribute('href');
+      if(!href || href.indexOf('://')>=0 || href.charAt(0)==='#') return;
+      if(href.indexOf('.html')<0) return;
+      a.setAttribute('href', href.split('?')[0] + '?theme=' + t);
+    });
+  }
+  function lbl(){ return root.getAttribute('data-theme')==='dark' ? '\u2600 light' : '\u263e dark'; }
+  document.addEventListener('DOMContentLoaded', function(){
+    propagate(root.getAttribute('data-theme'));
+    const btn = document.getElementById('theme');
+    if(!btn) return;
+    btn.textContent = lbl();
+    btn.addEventListener('click', function(){
+      const next = root.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      persist(next);
+      propagate(next);
+      btn.textContent = lbl();
+    });
+  });
+})();
+</script></head><body>
+<header class="hero"><div class="inner">
+<button id="theme" class="theme-toggle"></button>
+<a class="back" href="./index.html">&larr; back to overview</a>
+<h1>example1a</h1>
+<div class="sub mono">tests/atl/(non-)termination/terminating/termination/example1a_combination_1.c</div>
+</div></header>
+<div class="wrap">
+<div class="meta">
+  <div class="item"><span class="k">Group</span><span class="v">atl/</span></div>
+  <div class="item"><span class="k">Property</span><span class="v">AF{exit:true}</span></div>
+  <div class="item"><span class="k">Domain</span><span class="v">polyhedra</span></div>
+  <div class="item"><span class="k">Result</span><span class="v"><span class="badge unknown">UNKNOWN</span></span></div>
+  <div class="item"><span class="k">Time</span><span class="v">1.000 s</span></div>
+  <div class="item"><span class="k">Wall time</span><span class="v">0.366 s</span></div>
+</div>
+<h3 class="sec">Analyzer config</h3>
+<div class="card"><table><tbody><tr><td class="mono" style="color:var(--muted)">filename</td><td class="mono">tests/atl/(non-)termination/terminating/termination/example1a_combination_1.c</td></tr><tr><td class="mono" style="color:var(--muted)">analysis_type</td><td class="mono">termination</td></tr><tr><td class="mono" style="color:var(--muted)">property</td><td class="mono">AF{exit:true}</td></tr><tr><td class="mono" style="color:var(--muted)">precondition</td><td class="mono">true</td></tr><tr><td class="mono" style="color:var(--muted)">result</td><td class="mono">UKNOWN</td></tr><tr><td class="mono" style="color:var(--muted)">domain</td><td class="mono">polyhedra</td></tr><tr><td class="mono" style="color:var(--muted)">joinbwd</td><td class="mono">2</td></tr><tr><td class="mono" style="color:var(--muted)">time</td><td class="mono">1</td></tr></tbody></table></div>
+<h3 class="sec">Decision tree &amp; preconditions</h3>
+<div class="treechips">
+  <span class="tag">11 leaves</span>
+  <span class="tag true">5 defined region(s)</span>
+  <span class="tag">6 distinct guard(s)</span>
+</div>
+<div class="card treesvg"><svg width="844pt" height="476pt"
+ viewBox="0.00 0.00 844.25 476.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 472)">
+<title>T</title>
+<!-- n0 -->
+<g id="node1" class="node">
+<title>n0</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="214" cy="-450" rx="111.5" ry="18"/>
+<text text-anchor="middle" x="214" y="-447.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$15{y}&#45;$7{__return7} &gt;= 2</text>
+</g>
+<!-- n1 -->
+<g id="node2" class="node">
+<title>n1</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="122" cy="-378" rx="54.94" ry="18"/>
+<text text-anchor="middle" x="122" y="-375.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$15{y} &gt;= 2</text>
+</g>
+<!-- n0&#45;&gt;n1 -->
+<g id="edge19" class="edge">
+<title>n0&#45;&gt;n1</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M191.73,-432.05C179.51,-422.76 164.23,-411.13 151.08,-401.13"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="152.88,-398.1 142.8,-394.83 148.64,-403.67 152.88,-398.1"/>
+</g>
+<!-- n6 -->
+<g id="node7" class="node">
+<title>n6</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="306" cy="-378" rx="111.5" ry="18"/>
+<text text-anchor="middle" x="306" y="-375.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$15{y}&#45;$7{__return7} &gt;= 1</text>
+</g>
+<!-- n0&#45;&gt;n6 -->
+<g id="edge20" class="edge">
+<title>n0&#45;&gt;n6</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M236.27,-432.05C248.14,-423.03 262.9,-411.79 275.79,-401.99"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="278.1,-404.63 283.93,-395.79 273.86,-399.06 278.1,-404.63"/>
+</g>
+<!-- n2 -->
+<g id="node3" class="node">
+<title>n2</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M42,-324C42,-324 12,-324 12,-324 6,-324 0,-318 0,-312 0,-312 0,-300 0,-300 0,-294 6,-288 12,-288 12,-288 42,-288 42,-288 48,-288 54,-294 54,-300 54,-300 54,-312 54,-312 54,-318 48,-324 42,-324"/>
+<text text-anchor="middle" x="27" y="-303.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n1&#45;&gt;n2 -->
+<g id="edge3" class="edge">
+<title>n1&#45;&gt;n2</title>
+<path fill="none" stroke="#aaaaaa" d="M100.44,-361.12C88.02,-351.96 72.18,-340.29 58.4,-330.14"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="60.26,-327.16 50.13,-324.04 56.11,-332.79 60.26,-327.16"/>
+</g>
+<!-- n3 -->
+<g id="node4" class="node">
+<title>n3</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="127" cy="-306" rx="54.94" ry="18"/>
+<text text-anchor="middle" x="127" y="-303.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$15{y} &gt;= 1</text>
+</g>
+<!-- n1&#45;&gt;n3 -->
+<g id="edge4" class="edge">
+<title>n1&#45;&gt;n3</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M123.24,-359.7C123.79,-351.98 124.45,-342.71 125.06,-334.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="128.56,-334.33 125.78,-324.1 121.57,-333.83 128.56,-334.33"/>
+</g>
+<!-- n4 -->
+<g id="node5" class="node">
+<title>n4</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M75,-252C75,-252 45,-252 45,-252 39,-252 33,-246 33,-240 33,-240 33,-228 33,-228 33,-222 39,-216 45,-216 45,-216 75,-216 75,-216 81,-216 87,-222 87,-228 87,-228 87,-240 87,-240 87,-246 81,-252 75,-252"/>
+<text text-anchor="middle" x="60" y="-231.2" font-family="monospace" font-size="11.00" fill="#1b2430">9</text>
+</g>
+<!-- n3&#45;&gt;n4 -->
+<g id="edge1" class="edge">
+<title>n3&#45;&gt;n4</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M111.12,-288.41C102.94,-279.86 92.79,-269.26 83.7,-259.77"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="86.14,-257.25 76.7,-252.45 81.09,-262.09 86.14,-257.25"/>
+</g>
+<!-- n5 -->
+<g id="node6" class="node">
+<title>n5</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M147,-252C147,-252 117,-252 117,-252 111,-252 105,-246 105,-240 105,-240 105,-228 105,-228 105,-222 111,-216 117,-216 117,-216 147,-216 147,-216 153,-216 159,-222 159,-228 159,-228 159,-240 159,-240 159,-246 153,-252 147,-252"/>
+<text text-anchor="middle" x="132" y="-231.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n3&#45;&gt;n5 -->
+<g id="edge2" class="edge">
+<title>n3&#45;&gt;n5</title>
+<path fill="none" stroke="#aaaaaa" d="M128.24,-287.7C128.79,-279.98 129.45,-270.71 130.06,-262.11"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="133.56,-262.33 130.78,-252.1 126.57,-261.83 133.56,-262.33"/>
+</g>
+<!-- n7 -->
+<g id="node8" class="node">
+<title>n7</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="297" cy="-306" rx="54.94" ry="18"/>
+<text text-anchor="middle" x="297" y="-303.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$15{y} &gt;= 2</text>
+</g>
+<!-- n6&#45;&gt;n7 -->
+<g id="edge17" class="edge">
+<title>n6&#45;&gt;n7</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M303.78,-359.7C302.78,-351.98 301.59,-342.71 300.49,-334.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="303.95,-333.58 299.2,-324.1 297,-334.47 303.95,-333.58"/>
+</g>
+<!-- n12 -->
+<g id="node13" class="node">
+<title>n12</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="424" cy="-306" rx="54.94" ry="18"/>
+<text text-anchor="middle" x="424" y="-303.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$15{y} &gt;= 2</text>
+</g>
+<!-- n6&#45;&gt;n12 -->
+<g id="edge18" class="edge">
+<title>n6&#45;&gt;n12</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M333.96,-360.41C350.68,-350.5 372.04,-337.82 389.76,-327.31"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="391.83,-330.15 398.65,-322.04 388.26,-324.13 391.83,-330.15"/>
+</g>
+<!-- n8 -->
+<g id="node9" class="node">
+<title>n8</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M225,-252C225,-252 195,-252 195,-252 189,-252 183,-246 183,-240 183,-240 183,-228 183,-228 183,-222 189,-216 195,-216 195,-216 225,-216 225,-216 231,-216 237,-222 237,-228 237,-228 237,-240 237,-240 237,-246 231,-252 225,-252"/>
+<text text-anchor="middle" x="210" y="-231.2" font-family="monospace" font-size="11.00" fill="#1b2430">11</text>
+</g>
+<!-- n7&#45;&gt;n8 -->
+<g id="edge7" class="edge">
+<title>n7&#45;&gt;n8</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M277.26,-289.12C265.99,-280.05 251.65,-268.51 239.11,-258.42"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="241.17,-255.59 231.18,-252.04 236.78,-261.04 241.17,-255.59"/>
+</g>
+<!-- n9 -->
+<g id="node10" class="node">
+<title>n9</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="310" cy="-234" rx="54.94" ry="18"/>
+<text text-anchor="middle" x="310" y="-231.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$15{y} &gt;= 1</text>
+</g>
+<!-- n7&#45;&gt;n9 -->
+<g id="edge8" class="edge">
+<title>n7&#45;&gt;n9</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M300.21,-287.7C301.65,-279.98 303.37,-270.71 304.96,-262.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="308.44,-262.58 306.82,-252.1 301.56,-261.3 308.44,-262.58"/>
+</g>
+<!-- n10 -->
+<g id="node11" class="node">
+<title>n10</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M285,-180C285,-180 255,-180 255,-180 249,-180 243,-174 243,-168 243,-168 243,-156 243,-156 243,-150 249,-144 255,-144 255,-144 285,-144 285,-144 291,-144 297,-150 297,-156 297,-156 297,-168 297,-168 297,-174 291,-180 285,-180"/>
+<text text-anchor="middle" x="270" y="-159.2" font-family="monospace" font-size="11.00" fill="#1b2430">9</text>
+</g>
+<!-- n9&#45;&gt;n10 -->
+<g id="edge5" class="edge">
+<title>n9&#45;&gt;n10</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M300.32,-216.05C295.72,-208.01 290.12,-198.2 284.99,-189.23"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="287.87,-187.22 279.87,-180.28 281.79,-190.69 287.87,-187.22"/>
+</g>
+<!-- n11 -->
+<g id="node12" class="node">
+<title>n11</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M357,-180C357,-180 327,-180 327,-180 321,-180 315,-174 315,-168 315,-168 315,-156 315,-156 315,-150 321,-144 327,-144 327,-144 357,-144 357,-144 363,-144 369,-150 369,-156 369,-156 369,-168 369,-168 369,-174 363,-180 357,-180"/>
+<text text-anchor="middle" x="342" y="-159.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n9&#45;&gt;n11 -->
+<g id="edge6" class="edge">
+<title>n9&#45;&gt;n11</title>
+<path fill="none" stroke="#aaaaaa" d="M317.75,-216.05C321.39,-208.09 325.81,-198.41 329.88,-189.51"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="333.13,-190.83 334.1,-180.28 326.76,-187.91 333.13,-190.83"/>
+</g>
+<!-- n13 -->
+<g id="node14" class="node">
+<title>n13</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M432,-252C432,-252 402,-252 402,-252 396,-252 390,-246 390,-240 390,-240 390,-228 390,-228 390,-222 396,-216 402,-216 402,-216 432,-216 432,-216 438,-216 444,-222 444,-228 444,-228 444,-240 444,-240 444,-246 438,-252 432,-252"/>
+<text text-anchor="middle" x="417" y="-231.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n12&#45;&gt;n13 -->
+<g id="edge15" class="edge">
+<title>n12&#45;&gt;n13</title>
+<path fill="none" stroke="#aaaaaa" d="M422.27,-287.7C421.5,-279.98 420.57,-270.71 419.71,-262.11"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="423.19,-261.71 418.71,-252.1 416.22,-262.4 423.19,-261.71"/>
+</g>
+<!-- n14 -->
+<g id="node15" class="node">
+<title>n14</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="517" cy="-234" rx="54.94" ry="18"/>
+<text text-anchor="middle" x="517" y="-231.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$15{y} &gt;= 1</text>
+</g>
+<!-- n12&#45;&gt;n14 -->
+<g id="edge16" class="edge">
+<title>n12&#45;&gt;n14</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M445.1,-289.12C457.71,-279.63 473.9,-267.44 487.73,-257.03"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="490.1,-259.63 495.98,-250.82 485.89,-254.04 490.1,-259.63"/>
+</g>
+<!-- n15 -->
+<g id="node16" class="node">
+<title>n15</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M506,-180C506,-180 476,-180 476,-180 470,-180 464,-174 464,-168 464,-168 464,-156 464,-156 464,-150 470,-144 476,-144 476,-144 506,-144 506,-144 512,-144 518,-150 518,-156 518,-156 518,-168 518,-168 518,-174 512,-180 506,-180"/>
+<text text-anchor="middle" x="491" y="-159.2" font-family="monospace" font-size="11.00" fill="#1b2430">9</text>
+</g>
+<!-- n14&#45;&gt;n15 -->
+<g id="edge13" class="edge">
+<title>n14&#45;&gt;n15</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M510.71,-216.05C507.78,-208.18 504.23,-198.62 500.95,-189.79"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="504.18,-188.43 497.42,-180.28 497.62,-190.87 504.18,-188.43"/>
+</g>
+<!-- n16 -->
+<g id="node17" class="node">
+<title>n16</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="647" cy="-162" rx="111.5" ry="18"/>
+<text text-anchor="middle" x="647" y="-159.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$15{y}+$7{__return7} &gt;= 2</text>
+</g>
+<!-- n14&#45;&gt;n16 -->
+<g id="edge14" class="edge">
+<title>n14&#45;&gt;n16</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M544.25,-218.33C562.67,-208.41 587.28,-195.16 607.79,-184.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="609.45,-187.19 616.6,-179.37 606.14,-181.03 609.45,-187.19"/>
+</g>
+<!-- n17 -->
+<g id="node18" class="node">
+<title>n17</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M584,-108C584,-108 554,-108 554,-108 548,-108 542,-102 542,-96 542,-96 542,-84 542,-84 542,-78 548,-72 554,-72 554,-72 584,-72 584,-72 590,-72 596,-78 596,-84 596,-84 596,-96 596,-96 596,-102 590,-108 584,-108"/>
+<text text-anchor="middle" x="569" y="-87.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n16&#45;&gt;n17 -->
+<g id="edge11" class="edge">
+<title>n16&#45;&gt;n17</title>
+<path fill="none" stroke="#aaaaaa" d="M628.12,-144.05C618.32,-135.26 606.19,-124.38 595.48,-114.76"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="597.76,-112.11 587.98,-108.03 593.08,-117.32 597.76,-112.11"/>
+</g>
+<!-- n18 -->
+<g id="node19" class="node">
+<title>n18</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="725" cy="-90" rx="111.5" ry="18"/>
+<text text-anchor="middle" x="725" y="-87.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$15{y}+$7{__return7} &gt;= 1</text>
+</g>
+<!-- n16&#45;&gt;n18 -->
+<g id="edge12" class="edge">
+<title>n16&#45;&gt;n18</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M665.88,-144.05C675.75,-135.2 687.98,-124.22 698.76,-114.55"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="701.19,-117.07 706.29,-107.79 696.51,-111.86 701.19,-117.07"/>
+</g>
+<!-- n19 -->
+<g id="node20" class="node">
+<title>n19</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M704,-36C704,-36 674,-36 674,-36 668,-36 662,-30 662,-24 662,-24 662,-12 662,-12 662,-6 668,0 674,0 674,0 704,0 704,0 710,0 716,-6 716,-12 716,-12 716,-24 716,-24 716,-30 710,-36 704,-36"/>
+<text text-anchor="middle" x="689" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">10</text>
+</g>
+<!-- n18&#45;&gt;n19 -->
+<g id="edge9" class="edge">
+<title>n18&#45;&gt;n19</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M716.29,-72.05C712.15,-64.01 707.11,-54.2 702.49,-45.23"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="705.57,-43.57 697.88,-36.28 699.35,-46.77 705.57,-43.57"/>
+</g>
+<!-- n20 -->
+<g id="node21" class="node">
+<title>n20</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M776,-36C776,-36 746,-36 746,-36 740,-36 734,-30 734,-24 734,-24 734,-12 734,-12 734,-6 740,0 746,0 746,0 776,0 776,0 782,0 788,-6 788,-12 788,-12 788,-24 788,-24 788,-30 782,-36 776,-36"/>
+<text text-anchor="middle" x="761" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n18&#45;&gt;n20 -->
+<g id="edge10" class="edge">
+<title>n18&#45;&gt;n20</title>
+<path fill="none" stroke="#aaaaaa" d="M733.71,-72.05C737.85,-64.01 742.89,-54.2 747.51,-45.23"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="750.65,-46.77 752.12,-36.28 744.43,-43.57 750.65,-46.77"/>
+</g>
+</g>
+</svg>
+</div>
+<h3 class="sec">Defined regions (sufficient preconditions)</h3>
+<div class="card"><table><thead><tr><th>#</th><th>Region (conjunction of guards)</th>
+<th>Ranking function</th><th>Status</th></tr></thead><tbody><tr><td class="num">1</td><td class="prop">$15{y}-$7{__return7} &gt;= 2 &and; &not;($15{y} &gt;= 2) &and; $15{y} &gt;= 1</td><td class="mono">9</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">2</td><td class="prop">&not;($15{y}-$7{__return7} &gt;= 2) &and; $15{y}-$7{__return7} &gt;= 1 &and; $15{y} &gt;= 2</td><td class="mono">11</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">3</td><td class="prop">&not;($15{y}-$7{__return7} &gt;= 2) &and; $15{y}-$7{__return7} &gt;= 1 &and; &not;($15{y} &gt;= 2) &and; $15{y} &gt;= 1</td><td class="mono">9</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">4</td><td class="prop">&not;($15{y}-$7{__return7} &gt;= 2) &and; &not;($15{y}-$7{__return7} &gt;= 1) &and; &not;($15{y} &gt;= 2) &and; $15{y} &gt;= 1</td><td class="mono">9</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">5</td><td class="prop">&not;($15{y}-$7{__return7} &gt;= 2) &and; &not;($15{y}-$7{__return7} &gt;= 1) &and; &not;($15{y} &gt;= 2) &and; &not;($15{y} &gt;= 1) &and; &not;($15{y}+$7{__return7} &gt;= 2) &and; $15{y}+$7{__return7} &gt;= 1</td><td class="mono">10</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">6</td><td class="prop">$15{y}-$7{__return7} &gt;= 2 &and; $15{y} &gt;= 2</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">7</td><td class="prop">$15{y}-$7{__return7} &gt;= 2 &and; &not;($15{y} &gt;= 2) &and; &not;($15{y} &gt;= 1)</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">8</td><td class="prop">&not;($15{y}-$7{__return7} &gt;= 2) &and; &not;($15{y}-$7{__return7} &gt;= 1) &and; $15{y} &gt;= 2</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">9</td><td class="prop">&not;($15{y}-$7{__return7} &gt;= 2) &and; $15{y}-$7{__return7} &gt;= 1 &and; &not;($15{y} &gt;= 2) &and; &not;($15{y} &gt;= 1)</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">10</td><td class="prop">&not;($15{y}-$7{__return7} &gt;= 2) &and; &not;($15{y}-$7{__return7} &gt;= 1) &and; &not;($15{y} &gt;= 2) &and; &not;($15{y} &gt;= 1) &and; $15{y}+$7{__return7} &gt;= 2</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">11</td><td class="prop">&not;($15{y}-$7{__return7} &gt;= 2) &and; &not;($15{y}-$7{__return7} &gt;= 1) &and; &not;($15{y} &gt;= 2) &and; &not;($15{y} &gt;= 1) &and; &not;($15{y}+$7{__return7} &gt;= 2) &and; &not;($15{y}+$7{__return7} &gt;= 1)</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr></tbody></table></div>
+<h3 class="sec">Distinct guards</h3>
+<div class="card" style="padding:10px 20px"><ul class="guards"><li class="mono">$15{y} &gt;= 1</li><li class="mono">$15{y} &gt;= 2</li><li class="mono">$15{y}+$7{__return7} &gt;= 1</li><li class="mono">$15{y}+$7{__return7} &gt;= 2</li><li class="mono">$15{y}-$7{__return7} &gt;= 1</li><li class="mono">$15{y}-$7{__return7} &gt;= 2</li></ul></div>
+
+<h3 class="sec">Source</h3>
+<pre class="block"><code class="language-c">/*
+TERMINATION
+
+suggested parameters:
+- conflict-driven conditional termination
+- partition abstract domain = boxes [default]
+- function abstract domain = affine [default]
+- backward widening delay = 2 [default]
+*/
+
+int get_step(int x) {
+  return 1;
+}
+
+int main()  {
+  int y, step;
+  step = get_step(y);
+  if (y &gt; 0) {
+    step = -step;
+  }
+  while(y &lt; 1 || y &gt; 1) {
+    y = y + step;
+  }
+  return 0;
+}</code></pre>
+<h3 class="sec">Analysis log</h3>
+<pre class="block"><code>
+Abstract typed Syntax:
+{
+  {44}
+}
+int get_step(int x)@
+{
+  {9} __return7 = 1;
+  {10} return;
+  {11} return#6:;
+  {12}
+}
+int main()@
+{
+  {16} int y;
+  {18} int step;
+  {20} int x = y;
+  {21} int __returned19;
+  {22} int __return7;
+  {23} __return7 = get_step(x);
+  {24} __returned19 = __return7;
+  {25} delete __return7;
+  {26} delete x;
+  {27} step = __returned19;
+  {28} delete __returned19;
+  {29} if (y &gt; 0)
+  {
+    {30} step = - step;
+    {31}
+  }
+  else
+  {
+    {32}
+  }
+  {33} while {34} (y &lt; 1 || y &gt; 1)
+  {
+    {35} y = y + step;
+    {36}
+  }
+  {37} break#34:;
+  {38} __return14 = 0;
+  {39} return;
+  {40} return#13:;
+  {41} delete y;
+  {42} delete step;
+  {43}
+}
+
+Backward Analysis:
+[9:]: top ? 1
+
+[ 10:]: top ? 0.
+
+[11:]: -$15{y}+$7{__return7} &gt;= 0 &amp;&amp; -$15{y}-$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$7{__return7} == 1 ? 7
+$15{y}+$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 6
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; -$15{y}+$7{__return7} == -1 ? top
+$15{y} == 1 &amp;&amp; $7{__return7} == 0 ? 6
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} == -1 ? 8
+$15{y}-$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+-$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 6
+$15{y} &gt;= 2 &amp;&amp; $15{y}-$7{__return7} &gt;= 2 ? top
+
+[12:]: -$15{y}+$7{__return7} &gt;= 0 &amp;&amp; -$15{y}-$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$7{__return7} == 1 ? 7
+$15{y}+$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 6
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; -$15{y}+$7{__return7} == -1 ? top
+$15{y} == 1 &amp;&amp; $7{__return7} == 0 ? 6
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} == -1 ? 8
+$15{y}-$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+-$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 6
+$15{y} &gt;= 2 &amp;&amp; $15{y}-$7{__return7} &gt;= 2 ? top
+
+[16:]: -$15{y}+$7{__return7} &gt;= 0 &amp;&amp; -$15{y}-$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$7{__return7} == 1 ? 10
+$15{y}+$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 9
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; -$15{y}+$7{__return7} == -1 ? top
+$15{y} == 1 &amp;&amp; $7{__return7} == 0 ? 9
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} == -1 ? 11
+$15{y}-$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+-$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 9
+$15{y} &gt;= 2 &amp;&amp; $15{y}-$7{__return7} &gt;= 2 ? top
+
+[18:]: -$15{y}+$7{__return7} &gt;= 0 &amp;&amp; -$15{y}-$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$7{__return7} == 1 ? 10
+$15{y}+$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 9
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; -$15{y}+$7{__return7} == -1 ? top
+$15{y} == 1 &amp;&amp; $7{__return7} == 0 ? 9
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} == -1 ? 11
+$15{y}-$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+-$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 9
+$15{y} &gt;= 2 &amp;&amp; $15{y}-$7{__return7} &gt;= 2 ? top
+
+[20:]: -$15{y}+$7{__return7} &gt;= 0 &amp;&amp; -$15{y}-$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$7{__return7} == 1 ? 10
+$15{y}+$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 9
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; -$15{y}+$7{__return7} == -1 ? top
+$15{y} == 1 &amp;&amp; $7{__return7} == 0 ? 9
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} == -1 ? 11
+$15{y}-$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+-$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 9
+$15{y} &gt;= 2 &amp;&amp; $15{y}-$7{__return7} &gt;= 2 ? top
+
+[21:]: -$15{y}+$7{__return7} &gt;= 0 &amp;&amp; -$15{y}-$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$7{__return7} == 1 ? 9
+$15{y}+$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 8
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; -$15{y}+$7{__return7} == -1 ? top
+$15{y} == 1 &amp;&amp; $7{__return7} == 0 ? 8
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} == -1 ? 10
+$15{y}-$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+-$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 8
+$15{y} &gt;= 2 &amp;&amp; $15{y}-$7{__return7} &gt;= 2 ? top
+
+[22:]: -$15{y}+$7{__return7} &gt;= 0 &amp;&amp; -$15{y}-$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$7{__return7} == 1 ? 9
+$15{y}+$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 8
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; -$15{y}+$7{__return7} == -1 ? top
+$15{y} == 1 &amp;&amp; $7{__return7} == 0 ? 8
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} == -1 ? 10
+$15{y}-$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+-$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 8
+$15{y} &gt;= 2 &amp;&amp; $15{y}-$7{__return7} &gt;= 2 ? top
+
+[23:]: -$15{y}+$7{__return7} &gt;= 0 &amp;&amp; -$15{y}-$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$7{__return7} == 1 ? 9
+$15{y}+$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 8
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; -$15{y}+$7{__return7} == -1 ? top
+$15{y} == 1 &amp;&amp; $7{__return7} == 0 ? 8
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} == -1 ? 10
+$15{y}-$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+-$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 8
+$15{y} &gt;= 2 &amp;&amp; $15{y}-$7{__return7} &gt;= 2 ? top
+
+[24:]: -$15{y}+$7{__return7} &gt;= 0 &amp;&amp; -$15{y}-$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$7{__return7} == 1 ? 7
+$15{y}+$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 6
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; -$15{y}+$7{__return7} == -1 ? top
+$15{y} == 1 &amp;&amp; $7{__return7} == 0 ? 6
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} == -1 ? 8
+$15{y}-$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+-$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 6
+$15{y} &gt;= 2 &amp;&amp; $15{y}-$7{__return7} &gt;= 2 ? top
+
+[25:]: -$15{y}+$19{__returned19} &gt;= 0 &amp;&amp; -$15{y}-$19{__returned19} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$19{__returned19} == 1 ? 6
+$15{y}+$19{__returned19} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$19{__returned19} &gt;= 1 &amp;&amp; $15{y} == 1 ? 5
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$19{__returned19} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; -$15{y}+$19{__returned19} == -1 ? top
+$15{y} == 1 &amp;&amp; $19{__returned19} == 0 ? 5
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$19{__returned19} == -1 ? 7
+$15{y}-$19{__returned19} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+-$19{__returned19} &gt;= 1 &amp;&amp; $15{y} == 1 ? 5
+$15{y} &gt;= 2 &amp;&amp; $15{y}-$19{__returned19} &gt;= 2 ? top
+
+[26:]: -$15{y}+$19{__returned19} &gt;= 0 &amp;&amp; -$15{y}-$19{__returned19} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$19{__returned19} == 1 ? 6
+$15{y}+$19{__returned19} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$19{__returned19} &gt;= 1 &amp;&amp; $15{y} == 1 ? 5
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$19{__returned19} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; -$15{y}+$19{__returned19} == -1 ? top
+$15{y} == 1 &amp;&amp; $19{__returned19} == 0 ? 5
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$19{__returned19} == -1 ? 7
+$15{y}-$19{__returned19} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+-$19{__returned19} &gt;= 1 &amp;&amp; $15{y} == 1 ? 5
+$15{y} &gt;= 2 &amp;&amp; $15{y}-$19{__returned19} &gt;= 2 ? top
+
+[27:]: -$15{y}+$19{__returned19} &gt;= 0 &amp;&amp; -$15{y}-$19{__returned19} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$19{__returned19} == 1 ? 6
+$15{y}+$19{__returned19} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$19{__returned19} &gt;= 1 &amp;&amp; $15{y} == 1 ? 5
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$19{__returned19} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; -$15{y}+$19{__returned19} == -1 ? top
+$15{y} == 1 &amp;&amp; $19{__returned19} == 0 ? 5
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$19{__returned19} == -1 ? 7
+$15{y}-$19{__returned19} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+-$19{__returned19} &gt;= 1 &amp;&amp; $15{y} == 1 ? 5
+$15{y} &gt;= 2 &amp;&amp; $15{y}-$19{__returned19} &gt;= 2 ? top
+
+[28:]: -$15{y}+$17{step} &gt;= 0 &amp;&amp; -$15{y}-$17{step} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$17{step} == 1 ? 5
+$15{y}+$17{step} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$17{step} &gt;= 1 &amp;&amp; $15{y} == 1 ? 4
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$17{step} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; -$15{y}+$17{step} == -1 ? top
+$15{y} == 1 &amp;&amp; $17{step} == 0 ? 4
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$17{step} == -1 ? 6
+$15{y}-$17{step} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+-$17{step} &gt;= 1 &amp;&amp; $15{y} == 1 ? 4
+$15{y} &gt;= 2 &amp;&amp; $15{y}-$17{step} &gt;= 2 ? top
+
+[29:]: -$15{y}+$17{step} &gt;= 0 &amp;&amp; -$15{y}-$17{step} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$17{step} == 1 ? 5
+$15{y}+$17{step} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$17{step} &gt;= 1 &amp;&amp; $15{y} == 1 ? 4
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$17{step} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; -$15{y}+$17{step} == -1 ? top
+$15{y} == 1 &amp;&amp; $17{step} == 0 ? 4
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$17{step} == -1 ? 6
+$15{y}-$17{step} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+-$17{step} &gt;= 1 &amp;&amp; $15{y} == 1 ? 4
+$15{y} &gt;= 2 &amp;&amp; $15{y}-$17{step} &gt;= 2 ? top
+
+[30:]: -$15{y}+$17{step} &gt;= 0 &amp;&amp; -$15{y} &gt;= 0 ? top
+$17{step} &gt;= 1 &amp;&amp; $15{y} == 1 ? 3
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$17{step} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; -$15{y}+$17{step} == -1 ? 5
+$15{y} == 1 &amp;&amp; $17{step} == 0 ? 3
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$17{step} == -1 ? 5
+$15{y}-$17{step} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+-$17{step} &gt;= 1 &amp;&amp; $15{y} == 1 ? 3
+$15{y} &gt;= 2 &amp;&amp; $15{y}-$17{step} &gt;= 2 ? top
+
+[31:]: -$15{y} &gt;= 0 &amp;&amp; -$15{y}-$17{step} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$17{step} == 1 ? 4
+$15{y}+$17{step} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$15{y} == 1 ? 2
+$15{y} &gt;= 2 &amp;&amp; -$15{y}-$17{step} &gt;= 0 ? top
+$15{y} &gt;= 2 &amp;&amp; $15{y}+$17{step} == 1 ? 4
+$15{y}+$17{step} &gt;= 2 &amp;&amp; $15{y} &gt;= 2 ? top
+
+[32:]: -$15{y} &gt;= 0 &amp;&amp; -$15{y}-$17{step} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$17{step} == 1 ? 4
+$15{y}+$17{step} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$15{y} == 1 ? 2
+$15{y} &gt;= 2 &amp;&amp; -$15{y}-$17{step} &gt;= 0 ? top
+$15{y} &gt;= 2 &amp;&amp; $15{y}+$17{step} == 1 ? 4
+$15{y}+$17{step} &gt;= 2 &amp;&amp; $15{y} &gt;= 2 ? top
+
+[33:]: -$15{y} &gt;= 0 &amp;&amp; -$15{y}-$17{step} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$17{step} == 1 ? 4
+$15{y}+$17{step} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$15{y} == 1 ? 2
+$15{y} &gt;= 2 &amp;&amp; -$15{y}-$17{step} &gt;= 0 ? top
+$15{y} &gt;= 2 &amp;&amp; $15{y}+$17{step} == 1 ? 4
+$15{y}+$17{step} &gt;= 2 &amp;&amp; $15{y} &gt;= 2 ? top
+
+[34:]: -$15{y} &gt;= 0 &amp;&amp; -$15{y}-$17{step} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$17{step} == 1 ? 4
+$15{y}+$17{step} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$15{y} == 1 ? 2
+$15{y} &gt;= 2 &amp;&amp; -$15{y}-$17{step} &gt;= 0 ? top
+$15{y} &gt;= 2 &amp;&amp; $15{y}+$17{step} == 1 ? 4
+$15{y}+$17{step} &gt;= 2 &amp;&amp; $15{y} &gt;= 2 ? top
+
+[35:]: -$15{y}-$17{step} &gt;= 0 &amp;&amp; -$15{y}-2$17{step} &gt;= 0 ? top
+-$15{y} &gt;= 1 &amp;&amp; $15{y}+2$17{step} == 1 ? 5
+$15{y}+2$17{step} &gt;= 2 &amp;&amp; -$15{y}-$17{step} &gt;= 0 ? top
+$15{y}+$17{step} == 1 ? 3
+$15{y}+$17{step} &gt;= 2 &amp;&amp; -$15{y}-2$17{step} &gt;= 0 ? top
+$15{y} &gt;= 3 &amp;&amp; $15{y}+2$17{step} == 1 ? 5
+$15{y}+2$17{step} &gt;= 2 &amp;&amp; $15{y}+$17{step} &gt;= 2 ? top
+
+[36:]: -$15{y} &gt;= 0 &amp;&amp; -$15{y}-$17{step} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$17{step} == 1 ? 4
+$15{y}+$17{step} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$15{y} == 1 ? 2
+$15{y} &gt;= 2 &amp;&amp; -$15{y}-$17{step} &gt;= 0 ? top
+$15{y} &gt;= 2 &amp;&amp; $15{y}+$17{step} == 1 ? 4
+$15{y}+$17{step} &gt;= 2 &amp;&amp; $15{y} &gt;= 2 ? top
+
+[37:]: top ? 1
+
+[38:]: top ? 1
+
+[39:]: top ? 0.
+
+[40:]: top ? 0.
+
+[41:]: top ? 0.
+
+[42:]: top ? 0.
+
+[43:]: top ? 0.
+
+[44:]: -$15{y}+$7{__return7} &gt;= 0 &amp;&amp; -$15{y}-$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; $15{y}+$7{__return7} == 1 ? 10
+$15{y}+$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 9
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} &gt;= 0 ? top
+-$15{y} &gt;= 0 &amp;&amp; -$15{y}+$7{__return7} == -1 ? top
+$15{y} == 1 &amp;&amp; $7{__return7} == 0 ? 9
+$15{y} &gt;= 2 &amp;&amp; -$15{y}+$7{__return7} == -1 ? 11
+$15{y}-$7{__return7} &gt;= 2 &amp;&amp; -$15{y} &gt;= 0 ? top
+-$7{__return7} &gt;= 1 &amp;&amp; $15{y} == 1 ? 9
+$15{y} &gt;= 2 &amp;&amp; $15{y}-$7{__return7} &gt;= 2 ? top
+
+
+Final Analysis Result: UNKNOWN
+{
+  &quot;Config&quot;: {
+    &quot;filename&quot;: &quot;tests/atl/(non-)termination/terminating/termination/example1a_combination_1.c&quot;,
+    &quot;analysis_type&quot;: &quot;termination&quot;,
+    &quot;property&quot;: &quot;AF{exit:true}&quot;,
+    &quot;precondition&quot;: &quot;true&quot;,
+    &quot;result&quot;: &quot;UKNOWN&quot;,
+    &quot;domain&quot;: &quot;polyhedra&quot;,
+    &quot;joinbwd&quot;: 2,
+    &quot;time&quot;: &quot;1&quot;
+  },
+  &quot;tree&quot;: {
+    &quot;Node&quot;: {
+      &quot;constraint&quot;: &quot;$15{y}-$7{__return7} &gt;= 2&quot;,
+      &quot;left&quot;: {
+        &quot;Node&quot;: {
+          &quot;constraint&quot;: &quot;$15{y} &gt;= 2&quot;,
+          &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+          &quot;right&quot;: {
+            &quot;Node&quot;: {
+              &quot;constraint&quot;: &quot;$15{y} &gt;= 1&quot;,
+              &quot;left&quot;: { &quot;Leaf&quot;: &quot;9&quot; },
+              &quot;right&quot;: { &quot;Leaf&quot;: &quot;top&quot; }
+            }
+          }
+        }
+      },
+      &quot;right&quot;: {
+        &quot;Node&quot;: {
+          &quot;constraint&quot;: &quot;$15{y}-$7{__return7} &gt;= 1&quot;,
+          &quot;left&quot;: {
+            &quot;Node&quot;: {
+              &quot;constraint&quot;: &quot;$15{y} &gt;= 2&quot;,
+              &quot;left&quot;: { &quot;Leaf&quot;: &quot;11&quot; },
+              &quot;right&quot;: {
+                &quot;Node&quot;: {
+                  &quot;constraint&quot;: &quot;$15{y} &gt;= 1&quot;,
+                  &quot;left&quot;: { &quot;Leaf&quot;: &quot;9&quot; },
+                  &quot;right&quot;: { &quot;Leaf&quot;: &quot;top&quot; }
+                }
+              }
+            }
+          },
+          &quot;right&quot;: {
+            &quot;Node&quot;: {
+              &quot;constraint&quot;: &quot;$15{y} &gt;= 2&quot;,
+              &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+              &quot;right&quot;: {
+                &quot;Node&quot;: {
+                  &quot;constraint&quot;: &quot;$15{y} &gt;= 1&quot;,
+                  &quot;left&quot;: { &quot;Leaf&quot;: &quot;9&quot; },
+                  &quot;right&quot;: {
+                    &quot;Node&quot;: {
+                      &quot;constraint&quot;: &quot;$15{y}+$7{__return7} &gt;= 2&quot;,
+                      &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+                      &quot;right&quot;: {
+                        &quot;Node&quot;: {
+                          &quot;constraint&quot;: &quot;$15{y}+$7{__return7} &gt;= 1&quot;,
+                          &quot;left&quot;: { &quot;Leaf&quot;: &quot;10&quot; },
+                          &quot;right&quot;: { &quot;Leaf&quot;: &quot;top&quot; }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  &quot;vulnerability&quot;: &quot;Not analyzed&quot;
+}</code></pre>
+</div>
+<script>hljs.highlightAll();</script>
+</body></html>

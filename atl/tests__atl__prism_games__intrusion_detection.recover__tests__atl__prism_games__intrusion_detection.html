@@ -94,6 +94,13 @@ td.prop{color:var(--text); font-weight:500}
 .badge.unknown{color:var(--unknown); background:var(--unknown-bg)}
 .badge.fail,.badge.timeout{color:var(--fail); background:var(--fail-bg)}
 .badge.info{color:var(--accent); background:rgba(91,141,239,.16)}
+/* one colour per ctl lifting variant (TRUE cells) */
+.badge.v-base{color:#3fb950; background:rgba(63,185,80,.16)}
+.badge.v-resilience{color:#5b8def; background:rgba(91,141,239,.16)}
+.badge.v-resilience_reachability{color:#1ab2a8; background:rgba(26,178,168,.16)}
+.badge.v-robust_reachability{color:#f0883e; background:rgba(240,136,62,.18)}
+.chip.v-base{color:#3fb950} .chip.v-resilience{color:#5b8def}
+.chip.v-resilience_reachability{color:#1ab2a8} .chip.v-robust_reachability{color:#f0883e}
 .tag{font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--muted);
   background:var(--surface2); padding:2px 8px; border-radius:6px}
 .empty{color:var(--muted); text-align:center; padding:40px}
@@ -171,15 +178,15 @@ pre.block code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
 </div></header>
 <div class="wrap">
 <div class="meta">
-  <div class="item"><span class="k">Group</span><span class="v">atl</span></div>
+  <div class="item"><span class="k">Group</span><span class="v">atl/</span></div>
   <div class="item"><span class="k">Property</span><span class="v">&lt;def&gt;G{&lt;def&gt;F{exposure == 0}}</span></div>
   <div class="item"><span class="k">Domain</span><span class="v">polyhedra</span></div>
   <div class="item"><span class="k">Result</span><span class="v"><span class="badge true">TRUE</span></span></div>
-  <div class="item"><span class="k">Time</span><span class="v">0.824 s</span></div>
-  <div class="item"><span class="k">Wall time</span><span class="v">1.02 s</span></div>
+  <div class="item"><span class="k">Time</span><span class="v">0.952 s</span></div>
+  <div class="item"><span class="k">Wall time</span><span class="v">1.106 s</span></div>
 </div>
 <h3 class="sec">Analyzer config</h3>
-<div class="card"><table><tbody><tr><td class="mono" style="color:var(--muted)">filename</td><td class="mono">tests/atl/prism_games/intrusion_detection.c</td></tr><tr><td class="mono" style="color:var(--muted)">analysis_type</td><td class="mono">atl-resilience</td></tr><tr><td class="mono" style="color:var(--muted)">property</td><td class="mono">&lt;def&gt;G{&lt;def&gt;F{exposure == 0}}</td></tr><tr><td class="mono" style="color:var(--muted)">precondition</td><td class="mono">true</td></tr><tr><td class="mono" style="color:var(--muted)">result</td><td class="mono">TRUE</td></tr><tr><td class="mono" style="color:var(--muted)">domain</td><td class="mono">polyhedra</td></tr><tr><td class="mono" style="color:var(--muted)">joinbwd</td><td class="mono">2</td></tr><tr><td class="mono" style="color:var(--muted)">time</td><td class="mono">0.824031000001</td></tr></tbody></table></div>
+<div class="card"><table><tbody><tr><td class="mono" style="color:var(--muted)">filename</td><td class="mono">tests/atl/prism_games/intrusion_detection.c</td></tr><tr><td class="mono" style="color:var(--muted)">analysis_type</td><td class="mono">atl-resilience</td></tr><tr><td class="mono" style="color:var(--muted)">property</td><td class="mono">&lt;def&gt;G{&lt;def&gt;F{exposure == 0}}</td></tr><tr><td class="mono" style="color:var(--muted)">precondition</td><td class="mono">true</td></tr><tr><td class="mono" style="color:var(--muted)">result</td><td class="mono">TRUE</td></tr><tr><td class="mono" style="color:var(--muted)">domain</td><td class="mono">polyhedra</td></tr><tr><td class="mono" style="color:var(--muted)">joinbwd</td><td class="mono">2</td></tr><tr><td class="mono" style="color:var(--muted)">time</td><td class="mono">0.952360000001</td></tr></tbody></table></div>
 <h3 class="sec">Decision tree &amp; preconditions</h3>
 <div class="treechips">
   <span class="tag">3 leaves</span>
@@ -1532,7 +1539,7 @@ $7{exposure} &gt;= 1 ? 6
 $7{exposure} == 0 ? 0.
 $7{exposure} &gt;= 1 ? 2
 
-Time: 0.824032
+Time: 0.952361
 Final Analysis Result: TRUE
 {
   &quot;Config&quot;: {
@@ -1543,7 +1550,7 @@ Final Analysis Result: TRUE
     &quot;result&quot;: &quot;TRUE&quot;,
     &quot;domain&quot;: &quot;polyhedra&quot;,
     &quot;joinbwd&quot;: 2,
-    &quot;time&quot;: &quot;0.824031000001&quot;
+    &quot;time&quot;: &quot;0.952360000001&quot;
   },
   &quot;tree&quot;: {
     &quot;Node&quot;: {

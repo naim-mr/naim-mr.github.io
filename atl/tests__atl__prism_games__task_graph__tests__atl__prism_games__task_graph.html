@@ -94,6 +94,13 @@ td.prop{color:var(--text); font-weight:500}
 .badge.unknown{color:var(--unknown); background:var(--unknown-bg)}
 .badge.fail,.badge.timeout{color:var(--fail); background:var(--fail-bg)}
 .badge.info{color:var(--accent); background:rgba(91,141,239,.16)}
+/* one colour per ctl lifting variant (TRUE cells) */
+.badge.v-base{color:#3fb950; background:rgba(63,185,80,.16)}
+.badge.v-resilience{color:#5b8def; background:rgba(91,141,239,.16)}
+.badge.v-resilience_reachability{color:#1ab2a8; background:rgba(26,178,168,.16)}
+.badge.v-robust_reachability{color:#f0883e; background:rgba(240,136,62,.18)}
+.chip.v-base{color:#3fb950} .chip.v-resilience{color:#5b8def}
+.chip.v-resilience_reachability{color:#1ab2a8} .chip.v-robust_reachability{color:#f0883e}
 .tag{font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--muted);
   background:var(--surface2); padding:2px 8px; border-radius:6px}
 .empty{color:var(--muted); text-align:center; padding:40px}
@@ -171,12 +178,12 @@ pre.block code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
 </div></header>
 <div class="wrap">
 <div class="meta">
-  <div class="item"><span class="k">Group</span><span class="v">atl</span></div>
+  <div class="item"><span class="k">Group</span><span class="v">atl/</span></div>
   <div class="item"><span class="k">Property</span><span class="v">&lt;sched&gt;F{done == 1}</span></div>
   <div class="item"><span class="k">Domain</span><span class="v">polyhedra</span></div>
   <div class="item"><span class="k">Result</span><span class="v"><span class="badge timeout">TO</span></span></div>
-  <div class="item"><span class="k">Time</span><span class="v">60.112 s</span></div>
-  <div class="item"><span class="k">Wall time</span><span class="v">60.112 s</span></div>
+  <div class="item"><span class="k">Time</span><span class="v">5.039 s</span></div>
+  <div class="item"><span class="k">Wall time</span><span class="v">5.039 s</span></div>
 </div>
 <h3 class="sec">Analyzer config</h3>
 <div class="card"><table><tbody><tr><td colspan="2">(no JSON produced)</td></tr></tbody></table></div>

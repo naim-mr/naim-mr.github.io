@@ -1,0 +1,1461 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>zeroconf</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+:root, html[data-theme="dark"]{
+  --bg:#0f1115; --surface:#171a21; --surface2:#1e222b; --border:#2a2f3a;
+  --text:#e6e8ee; --muted:#9aa3b2; --accent:#5b8def;
+  --true:#3fb950; --true-bg:#10371d;
+  --unknown:#d29922; --unknown-bg:#3a2e0c;
+  --fail:#f85149; --fail-bg:#3a1413;
+  --hero:linear-gradient(135deg,#1b2a4a 0%,#10131a 70%);
+}
+html[data-theme="light"]{
+  --bg:#f4f6fb; --surface:#ffffff; --surface2:#eef1f7; --border:#d8deea;
+  --text:#1b2430; --muted:#5b6675; --accent:#1f6feb;
+  --true:#1a7f37; --true-bg:#d8f3df;
+  --unknown:#9a6700; --unknown-bg:#fdf0d0;
+  --fail:#cf222e; --fail-bg:#ffe0e0;
+  --hero:linear-gradient(135deg,#dbe6ff 0%,#f4f6fb 70%);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px; line-height:1.5;
+}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1200px; margin:0 auto; padding:0 24px 80px}
+header.hero{
+  background:var(--hero);
+  border-bottom:1px solid var(--border); padding:34px 24px; margin-bottom:24px;
+}
+header.hero .inner{max-width:1200px; margin:0 auto; position:relative}
+header.hero h1{margin:0; font-size:30px; font-weight:700; letter-spacing:.3px}
+.theme-toggle{
+  position:absolute; top:0; right:0; cursor:pointer; font-size:13px; font-weight:600;
+  padding:8px 14px; border-radius:999px; background:var(--surface2);
+  border:1px solid var(--border); color:var(--text);
+}
+.theme-toggle:hover{border-color:var(--accent)}
+.stats{margin:4px 0 30px}
+.stats .stat-head{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:12px}
+.stats h2{font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); margin:0}
+.seg{display:inline-flex; border:1px solid var(--border); border-radius:10px; overflow:hidden}
+.seg button{
+  background:var(--surface); color:var(--muted); border:none; padding:7px 16px;
+  font-size:13px; font-weight:600; cursor:pointer;
+}
+.seg button.active{background:var(--accent); color:#fff}
+.stats .chart{background:#fff; border:1px solid var(--border); border-radius:14px; padding:10px; text-align:center}
+.stats .chart img{max-width:100%; height:auto}
+header.hero .sub{color:var(--muted); margin-top:6px; font-size:14px}
+.chips{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px}
+.chip{
+  display:inline-flex; align-items:baseline; gap:8px; padding:7px 14px;
+  border-radius:999px; background:var(--surface2); border:1px solid var(--border);
+  font-size:13px; font-weight:600;
+}
+.chip b{font-size:16px}
+.chip.true{color:var(--true)} .chip.unknown{color:var(--unknown)}
+.chip.fail,.chip.timeout{color:var(--fail)} .chip.total{color:var(--text)}
+.chip.info{color:var(--accent)}
+.controls{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin:6px 0 22px}
+.controls input[type=search]{
+  flex:1; min-width:220px; padding:10px 14px; border-radius:10px;
+  background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:14px;
+}
+.controls label{color:var(--muted); font-size:14px; display:inline-flex; gap:7px; align-items:center; cursor:pointer}
+section.grp{margin-bottom:30px}
+section.grp h2{
+  font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted);
+  margin:0 0 10px; padding-bottom:8px; border-bottom:1px solid var(--border);
+}
+.card{background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden}
+table{border-collapse:collapse; width:100%; font-size:14px}
+thead th{
+  position:sticky; top:0; background:var(--surface2); color:var(--muted);
+  text-align:left; font-weight:600; padding:11px 16px; border-bottom:1px solid var(--border);
+  font-size:12px; text-transform:uppercase; letter-spacing:.5px;
+}
+tbody td{padding:11px 16px; border-bottom:1px solid var(--border); vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface2)}
+td.c{text-align:center; white-space:nowrap}
+code.mono,td.prop,.mono{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  font-size:13px; color:var(--text)}
+td.prop{color:var(--text); font-weight:500}
+.badge{
+  display:inline-block; padding:3px 11px; border-radius:999px; font-size:12px; font-weight:700;
+  letter-spacing:.3px;
+}
+.badge.true{color:var(--true); background:var(--true-bg)}
+.badge.unknown{color:var(--unknown); background:var(--unknown-bg)}
+.badge.fail,.badge.timeout{color:var(--fail); background:var(--fail-bg)}
+.badge.info{color:var(--accent); background:rgba(91,141,239,.16)}
+/* one colour per ctl lifting variant (TRUE cells) */
+.badge.v-base{color:#3fb950; background:rgba(63,185,80,.16)}
+.badge.v-resilience{color:#5b8def; background:rgba(91,141,239,.16)}
+.badge.v-resilience_reachability{color:#1ab2a8; background:rgba(26,178,168,.16)}
+.badge.v-robust_reachability{color:#f0883e; background:rgba(240,136,62,.18)}
+.chip.v-base{color:#3fb950} .chip.v-resilience{color:#5b8def}
+.chip.v-resilience_reachability{color:#1ab2a8} .chip.v-robust_reachability{color:#f0883e}
+.tag{font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--muted);
+  background:var(--surface2); padding:2px 8px; border-radius:6px}
+.empty{color:var(--muted); text-align:center; padding:40px}
+/* per-test page */
+.meta{display:flex; flex-wrap:wrap; gap:22px; background:var(--surface); border:1px solid var(--border);
+  border-radius:14px; padding:18px 22px; margin-bottom:22px}
+.meta .item{display:flex; flex-direction:column; gap:3px}
+.meta .item .k{font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted)}
+.meta .item .v{font-size:15px; font-family:ui-monospace,Menlo,monospace}
+/* tabs */
+nav.tabs{display:flex; gap:6px; margin:0 0 22px; border-bottom:1px solid var(--border)}
+nav.tabs button{
+  background:none; border:none; border-bottom:2px solid transparent; color:var(--muted);
+  font-size:15px; font-weight:600; padding:10px 18px; cursor:pointer; margin-bottom:-1px;
+}
+nav.tabs button:hover{color:var(--text)}
+nav.tabs button.active{color:var(--accent); border-bottom-color:var(--accent)}
+.panel[hidden]{display:none}
+/* summary table */
+table.summary{margin-bottom:22px}
+table.summary td.num{text-align:right; font-family:ui-monospace,Menlo,monospace}
+.rate{display:inline-block; min-width:46px}
+.bar{height:7px; border-radius:4px; background:var(--surface2); overflow:hidden; margin-top:4px}
+.bar > i{display:block; height:100%; background:var(--true)}
+/* decision tree */
+.treechips{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px}
+.tag.true{color:var(--true); background:var(--true-bg)}
+.treesvg{background:#fff; padding:14px; text-align:center; overflow:auto}
+.treesvg svg{max-width:100%; height:auto}
+ul.guards{margin:6px 0; padding-left:22px}
+ul.guards li{padding:2px 0; font-size:13px}
+h3.sec{font-size:14px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:26px 0 10px}
+pre.block{background:#0b0d12; border:1px solid var(--border); border-radius:12px; padding:16px;
+  overflow:auto; font-size:13px; line-height:1.45; max-height:560px}
+pre.block code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.back{display:inline-block; margin-bottom:18px; font-size:14px}
+</style><script>
+(function(){
+  const root = document.documentElement;
+  function fromUrl(){ try{ return new URLSearchParams(location.search).get('theme'); }catch(e){ return null; } }
+  function fromStore(){ try{ return localStorage.getItem('ftheme'); }catch(e){ return null; } }
+  function persist(t){ try{ localStorage.setItem('ftheme', t); }catch(e){} }
+  // URL param wins (survives file:// where localStorage is not shared across pages).
+  root.setAttribute('data-theme', fromUrl() || fromStore() || 'dark');
+  // Carry the current theme through internal links so navigation keeps it.
+  function propagate(t){
+    document.querySelectorAll('a[href]').forEach(function(a){
+      const href = a.getAttribute('href');
+      if(!href || href.indexOf('://')>=0 || href.charAt(0)==='#') return;
+      if(href.indexOf('.html')<0) return;
+      a.setAttribute('href', href.split('?')[0] + '?theme=' + t);
+    });
+  }
+  function lbl(){ return root.getAttribute('data-theme')==='dark' ? '\u2600 light' : '\u263e dark'; }
+  document.addEventListener('DOMContentLoaded', function(){
+    propagate(root.getAttribute('data-theme'));
+    const btn = document.getElementById('theme');
+    if(!btn) return;
+    btn.textContent = lbl();
+    btn.addEventListener('click', function(){
+      const next = root.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      persist(next);
+      propagate(next);
+      btn.textContent = lbl();
+    });
+  });
+})();
+</script></head><body>
+<header class="hero"><div class="inner">
+<button id="theme" class="theme-toggle"></button>
+<a class="back" href="./index.html">&larr; back to overview</a>
+<h1>zeroconf</h1>
+<div class="sub mono">tests/atl/prism_games/Communication_protocols/zeroconf.c</div>
+</div></header>
+<div class="wrap">
+<div class="meta">
+  <div class="item"><span class="k">Group</span><span class="v">atl/</span></div>
+  <div class="item"><span class="k">Property</span><span class="v">&lt;host&gt;F{configured == 1}</span></div>
+  <div class="item"><span class="k">Domain</span><span class="v">polyhedra</span></div>
+  <div class="item"><span class="k">Result</span><span class="v"><span class="badge true">TRUE</span></span></div>
+  <div class="item"><span class="k">Time</span><span class="v">13.515 s</span></div>
+  <div class="item"><span class="k">Wall time</span><span class="v">13.592 s</span></div>
+</div>
+<h3 class="sec">Analyzer config</h3>
+<div class="card"><table><tbody><tr><td class="mono" style="color:var(--muted)">filename</td><td class="mono">tests/atl/prism_games/Communication_protocols/zeroconf.c</td></tr><tr><td class="mono" style="color:var(--muted)">analysis_type</td><td class="mono">atl-resilience</td></tr><tr><td class="mono" style="color:var(--muted)">property</td><td class="mono">&lt;host&gt;F{configured == 1}</td></tr><tr><td class="mono" style="color:var(--muted)">precondition</td><td class="mono">true</td></tr><tr><td class="mono" style="color:var(--muted)">result</td><td class="mono">TRUE</td></tr><tr><td class="mono" style="color:var(--muted)">domain</td><td class="mono">polyhedra</td></tr><tr><td class="mono" style="color:var(--muted)">joinbwd</td><td class="mono">7</td></tr><tr><td class="mono" style="color:var(--muted)">time</td><td class="mono">13.5145700001</td></tr></tbody></table></div>
+<h3 class="sec">Decision tree &amp; preconditions</h3>
+<div class="treechips">
+  <span class="tag">3 leaves</span>
+  <span class="tag true">3 defined region(s)</span>
+  <span class="tag">2 distinct guard(s)</span>
+</div>
+<div class="card treesvg"><svg width="295pt" height="188pt"
+ viewBox="0.00 0.00 295.00 188.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 184)">
+<title>T</title>
+<!-- n0 -->
+<g id="node1" class="node">
+<title>n0</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="120.5" cy="-162" rx="87.39" ry="18"/>
+<text text-anchor="middle" x="120.5" y="-159.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$5{configured} &gt;= 2</text>
+</g>
+<!-- n1 -->
+<g id="node2" class="node">
+<title>n1</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M79,-108C79,-108 12,-108 12,-108 6,-108 0,-102 0,-96 0,-96 0,-84 0,-84 0,-78 6,-72 12,-72 12,-72 79,-72 79,-72 85,-72 91,-78 91,-84 91,-84 91,-96 91,-96 91,-102 85,-108 79,-108"/>
+<text text-anchor="middle" x="45.5" y="-87.2" font-family="monospace" font-size="11.00" fill="#1b2430">17179869185</text>
+</g>
+<!-- n0&#45;&gt;n1 -->
+<g id="edge3" class="edge">
+<title>n0&#45;&gt;n1</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M102.34,-144.05C93.02,-135.35 81.49,-124.59 71.26,-115.04"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="73.45,-112.3 63.75,-108.03 68.67,-117.41 73.45,-112.3"/>
+</g>
+<!-- n2 -->
+<g id="node3" class="node">
+<title>n2</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="196.5" cy="-90" rx="87.39" ry="18"/>
+<text text-anchor="middle" x="196.5" y="-87.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$5{configured} &gt;= 1</text>
+</g>
+<!-- n0&#45;&gt;n2 -->
+<g id="edge4" class="edge">
+<title>n0&#45;&gt;n2</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M138.9,-144.05C148.42,-135.28 160.2,-124.43 170.63,-114.83"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="173.29,-117.14 178.27,-107.79 168.55,-111.99 173.29,-117.14"/>
+</g>
+<!-- n3 -->
+<g id="node4" class="node">
+<title>n3</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M165.5,-36C165.5,-36 135.5,-36 135.5,-36 129.5,-36 123.5,-30 123.5,-24 123.5,-24 123.5,-12 123.5,-12 123.5,-6 129.5,0 135.5,0 135.5,0 165.5,0 165.5,0 171.5,0 177.5,-6 177.5,-12 177.5,-12 177.5,-24 177.5,-24 177.5,-30 171.5,-36 165.5,-36"/>
+<text text-anchor="middle" x="150.5" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">0.</text>
+</g>
+<!-- n2&#45;&gt;n3 -->
+<g id="edge1" class="edge">
+<title>n2&#45;&gt;n3</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M185.36,-72.05C179.96,-63.84 173.36,-53.79 167.36,-44.66"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="170.27,-42.71 161.85,-36.28 164.42,-46.55 170.27,-42.71"/>
+</g>
+<!-- n4 -->
+<g id="node5" class="node">
+<title>n4</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M275,-36C275,-36 208,-36 208,-36 202,-36 196,-30 196,-24 196,-24 196,-12 196,-12 196,-6 202,0 208,0 208,0 275,0 275,0 281,0 287,-6 287,-12 287,-12 287,-24 287,-24 287,-30 281,-36 275,-36"/>
+<text text-anchor="middle" x="241.5" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">17179869185</text>
+</g>
+<!-- n2&#45;&gt;n4 -->
+<g id="edge2" class="edge">
+<title>n2&#45;&gt;n4</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M207.39,-72.05C212.62,-63.92 219,-54 224.82,-44.94"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="227.93,-46.58 230.39,-36.28 222.04,-42.79 227.93,-46.58"/>
+</g>
+</g>
+</svg>
+</div>
+<h3 class="sec">Defined regions (sufficient preconditions)</h3>
+<div class="card"><table><thead><tr><th>#</th><th>Region (conjunction of guards)</th>
+<th>Ranking function</th><th>Status</th></tr></thead><tbody><tr><td class="num">1</td><td class="prop">$5{configured} &gt;= 2</td><td class="mono">17179869185</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">2</td><td class="prop">&not;($5{configured} &gt;= 2) &and; $5{configured} &gt;= 1</td><td class="mono">0.</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">3</td><td class="prop">&not;($5{configured} &gt;= 2) &and; &not;($5{configured} &gt;= 1)</td><td class="mono">17179869185</td><td class="c"><span class="badge true">defined</span></td></tr></tbody></table></div>
+<h3 class="sec">Distinct guards</h3>
+<div class="card" style="padding:10px 20px"><ul class="guards"><li class="mono">$5{configured} &gt;= 1</li><li class="mono">$5{configured} &gt;= 2</li></ul></div>
+
+<h3 class="sec">Source</h3>
+<pre class="block"><code class="language-c">// =====================================================================
+// IPv4 Zeroconf Address Allocation -- PRISM case study (de-prob., game cast)
+// ---------------------------------------------------------------------
+// Source : PRISM case studies, &quot;IPv4 Zeroconf protocol&quot;.
+//   https://www.prismmodelchecker.org/casestudies/zeroconf.php
+// Original model description: see zeroconf.txt
+// ---------------------------------------------------------------------
+// A host joining a network self-assigns an IP address: it probes a candidate
+// address and, if no other host claims it, configures. The network may raise
+// an address conflict, but only a bounded number of times; the host then
+// picks another candidate. The host eventually configures an address.
+//
+//   agent &quot;host&quot; = input(&quot;host&quot;)  -&gt; joining host (coalition, angelic)
+//   agent &quot;env&quot;  = input(&quot;env&quot;)   -&gt; address conflicts (adversary, bounded)
+//
+// The host eventually configures an address (TRUE):
+//   -atl &quot;&lt;host&gt;F{configured == 1}&quot;
+// =====================================================================
+
+int main() {
+    int configured = 0;    // host has acquired an address?
+    int conflicts = input(&quot;env&quot;);  // adversary-chosen FINITE conflict bound, NOT fixed in advance
+                                   // (any value -- e.g. RFC 3927 MAX_CONFLICTS = 10 -- and beyond):
+                                   // the proof must hold for an arbitrary finite number of conflicts.
+    while (configured == 0) {
+        int collide = 0;
+        // the network can raise a conflict only while the bound is not exhausted
+        if (conflicts &gt; 0) { collide = input(&quot;env&quot;); }   // another host claims the address?
+        int probe = input(&quot;host&quot;);                        // host probes a candidate address?
+        if (probe == 1) {
+            if (collide == 1) { conflicts = conflicts - 1; }  // conflict -&gt; pick another address
+            else { configured = 1; }                          // no conflict -&gt; configured
+        }
+    }
+}
+</code></pre>
+<h3 class="sec">Analysis log</h3>
+<pre class="block"><code>
+Abstract typed Syntax:
+{
+  {35}
+}
+int main()@
+{
+  {6} int configured = 0;
+  {8} int conflicts = input(&#x27;env&#x27;);
+  {9} while {10} (configured == 0)
+  {
+    {12} int collide = 0;
+    {13} if (conflicts &gt; 0)
+    {
+      {14} collide = input(&#x27;env&#x27;);
+      {15}
+    }
+    else
+    {
+      {16}
+    }
+    {18} int probe = input(&#x27;host&#x27;);
+    {19} if (probe == 1)
+    {
+      {20} if (collide == 1)
+      {
+        {21} conflicts = conflicts - 1;
+        {22}
+      }
+      else
+      {
+        {23} configured = 1;
+        {24}
+      }
+      {25}
+    }
+    else
+    {
+      {26}
+    }
+    {27} delete collide;
+    {28} delete probe;
+    {29}
+  }
+  {30} break#10:;
+  {31} return#3:;
+  {32} delete configured;
+  {33} delete conflicts;
+  {34}
+}
+
+Abstract atl typed Syntax:
+ {
+  {35}
+}
+int main()@
+{
+  {6} int configured = 0;
+  {8} int conflicts = input(&#x27;env&#x27;);
+  {9} while {10} (configured == 0)
+  {
+    {36} loop:;
+    {12} int collide = 0;
+    {13} if (conflicts &gt; 0)
+    {
+      {14} collide = input(&#x27;env&#x27;);
+      {15}
+    }
+    else
+    {
+      {16}
+    }
+    {18} int probe = input(&#x27;host&#x27;);
+    {19} if (probe == 1)
+    {
+      {20} if (collide == 1)
+      {
+        {21} conflicts = conflicts - 1;
+        {22}
+      }
+      else
+      {
+        {23} configured = 1;
+        {24}
+      }
+      {25}
+    }
+    else
+    {
+      {26}
+    }
+    {27} delete collide;
+    {28} delete probe;
+    {29}
+  }
+  {30} break#10:;
+  {31} return#3:;
+  {32} delete configured;
+  {33} delete conflicts;
+  {-1} exit:;
+  {34}
+}
+debug cp 
+
+Forward Summary :
+
+Forward Analysis numerical:
+[-1:]: $7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 1
+[6:]: top
+[8:]: $5{configured} == 0
+[9:]: $7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 0
+[ 10:]: $5{configured} &gt;= 0 &amp;&amp; $7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$5{configured} &gt;= -1
+[12:]: $7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 0
+[13:]: $7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $11{collide} == 0 &amp;&amp; $5{configured} == 0
+[14:]: $7{conflicts} &gt;= 1 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $11{collide} == 0 &amp;&amp; $5{configured} == 0
+[15:]: $11{collide} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= 1 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0
+[16:]: $7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; $11{collide} == 0 &amp;&amp; $5{configured} == 0
+[18:]: 2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $11{collide} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $5{configured} == 0
+[19:]: 2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $5{configured} == 0
+[20:]: 2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $11{collide} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0
+[21:]: $7{conflicts} &gt;= -2147483646 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0
+[22:]: $7{conflicts} &gt;= -2147483647 &amp;&amp; -$7{conflicts} &gt;= -2147483646 &amp;&amp; $11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0
+[23:]: 2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $11{collide} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0
+[24:]: 2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $11{collide} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1
+[25:]: 2147483649$11{collide}+4294967297$5{configured}+2147483648$7{conflicts} &gt;= -4611686014132420607 &amp;&amp; $11{collide}+2147483649$5{configured} &gt;= 1 &amp;&amp; $5{configured}-$7{conflicts} &gt;= -2147483646 &amp;&amp; -$5{configured} &gt;= -1 &amp;&amp; -$11{collide}+2147483646$5{configured} &gt;= -1 &amp;&amp; -2147483649$11{collide}-2$5{configured}+2147483647$7{conflicts} &gt;= -4611686016279904258 &amp;&amp; $17{probe} == 1
+[26:]: 2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $5{configured} == 0
+[27:]: 2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $11{collide} &gt;= -2147483648 &amp;&amp; $17{probe}-2147483649$5{configured} &gt;= -2147483648 &amp;&amp; $5{configured} &gt;= 0 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$17{probe}-2147483646$5{configured} &gt;= -2147483647 &amp;&amp; -$11{collide}+$7{conflicts} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; -1073741824$11{collide}+1073741823$7{conflicts} &gt;= -2305843007066210305 &amp;&amp; -2305843008139952127$11{collide}-$17{probe}-2147483646$5{configured}+2305843005992468481$7{conflicts} &gt;= -4951760150223992076250382335 &amp;&amp; -4611686022722355201$11{collide}+2$17{probe}-4294967298$5{configured}+4611686018427387903$7{conflicts} &gt;= -9903520314283042201340477440
+[28:]: 2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $11{collide} &gt;= -2147483648 &amp;&amp; $17{probe}-2147483649$5{configured} &gt;= -2147483648 &amp;&amp; $5{configured} &gt;= 0 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$17{probe}-2147483646$5{configured} &gt;= -2147483647 &amp;&amp; -$11{collide}+$7{conflicts} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; -1073741824$11{collide}+1073741823$7{conflicts} &gt;= -2305843007066210305 &amp;&amp; -2305843008139952127$11{collide}-$17{probe}-2147483646$5{configured}+2305843005992468481$7{conflicts} &gt;= -4951760150223992076250382335 &amp;&amp; -4611686022722355201$11{collide}+2$17{probe}-4294967298$5{configured}+4611686018427387903$7{conflicts} &gt;= -9903520314283042201340477440
+[29:]: 2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $11{collide} &gt;= -2147483648 &amp;&amp; $17{probe}-2147483649$5{configured} &gt;= -2147483648 &amp;&amp; $5{configured} &gt;= 0 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$17{probe}-2147483646$5{configured} &gt;= -2147483647 &amp;&amp; -$11{collide}+$7{conflicts} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; -1073741824$11{collide}+1073741823$7{conflicts} &gt;= -2305843007066210305 &amp;&amp; -2305843008139952127$11{collide}-$17{probe}-2147483646$5{configured}+2305843005992468481$7{conflicts} &gt;= -4951760150223992076250382335 &amp;&amp; -4611686022722355201$11{collide}+2$17{probe}-4294967298$5{configured}+4611686018427387903$7{conflicts} &gt;= -9903520314283042201340477440
+[30:]: $7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 1
+[31:]: $7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 1
+[32:]: $7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 1
+[33:]: $7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 1
+[34:]: $7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 1
+[35:]: top
+[36:]: $7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 0
+in if is tainted ?conflicts &gt; 0yes! 
+in if is tainted ?collide == 1yes! 
+in if is tainted ?probe == 1yes! 
+in if is tainted ?configured == 0no! 
+
+Forward Taint Summary :
+
+Forward Analysis numerical:
+[-1:]: conflicts -- 
+[6:]: 
+[8:]: 
+[9:]: conflicts -- 
+[ 10:]: conflicts -- 
+[12:]: conflicts -- 
+[13:]: conflicts -- 
+[14:]: conflicts -- 
+[15:]: collide -- conflicts -- 
+[16:]: conflicts -- 
+[18:]: collide -- conflicts -- 
+[19:]: probe -- collide -- conflicts -- 
+[20:]: probe -- collide -- conflicts -- 
+[21:]: probe -- collide -- conflicts -- 
+[22:]: probe -- collide -- conflicts -- 
+[23:]: probe -- collide -- conflicts -- 
+[24:]: probe -- collide -- conflicts -- 
+[25:]: probe -- collide -- conflicts -- configured -- 
+[26:]: probe -- collide -- conflicts -- 
+[27:]: probe -- collide -- conflicts -- configured -- 
+[28:]: probe -- collide -- conflicts -- configured -- 
+[29:]: probe -- collide -- conflicts -- configured -- 
+[30:]: conflicts -- 
+[31:]: conflicts -- 
+[32:]: conflicts -- 
+[33:]: conflicts -- 
+[34:]: conflicts -- 
+[36:]: conflicts -- 
+Property: configured == 1
+
+[-1:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[6:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[8:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[9:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[ 10:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[12:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[13:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[14:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[15:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[16:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[18:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[19:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[20:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[21:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[22:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[23:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[24:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[25:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[26:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[27:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[28:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[29:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[30:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[31:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[32:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[33:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[34:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+[36:]:
+-$5{configured} &gt;= 0 ? bottom
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? bottom
+
+debug cp 
+hostin if is tainted ?conflicts &gt; 0yes! 
+in if is tainted ?collide == 1yes! 
+in if is tainted ?probe == 1no! 
+in if is tainted ?configured == 0no! 
+
+Forward Taint Summary :
+
+Forward Analysis numerical:
+[-1:]: conflicts -- 
+[6:]: 
+[8:]: 
+[9:]: conflicts -- 
+[ 10:]: conflicts -- 
+[12:]: conflicts -- 
+[13:]: conflicts -- 
+[14:]: conflicts -- 
+[15:]: collide -- conflicts -- 
+[16:]: conflicts -- 
+[18:]: collide -- conflicts -- 
+[19:]: collide -- conflicts -- 
+[20:]: collide -- conflicts -- 
+[21:]: collide -- conflicts -- 
+[22:]: collide -- conflicts -- 
+[23:]: collide -- conflicts -- 
+[24:]: collide -- conflicts -- 
+[25:]: collide -- conflicts -- configured -- 
+[26:]: collide -- conflicts -- 
+[27:]: collide -- conflicts -- configured -- 
+[28:]: collide -- conflicts -- configured -- 
+[29:]: collide -- conflicts -- configured -- 
+[30:]: conflicts -- 
+[31:]: conflicts -- 
+[32:]: conflicts -- 
+[33:]: conflicts -- 
+[34:]: conflicts -- 
+[36:]: conflicts -- 
+
+ debug assign conflicts= conflicts - 1
+check if is controlled conflicts - 1 ? false 
+ 
+ debug assign configured= 1
+check if is controlled 1 ? true 
+ check if is controlled collide == 1 ? false 
+ check if is controlled probe == 1 ? true 
+ check if is controlled input(&#x27;host&#x27;) ? true 
+ 
+ debug assign collide= input(&#x27;env&#x27;)
+check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled conflicts &gt; 0 ? false 
+ check if is controlled 0 ? true 
+ check if is controlled configured == 0 ? true 
+ 
+ debug assign conflicts= conflicts - 1
+check if is controlled conflicts - 1 ? false 
+ 
+ debug assign configured= 1
+check if is controlled 1 ? true 
+ check if is controlled collide == 1 ? false 
+ check if is controlled probe == 1 ? true 
+ check if is controlled input(&#x27;host&#x27;) ? true 
+ 
+raise top 
+ 
+
+ debug assign collide= input(&#x27;env&#x27;)
+check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled conflicts &gt; 0 ? false 
+ check if is controlled 0 ? true 
+ check if is controlled configured == 0 ? true 
+ 
+ debug assign conflicts= conflicts - 1
+check if is controlled conflicts - 1 ? false 
+ 
+ debug assign configured= 1
+check if is controlled 1 ? true 
+ check if is controlled collide == 1 ? false 
+ check if is controlled probe == 1 ? true 
+ check if is controlled input(&#x27;host&#x27;) ? true 
+ 
+raise top 
+ 
+
+raise top 
+ 
+
+ debug assign collide= input(&#x27;env&#x27;)
+check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled conflicts &gt; 0 ? false 
+ check if is controlled 0 ? true 
+ check if is controlled configured == 0 ? true 
+ 
+ debug assign conflicts= conflicts - 1
+check if is controlled conflicts - 1 ? false 
+ 
+ debug assign configured= 1
+check if is controlled 1 ? true 
+ check if is controlled collide == 1 ? false 
+ check if is controlled probe == 1 ? true 
+ check if is controlled input(&#x27;host&#x27;) ? true 
+ 
+raise top 
+ 
+
+ debug assign collide= input(&#x27;env&#x27;)
+check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled conflicts &gt; 0 ? false 
+ check if is controlled 0 ? true 
+ check if is controlled configured == 0 ? true 
+ 
+ debug assign conflicts= conflicts - 1
+check if is controlled conflicts - 1 ? false 
+ 
+ debug assign configured= 1
+check if is controlled 1 ? true 
+ check if is controlled collide == 1 ? false 
+ check if is controlled probe == 1 ? true 
+ check if is controlled input(&#x27;host&#x27;) ? true 
+ 
+raise top 
+ 
+
+ debug assign collide= input(&#x27;env&#x27;)
+check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled conflicts &gt; 0 ? false 
+ check if is controlled 0 ? true 
+ check if is controlled configured == 0 ? true 
+ 
+ debug assign conflicts= conflicts - 1
+check if is controlled conflicts - 1 ? false 
+ 
+ debug assign configured= 1
+check if is controlled 1 ? true 
+ check if is controlled collide == 1 ? false 
+ check if is controlled probe == 1 ? true 
+ check if is controlled input(&#x27;host&#x27;) ? true 
+ 
+raise top 
+ 
+
+ debug assign collide= input(&#x27;env&#x27;)
+check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled conflicts &gt; 0 ? false 
+ check if is controlled 0 ? true 
+ check if is controlled configured == 0 ? true 
+ 
+ debug assign conflicts= conflicts - 1
+check if is controlled conflicts - 1 ? false 
+ 
+ debug assign configured= 1
+check if is controlled 1 ? true 
+ check if is controlled collide == 1 ? false 
+ check if is controlled probe == 1 ? true 
+ check if is controlled input(&#x27;host&#x27;) ? true 
+ 
+raise top 
+ 
+
+ debug assign collide= input(&#x27;env&#x27;)
+check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled conflicts &gt; 0 ? false 
+ check if is controlled 0 ? true 
+ check if is controlled configured == 0 ? true 
+ 
+ debug assign conflicts= conflicts - 1
+check if is controlled conflicts - 1 ? false 
+ 
+ debug assign configured= 1
+check if is controlled 1 ? true 
+ check if is controlled collide == 1 ? false 
+ check if is controlled probe == 1 ? true 
+ check if is controlled input(&#x27;host&#x27;) ? true 
+ 
+raise top 
+ 
+
+ debug assign collide= input(&#x27;env&#x27;)
+check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled conflicts &gt; 0 ? false 
+ check if is controlled 0 ? true 
+ check if is controlled configured == 0 ? true 
+ 
+ debug assign conflicts= conflicts - 1
+check if is controlled conflicts - 1 ? false 
+ 
+ debug assign configured= 1
+check if is controlled 1 ? true 
+ check if is controlled collide == 1 ? false 
+ check if is controlled probe == 1 ? true 
+ check if is controlled input(&#x27;host&#x27;) ? true 
+ 
+raise top 
+ 
+
+ debug assign collide= input(&#x27;env&#x27;)
+check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled conflicts &gt; 0 ? false 
+ check if is controlled 0 ? true 
+ check if is controlled configured == 0 ? true 
+ check if is controlled input(&#x27;env&#x27;) ? false 
+ check if is controlled 0 ? true 
+ Property: &lt;host &gt;F{configured == 1}
+
+[-1:]:
+$7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 1 ? 0.
+
+[6:]:
+-$5{configured} &gt;= 0 ? 17179869185
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? 17179869185
+
+[8:]:
+$5{configured} == 0 ? 17179869184
+
+[9:]:
+$7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; $5{configured} == 0 ? 7
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 7
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 7
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 7
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 7
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 7
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 7
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 7
+$7{conflicts} &gt;= -2147483639 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; $5{configured} == 0 ? 7
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 15
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 23
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 31
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 39
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 47
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 55
+$7{conflicts} &gt;= 7 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 ? 7
+
+[ 10:]:
+$7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; $5{configured} == 0 ? 7
+$7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; $5{configured} == 1 ? 0
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 7
+$5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483646 ? 0
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 7
+$5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483645 ? 0
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 7
+$5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483644 ? 0
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 7
+$5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483643 ? 0
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 7
+$5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483642 ? 0
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 7
+$5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483641 ? 0
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 7
+$5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483640 ? 0
+$7{conflicts} &gt;= -2147483639 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; $5{configured} == 0 ? 7
+$7{conflicts} &gt;= -2147483639 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; $5{configured} == 1 ? 0
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 15
+$5{configured} == 1 &amp;&amp; $7{conflicts} == 1 ? 0
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 23
+$5{configured} == 1 &amp;&amp; $7{conflicts} == 2 ? 0
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 31
+$5{configured} == 1 &amp;&amp; $7{conflicts} == 3 ? 0
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 39
+$5{configured} == 1 &amp;&amp; $7{conflicts} == 4 ? 0
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 47
+$5{configured} == 1 &amp;&amp; $7{conflicts} == 5 ? 0
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 55
+$5{configured} == 1 &amp;&amp; $7{conflicts} == 6 ? 0
+$7{conflicts} &gt;= 7 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 ? 7
+$7{conflicts} &gt;= 7 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 1 ? 0
+
+[12:]:
+$7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; $5{configured} == 0 ? 6
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 6
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 6
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 6
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 6
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 6
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 6
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 6
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483639 ? 6
+$7{conflicts} &gt;= -2147483638 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; $5{configured} == 0 ? 6
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 14
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 22
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 30
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 38
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 46
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 54
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 62
+$7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 ? 6
+
+[13:]:
+$7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; $11{collide} == 0 &amp;&amp; $5{configured} == 0 ? 5
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 5
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 5
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 5
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 5
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 5
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 5
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 5
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483639 ? 5
+$7{conflicts} &gt;= -2147483638 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; $11{collide} == 0 &amp;&amp; $5{configured} == 0 ? 5
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 13
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 21
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 29
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 37
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 45
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 53
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 61
+$7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $11{collide} == 0 &amp;&amp; $5{configured} == 0 ? 5
+
+[14:]:
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 12
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 20
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 28
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 36
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 44
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 52
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 60
+$7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $11{collide} == 0 &amp;&amp; $5{configured} == 0 ? 4
+
+[15:]:
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 11
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 4
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 19
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 4
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 27
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 4
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 35
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 4
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 43
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 4
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 51
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 4
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 59
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 4
+$11{collide} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 ? 4
+$7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $11{collide} == 1 &amp;&amp; $5{configured} == 0 ? 3
+$11{collide} &gt;= 2 &amp;&amp; $7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 ? 4
+
+[16:]:
+$7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; $11{collide} == 0 &amp;&amp; $5{configured} == 0 ? 4
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 4
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 4
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 4
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 4
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 4
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 4
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 4
+$11{collide} == 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483639 ? 4
+$7{conflicts} &gt;= -2147483638 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; $11{collide} == 0 &amp;&amp; $5{configured} == 0 ? 4
+
+[18:]:
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 ? 4
+$11{collide} &gt;= -1 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 9
+$11{collide} &gt;= -2 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 9
+$11{collide} == 2 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 4
+$11{collide} &gt;= -3 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 9
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -3 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 4
+$11{collide} &gt;= -4 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 9
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -4 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 4
+$11{collide} &gt;= -5 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 9
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -5 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 4
+$11{collide} &gt;= -6 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 9
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -6 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 4
+$11{collide} &gt;= -7 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 9
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -7 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 4
+$11{collide} &gt;= -8 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483639 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483639 ? 9
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -8 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483639 ? 4
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $7{conflicts} &gt;= -2147483638 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 ? 4
+$7{conflicts} &gt;= -2147483638 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; $11{collide} == 1 &amp;&amp; $5{configured} == 0 ? 9
+$11{collide} &gt;= 2 &amp;&amp; $7{conflicts} &gt;= -2147483638 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $5{configured} == 0 ? 4
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 11
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 4
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 19
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 4
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 27
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 4
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 35
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 4
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 43
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 4
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 51
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 4
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 4
+$11{collide} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 59
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 4
+$11{collide} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $5{configured} == 0 ? 4
+$7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $11{collide} == 1 &amp;&amp; $5{configured} == 0 ? 3
+$11{collide} &gt;= 2 &amp;&amp; $7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 ? 4
+
+[19:]:
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; -$17{probe} &gt;= 0 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $5{configured} == 0 ? 8
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 3
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $17{probe} &gt;= 2 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $5{configured} == 0 ? 8
+$11{collide} &gt;= -1 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= 0 &amp;&amp; -$11{collide} &gt;= -1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 8
+$11{collide} &gt;= -1 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 3
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 10
+$11{collide} &gt;= -1 &amp;&amp; $17{probe} &gt;= 2 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 8
+$11{collide} &gt;= -2 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= 0 &amp;&amp; -$11{collide} &gt;= -2 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 8
+$11{collide} &gt;= -2 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 3
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 10
+$11{collide} == 2 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 3
+$11{collide} &gt;= -2 &amp;&amp; $17{probe} &gt;= 2 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 8
+$11{collide} &gt;= -3 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= 0 &amp;&amp; -$11{collide} &gt;= -3 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 8
+$11{collide} &gt;= -3 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 3
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 10
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -3 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 3
+$11{collide} &gt;= -3 &amp;&amp; $17{probe} &gt;= 2 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -3 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 8
+$11{collide} &gt;= -4 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= 0 &amp;&amp; -$11{collide} &gt;= -4 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 8
+$11{collide} &gt;= -4 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 3
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 10
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -4 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 3
+$11{collide} &gt;= -4 &amp;&amp; $17{probe} &gt;= 2 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -4 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 8
+$11{collide} &gt;= -5 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= 0 &amp;&amp; -$11{collide} &gt;= -5 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 8
+$11{collide} &gt;= -5 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 3
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 10
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -5 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 3
+$11{collide} &gt;= -5 &amp;&amp; $17{probe} &gt;= 2 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -5 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 8
+$11{collide} &gt;= -6 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= 0 &amp;&amp; -$11{collide} &gt;= -6 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 8
+$11{collide} &gt;= -6 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 3
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 10
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -6 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 3
+$11{collide} &gt;= -6 &amp;&amp; $17{probe} &gt;= 2 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -6 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 8
+$11{collide} &gt;= -7 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= 0 &amp;&amp; -$11{collide} &gt;= -7 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 8
+$11{collide} &gt;= -7 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 3
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 10
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -7 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 3
+$11{collide} &gt;= -7 &amp;&amp; $17{probe} &gt;= 2 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -7 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 8
+$11{collide} &gt;= -8 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= 0 &amp;&amp; -$11{collide} &gt;= -8 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483639 ? 8
+$11{collide} &gt;= -8 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483639 ? 3
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483639 ? 10
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -8 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483639 ? 3
+$11{collide} &gt;= -8 &amp;&amp; $17{probe} &gt;= 2 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -8 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483639 ? 8
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= -2147483638 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; -$17{probe} &gt;= 0 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $5{configured} == 0 ? 8
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $7{conflicts} &gt;= -2147483638 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 3
+$7{conflicts} &gt;= -2147483638 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; $11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 10
+$11{collide} &gt;= 2 &amp;&amp; $7{conflicts} &gt;= -2147483638 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 3
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $17{probe} &gt;= 2 &amp;&amp; $7{conflicts} &gt;= -2147483638 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $5{configured} == 0 ? 8
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= 0 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 16
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 3
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 10
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 3
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= 2 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 16
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= 0 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 24
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 3
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 18
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 3
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= 2 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 24
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= 0 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 32
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 3
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 26
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 3
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= 2 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 32
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= 0 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 40
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 3
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 34
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 3
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= 2 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 40
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= 0 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 48
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 3
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 42
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 3
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= 2 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 48
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= 0 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 56
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 3
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 50
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 3
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= 2 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 56
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= 0 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 8
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 3
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 58
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 3
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= 2 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 8
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$17{probe} &gt;= 0 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 ? 8
+$11{collide} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 3
+$7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 2
+$11{collide} &gt;= 2 &amp;&amp; $7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 3
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= 2 &amp;&amp; $7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 ? 8
+
+[20:]:
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 2
+$11{collide} &gt;= -1 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 2
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 9
+$11{collide} &gt;= -2 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 2
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 9
+$11{collide} == 2 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 2
+$11{collide} &gt;= -3 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 2
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 9
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -3 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 2
+$11{collide} &gt;= -4 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 2
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 9
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -4 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 2
+$11{collide} &gt;= -5 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 2
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 9
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -5 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 2
+$11{collide} &gt;= -6 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 2
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 9
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -6 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 2
+$11{collide} &gt;= -7 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 2
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 9
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -7 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 2
+$11{collide} &gt;= -8 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483639 ? 2
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483639 ? 9
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -8 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483639 ? 2
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $7{conflicts} &gt;= -2147483638 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 2
+$7{conflicts} &gt;= -2147483638 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; $11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 9
+$11{collide} &gt;= 2 &amp;&amp; $7{conflicts} &gt;= -2147483638 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 2
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 2
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 9
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 2
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 2
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 17
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 2
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 2
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 25
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 2
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 2
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 33
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 2
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 2
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 41
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 2
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 2
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 49
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 2
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 2
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 57
+$11{collide} &gt;= 2 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 2
+$11{collide} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= 0 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 2
+$7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 1
+$11{collide} &gt;= 2 &amp;&amp; $7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 2
+
+[21:]:
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 8
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 8
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 8
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 8
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 8
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 8
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 8
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483639 ? 8
+$7{conflicts} &gt;= -2147483638 &amp;&amp; -$7{conflicts} &gt;= -1 &amp;&amp; $11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 8
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 16
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 24
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 32
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 40
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 48
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 56
+$7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 0
+
+[22:]:
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483647 ? 7
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 7
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 7
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 7
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 7
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 7
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 7
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 7
+$7{conflicts} &gt;= -2147483639 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; $11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 7
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 15
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 23
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 31
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 39
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 47
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 55
+$7{conflicts} &gt;= 7 &amp;&amp; -$7{conflicts} &gt;= -2147483646 &amp;&amp; $11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 7
+
+[23:]:
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 1
+$11{collide} &gt;= -1 &amp;&amp; -$11{collide} &gt;= -1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 1
+$11{collide} &gt;= -2 &amp;&amp; -$11{collide} &gt;= -2 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 1
+$11{collide} &gt;= -3 &amp;&amp; -$11{collide} &gt;= -3 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 1
+$11{collide} &gt;= -4 &amp;&amp; -$11{collide} &gt;= -4 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 1
+$11{collide} &gt;= -5 &amp;&amp; -$11{collide} &gt;= -5 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 1
+$11{collide} &gt;= -6 &amp;&amp; -$11{collide} &gt;= -6 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 1
+$11{collide} &gt;= -7 &amp;&amp; -$11{collide} &gt;= -7 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 1
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $7{conflicts} &gt;= -2147483639 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 1
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 1
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 1
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 1
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 1
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 1
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 1
+$11{collide} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= 7 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 1
+
+[24:]:
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 ? 0.
+$11{collide} &gt;= -1 &amp;&amp; -$11{collide} &gt;= -1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483646 ? 0.
+$11{collide} &gt;= -2 &amp;&amp; -$11{collide} &gt;= -2 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483645 ? 0.
+$11{collide} &gt;= -3 &amp;&amp; -$11{collide} &gt;= -3 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483644 ? 0.
+$11{collide} &gt;= -4 &amp;&amp; -$11{collide} &gt;= -4 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483643 ? 0.
+$11{collide} &gt;= -5 &amp;&amp; -$11{collide} &gt;= -5 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483642 ? 0.
+$11{collide} &gt;= -6 &amp;&amp; -$11{collide} &gt;= -6 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483641 ? 0.
+$11{collide} &gt;= -7 &amp;&amp; -$11{collide} &gt;= -7 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483640 ? 0.
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $7{conflicts} &gt;= -2147483639 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 1 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 2 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 3 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 4 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 5 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 6 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= 7 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 ? 0.
+
+[25:]:
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483647 ? 7
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 ? 0.
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 7
+$11{collide} &gt;= -1 &amp;&amp; -$11{collide} &gt;= -1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483646 ? 0.
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 7
+$11{collide} &gt;= -2 &amp;&amp; -$11{collide} &gt;= -2 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483645 ? 0.
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 7
+$11{collide} &gt;= -3 &amp;&amp; -$11{collide} &gt;= -3 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483644 ? 0.
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 7
+$11{collide} &gt;= -4 &amp;&amp; -$11{collide} &gt;= -4 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483643 ? 0.
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 7
+$11{collide} &gt;= -5 &amp;&amp; -$11{collide} &gt;= -5 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483642 ? 0.
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 7
+$11{collide} &gt;= -6 &amp;&amp; -$11{collide} &gt;= -6 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483641 ? 0.
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 7
+$11{collide} &gt;= -7 &amp;&amp; -$11{collide} &gt;= -7 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483640 ? 0.
+$7{conflicts} &gt;= -2147483639 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; $11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 7
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $7{conflicts} &gt;= -2147483639 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 ? 0.
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 15
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 1 ? 0.
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 23
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 2 ? 0.
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 31
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 3 ? 0.
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 39
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 4 ? 0.
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 47
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 5 ? 0.
+$11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 55
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 6 ? 0.
+$7{conflicts} &gt;= 7 &amp;&amp; -$7{conflicts} &gt;= -2147483646 &amp;&amp; $11{collide} == 1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 0 ? 7
+$11{collide} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= 7 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 ? 0.
+
+[26:]:
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $5{configured} == 0 ? 7
+$11{collide} &gt;= -1 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 7
+$11{collide} &gt;= -2 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 7
+$11{collide} &gt;= -3 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -3 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 7
+$11{collide} &gt;= -4 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -4 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 7
+$11{collide} &gt;= -5 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -5 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 7
+$11{collide} &gt;= -6 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -6 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 7
+$11{collide} &gt;= -7 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -7 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 7
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= -2147483639 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $5{configured} == 0 ? 7
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 15
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 23
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 31
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 39
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 47
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 55
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= 7 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 ? 7
+
+[27:]:
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide}+$7{conflicts} &gt;= -2147483648 &amp;&amp; -2305843008139952127$11{collide}-$17{probe}+2305843005992468481$7{conflicts} &gt;= -4951760150223992076250382335 &amp;&amp; -4611686022722355201$11{collide}+2$17{probe}+4611686018427387903$7{conflicts} &gt;= -9903520314283042201340477440 &amp;&amp; $5{configured} == 0 ? 7
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 ? 0.
+$11{collide} &gt;= -1 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 7
+$11{collide} &gt;= -1 &amp;&amp; -$11{collide} &gt;= -1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483646 ? 0.
+$11{collide} &gt;= -2 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 7
+$11{collide} &gt;= -2 &amp;&amp; -$11{collide} &gt;= -2 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483645 ? 0.
+$11{collide} &gt;= -3 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -3 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 7
+$11{collide} &gt;= -3 &amp;&amp; -$11{collide} &gt;= -3 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483644 ? 0.
+$11{collide} &gt;= -4 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -4 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 7
+$11{collide} &gt;= -4 &amp;&amp; -$11{collide} &gt;= -4 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483643 ? 0.
+$11{collide} &gt;= -5 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -5 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 7
+$11{collide} &gt;= -5 &amp;&amp; -$11{collide} &gt;= -5 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483642 ? 0.
+$11{collide} &gt;= -6 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -6 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 7
+$11{collide} &gt;= -6 &amp;&amp; -$11{collide} &gt;= -6 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483641 ? 0.
+$11{collide} &gt;= -7 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -7 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 7
+$11{collide} &gt;= -7 &amp;&amp; -$11{collide} &gt;= -7 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483640 ? 0.
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= -2147483639 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -1073741824$11{collide}+1073741823$7{conflicts} &gt;= -2305843007066210305 &amp;&amp; -2305843008139952127$11{collide}-$17{probe}+2305843005992468481$7{conflicts} &gt;= -4951760150223992076250382335 &amp;&amp; -4611686022722355201$11{collide}+2$17{probe}+4611686018427387903$7{conflicts} &gt;= -9903520314283042201340477440 &amp;&amp; $5{configured} == 0 ? 7
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $7{conflicts} &gt;= -2147483639 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 15
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 1 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 23
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 2 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 31
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 3 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 39
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 4 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 47
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 5 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 55
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 6 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= 7 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 ? 7
+$11{collide} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= 7 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 ? 0.
+
+[28:]:
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide}+$7{conflicts} &gt;= -2147483648 &amp;&amp; -2305843008139952127$11{collide}-$17{probe}+2305843005992468481$7{conflicts} &gt;= -4951760150223992076250382335 &amp;&amp; -4611686022722355201$11{collide}+2$17{probe}+4611686018427387903$7{conflicts} &gt;= -9903520314283042201340477440 &amp;&amp; $5{configured} == 0 ? 7
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 ? 0.
+$11{collide} &gt;= -1 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 7
+$11{collide} &gt;= -1 &amp;&amp; -$11{collide} &gt;= -1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483646 ? 0.
+$11{collide} &gt;= -2 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 7
+$11{collide} &gt;= -2 &amp;&amp; -$11{collide} &gt;= -2 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483645 ? 0.
+$11{collide} &gt;= -3 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -3 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 7
+$11{collide} &gt;= -3 &amp;&amp; -$11{collide} &gt;= -3 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483644 ? 0.
+$11{collide} &gt;= -4 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -4 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 7
+$11{collide} &gt;= -4 &amp;&amp; -$11{collide} &gt;= -4 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483643 ? 0.
+$11{collide} &gt;= -5 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -5 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 7
+$11{collide} &gt;= -5 &amp;&amp; -$11{collide} &gt;= -5 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483642 ? 0.
+$11{collide} &gt;= -6 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -6 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 7
+$11{collide} &gt;= -6 &amp;&amp; -$11{collide} &gt;= -6 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483641 ? 0.
+$11{collide} &gt;= -7 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -7 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 7
+$11{collide} &gt;= -7 &amp;&amp; -$11{collide} &gt;= -7 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483640 ? 0.
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= -2147483639 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -1073741824$11{collide}+1073741823$7{conflicts} &gt;= -2305843007066210305 &amp;&amp; -2305843008139952127$11{collide}-$17{probe}+2305843005992468481$7{conflicts} &gt;= -4951760150223992076250382335 &amp;&amp; -4611686022722355201$11{collide}+2$17{probe}+4611686018427387903$7{conflicts} &gt;= -9903520314283042201340477440 &amp;&amp; $5{configured} == 0 ? 7
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $7{conflicts} &gt;= -2147483639 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 15
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 1 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 23
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 2 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 31
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 3 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 39
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 4 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 47
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 5 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 55
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 6 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= 7 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 ? 7
+$11{collide} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= 7 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 ? 0.
+
+[29:]:
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide}+$7{conflicts} &gt;= -2147483648 &amp;&amp; -2305843008139952127$11{collide}-$17{probe}+2305843005992468481$7{conflicts} &gt;= -4951760150223992076250382335 &amp;&amp; -4611686022722355201$11{collide}+2$17{probe}+4611686018427387903$7{conflicts} &gt;= -9903520314283042201340477440 &amp;&amp; $5{configured} == 0 ? 7
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 ? 0.
+$11{collide} &gt;= -1 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -1 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 7
+$11{collide} &gt;= -1 &amp;&amp; -$11{collide} &gt;= -1 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483646 ? 0.
+$11{collide} &gt;= -2 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 7
+$11{collide} &gt;= -2 &amp;&amp; -$11{collide} &gt;= -2 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483645 ? 0.
+$11{collide} &gt;= -3 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -3 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 7
+$11{collide} &gt;= -3 &amp;&amp; -$11{collide} &gt;= -3 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483644 ? 0.
+$11{collide} &gt;= -4 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -4 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 7
+$11{collide} &gt;= -4 &amp;&amp; -$11{collide} &gt;= -4 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483643 ? 0.
+$11{collide} &gt;= -5 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -5 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 7
+$11{collide} &gt;= -5 &amp;&amp; -$11{collide} &gt;= -5 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483642 ? 0.
+$11{collide} &gt;= -6 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -6 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 7
+$11{collide} &gt;= -6 &amp;&amp; -$11{collide} &gt;= -6 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483641 ? 0.
+$11{collide} &gt;= -7 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -7 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 7
+$11{collide} &gt;= -7 &amp;&amp; -$11{collide} &gt;= -7 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == -2147483640 ? 0.
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= -2147483639 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -1073741824$11{collide}+1073741823$7{conflicts} &gt;= -2305843007066210305 &amp;&amp; -2305843008139952127$11{collide}-$17{probe}+2305843005992468481$7{conflicts} &gt;= -4951760150223992076250382335 &amp;&amp; -4611686022722355201$11{collide}+2$17{probe}+4611686018427387903$7{conflicts} &gt;= -9903520314283042201340477440 &amp;&amp; $5{configured} == 0 ? 7
+2147483649$11{collide}+2147483648$7{conflicts} &gt;= -4611686018427387904 &amp;&amp; $7{conflicts} &gt;= -2147483639 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; -2147483649$11{collide}+2147483647$7{conflicts} &gt;= -4611686016279904256 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 15
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 1 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 23
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 2 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 31
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 3 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 39
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 4 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 47
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 5 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 55
+$11{collide} &gt;= -2147483648 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 &amp;&amp; $7{conflicts} == 6 ? 0.
+$11{collide} &gt;= -2147483648 &amp;&amp; $17{probe} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= 7 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$17{probe} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 ? 7
+$11{collide} &gt;= -2147483648 &amp;&amp; $7{conflicts} &gt;= 7 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; -$11{collide} &gt;= -2147483647 &amp;&amp; $17{probe} == 1 &amp;&amp; $5{configured} == 1 ? 0.
+
+[30:]:
+$7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 1 ? 0.
+
+[31:]:
+$7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 1 ? 0.
+
+[32:]:
+$7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 1 ? 0.
+
+[33:]:
+$7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 1 ? 0.
+
+[34:]:
+$7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 1 ? 0.
+
+[36:]:
+$7{conflicts} &gt;= -2147483648 &amp;&amp; -$7{conflicts} &gt;= 2147483647 &amp;&amp; $5{configured} == 0 ? 6
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483646 ? 6
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483645 ? 6
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483644 ? 6
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483643 ? 6
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483642 ? 6
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483641 ? 6
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483640 ? 6
+$5{configured} == 0 &amp;&amp; $7{conflicts} == -2147483639 ? 6
+$7{conflicts} &gt;= -2147483638 &amp;&amp; -$7{conflicts} &gt;= 0 &amp;&amp; $5{configured} == 0 ? 6
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 1 ? 14
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 2 ? 22
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 3 ? 30
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 4 ? 38
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 5 ? 46
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 6 ? 54
+$5{configured} == 0 &amp;&amp; $7{conflicts} == 7 ? 62
+$7{conflicts} &gt;= 8 &amp;&amp; -$7{conflicts} &gt;= -2147483647 &amp;&amp; $5{configured} == 0 ? 6
+
+
+ Resulting tree:  
+ -$5{configured} &gt;= 0 ? 17179869185
+$5{configured} == 1 ? 0.
+$5{configured} &gt;= 2 ? 17179869185
+
+Time: 13.514571
+Final Analysis Result: TRUE
+{
+  &quot;Config&quot;: {
+    &quot;filename&quot;: &quot;tests/atl/prism_games/Communication_protocols/zeroconf.c&quot;,
+    &quot;analysis_type&quot;: &quot;atl-resilience&quot;,
+    &quot;property&quot;: &quot;&lt;host&gt;F{configured == 1}&quot;,
+    &quot;precondition&quot;: &quot;true&quot;,
+    &quot;result&quot;: &quot;TRUE&quot;,
+    &quot;domain&quot;: &quot;polyhedra&quot;,
+    &quot;joinbwd&quot;: 7,
+    &quot;time&quot;: &quot;13.5145700001&quot;
+  },
+  &quot;tree&quot;: {
+    &quot;Node&quot;: {
+      &quot;constraint&quot;: &quot;$5{configured} &gt;= 2&quot;,
+      &quot;left&quot;: { &quot;Leaf&quot;: &quot;17179869185&quot; },
+      &quot;right&quot;: {
+        &quot;Node&quot;: {
+          &quot;constraint&quot;: &quot;$5{configured} &gt;= 1&quot;,
+          &quot;left&quot;: { &quot;Leaf&quot;: &quot;0.&quot; },
+          &quot;right&quot;: { &quot;Leaf&quot;: &quot;17179869185&quot; }
+        }
+      }
+    }
+  },
+  &quot;vulnerability&quot;: &quot;Not analyzed&quot;
+}</code></pre>
+</div>
+<script>hljs.highlightAll();</script>
+</body></html>

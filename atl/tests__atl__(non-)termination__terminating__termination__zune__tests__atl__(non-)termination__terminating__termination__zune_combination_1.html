@@ -1,0 +1,1026 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>zune</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+:root, html[data-theme="dark"]{
+  --bg:#0f1115; --surface:#171a21; --surface2:#1e222b; --border:#2a2f3a;
+  --text:#e6e8ee; --muted:#9aa3b2; --accent:#5b8def;
+  --true:#3fb950; --true-bg:#10371d;
+  --unknown:#d29922; --unknown-bg:#3a2e0c;
+  --fail:#f85149; --fail-bg:#3a1413;
+  --hero:linear-gradient(135deg,#1b2a4a 0%,#10131a 70%);
+}
+html[data-theme="light"]{
+  --bg:#f4f6fb; --surface:#ffffff; --surface2:#eef1f7; --border:#d8deea;
+  --text:#1b2430; --muted:#5b6675; --accent:#1f6feb;
+  --true:#1a7f37; --true-bg:#d8f3df;
+  --unknown:#9a6700; --unknown-bg:#fdf0d0;
+  --fail:#cf222e; --fail-bg:#ffe0e0;
+  --hero:linear-gradient(135deg,#dbe6ff 0%,#f4f6fb 70%);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px; line-height:1.5;
+}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1200px; margin:0 auto; padding:0 24px 80px}
+header.hero{
+  background:var(--hero);
+  border-bottom:1px solid var(--border); padding:34px 24px; margin-bottom:24px;
+}
+header.hero .inner{max-width:1200px; margin:0 auto; position:relative}
+header.hero h1{margin:0; font-size:30px; font-weight:700; letter-spacing:.3px}
+.theme-toggle{
+  position:absolute; top:0; right:0; cursor:pointer; font-size:13px; font-weight:600;
+  padding:8px 14px; border-radius:999px; background:var(--surface2);
+  border:1px solid var(--border); color:var(--text);
+}
+.theme-toggle:hover{border-color:var(--accent)}
+.stats{margin:4px 0 30px}
+.stats .stat-head{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:12px}
+.stats h2{font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); margin:0}
+.seg{display:inline-flex; border:1px solid var(--border); border-radius:10px; overflow:hidden}
+.seg button{
+  background:var(--surface); color:var(--muted); border:none; padding:7px 16px;
+  font-size:13px; font-weight:600; cursor:pointer;
+}
+.seg button.active{background:var(--accent); color:#fff}
+.stats .chart{background:#fff; border:1px solid var(--border); border-radius:14px; padding:10px; text-align:center}
+.stats .chart img{max-width:100%; height:auto}
+header.hero .sub{color:var(--muted); margin-top:6px; font-size:14px}
+.chips{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px}
+.chip{
+  display:inline-flex; align-items:baseline; gap:8px; padding:7px 14px;
+  border-radius:999px; background:var(--surface2); border:1px solid var(--border);
+  font-size:13px; font-weight:600;
+}
+.chip b{font-size:16px}
+.chip.true{color:var(--true)} .chip.unknown{color:var(--unknown)}
+.chip.fail,.chip.timeout{color:var(--fail)} .chip.total{color:var(--text)}
+.chip.info{color:var(--accent)}
+.controls{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin:6px 0 22px}
+.controls input[type=search]{
+  flex:1; min-width:220px; padding:10px 14px; border-radius:10px;
+  background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:14px;
+}
+.controls label{color:var(--muted); font-size:14px; display:inline-flex; gap:7px; align-items:center; cursor:pointer}
+section.grp{margin-bottom:30px}
+section.grp h2{
+  font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted);
+  margin:0 0 10px; padding-bottom:8px; border-bottom:1px solid var(--border);
+}
+.card{background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden}
+table{border-collapse:collapse; width:100%; font-size:14px}
+thead th{
+  position:sticky; top:0; background:var(--surface2); color:var(--muted);
+  text-align:left; font-weight:600; padding:11px 16px; border-bottom:1px solid var(--border);
+  font-size:12px; text-transform:uppercase; letter-spacing:.5px;
+}
+tbody td{padding:11px 16px; border-bottom:1px solid var(--border); vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface2)}
+td.c{text-align:center; white-space:nowrap}
+code.mono,td.prop,.mono{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  font-size:13px; color:var(--text)}
+td.prop{color:var(--text); font-weight:500}
+.badge{
+  display:inline-block; padding:3px 11px; border-radius:999px; font-size:12px; font-weight:700;
+  letter-spacing:.3px;
+}
+.badge.true{color:var(--true); background:var(--true-bg)}
+.badge.unknown{color:var(--unknown); background:var(--unknown-bg)}
+.badge.fail,.badge.timeout{color:var(--fail); background:var(--fail-bg)}
+.badge.info{color:var(--accent); background:rgba(91,141,239,.16)}
+/* one colour per ctl lifting variant (TRUE cells) */
+.badge.v-base{color:#3fb950; background:rgba(63,185,80,.16)}
+.badge.v-resilience{color:#5b8def; background:rgba(91,141,239,.16)}
+.badge.v-resilience_reachability{color:#1ab2a8; background:rgba(26,178,168,.16)}
+.badge.v-robust_reachability{color:#f0883e; background:rgba(240,136,62,.18)}
+.chip.v-base{color:#3fb950} .chip.v-resilience{color:#5b8def}
+.chip.v-resilience_reachability{color:#1ab2a8} .chip.v-robust_reachability{color:#f0883e}
+.tag{font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--muted);
+  background:var(--surface2); padding:2px 8px; border-radius:6px}
+.empty{color:var(--muted); text-align:center; padding:40px}
+/* per-test page */
+.meta{display:flex; flex-wrap:wrap; gap:22px; background:var(--surface); border:1px solid var(--border);
+  border-radius:14px; padding:18px 22px; margin-bottom:22px}
+.meta .item{display:flex; flex-direction:column; gap:3px}
+.meta .item .k{font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted)}
+.meta .item .v{font-size:15px; font-family:ui-monospace,Menlo,monospace}
+/* tabs */
+nav.tabs{display:flex; gap:6px; margin:0 0 22px; border-bottom:1px solid var(--border)}
+nav.tabs button{
+  background:none; border:none; border-bottom:2px solid transparent; color:var(--muted);
+  font-size:15px; font-weight:600; padding:10px 18px; cursor:pointer; margin-bottom:-1px;
+}
+nav.tabs button:hover{color:var(--text)}
+nav.tabs button.active{color:var(--accent); border-bottom-color:var(--accent)}
+.panel[hidden]{display:none}
+/* summary table */
+table.summary{margin-bottom:22px}
+table.summary td.num{text-align:right; font-family:ui-monospace,Menlo,monospace}
+.rate{display:inline-block; min-width:46px}
+.bar{height:7px; border-radius:4px; background:var(--surface2); overflow:hidden; margin-top:4px}
+.bar > i{display:block; height:100%; background:var(--true)}
+/* decision tree */
+.treechips{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px}
+.tag.true{color:var(--true); background:var(--true-bg)}
+.treesvg{background:#fff; padding:14px; text-align:center; overflow:auto}
+.treesvg svg{max-width:100%; height:auto}
+ul.guards{margin:6px 0; padding-left:22px}
+ul.guards li{padding:2px 0; font-size:13px}
+h3.sec{font-size:14px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:26px 0 10px}
+pre.block{background:#0b0d12; border:1px solid var(--border); border-radius:12px; padding:16px;
+  overflow:auto; font-size:13px; line-height:1.45; max-height:560px}
+pre.block code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.back{display:inline-block; margin-bottom:18px; font-size:14px}
+</style><script>
+(function(){
+  const root = document.documentElement;
+  function fromUrl(){ try{ return new URLSearchParams(location.search).get('theme'); }catch(e){ return null; } }
+  function fromStore(){ try{ return localStorage.getItem('ftheme'); }catch(e){ return null; } }
+  function persist(t){ try{ localStorage.setItem('ftheme', t); }catch(e){} }
+  // URL param wins (survives file:// where localStorage is not shared across pages).
+  root.setAttribute('data-theme', fromUrl() || fromStore() || 'dark');
+  // Carry the current theme through internal links so navigation keeps it.
+  function propagate(t){
+    document.querySelectorAll('a[href]').forEach(function(a){
+      const href = a.getAttribute('href');
+      if(!href || href.indexOf('://')>=0 || href.charAt(0)==='#') return;
+      if(href.indexOf('.html')<0) return;
+      a.setAttribute('href', href.split('?')[0] + '?theme=' + t);
+    });
+  }
+  function lbl(){ return root.getAttribute('data-theme')==='dark' ? '\u2600 light' : '\u263e dark'; }
+  document.addEventListener('DOMContentLoaded', function(){
+    propagate(root.getAttribute('data-theme'));
+    const btn = document.getElementById('theme');
+    if(!btn) return;
+    btn.textContent = lbl();
+    btn.addEventListener('click', function(){
+      const next = root.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      persist(next);
+      propagate(next);
+      btn.textContent = lbl();
+    });
+  });
+})();
+</script></head><body>
+<header class="hero"><div class="inner">
+<button id="theme" class="theme-toggle"></button>
+<a class="back" href="./index.html">&larr; back to overview</a>
+<h1>zune</h1>
+<div class="sub mono">tests/atl/(non-)termination/terminating/termination/zune_combination_1.c</div>
+</div></header>
+<div class="wrap">
+<div class="meta">
+  <div class="item"><span class="k">Group</span><span class="v">atl/</span></div>
+  <div class="item"><span class="k">Property</span><span class="v">AF{exit:true}</span></div>
+  <div class="item"><span class="k">Domain</span><span class="v">polyhedra</span></div>
+  <div class="item"><span class="k">Result</span><span class="v"><span class="badge unknown">UNKNOWN</span></span></div>
+  <div class="item"><span class="k">Time</span><span class="v">1.000 s</span></div>
+  <div class="item"><span class="k">Wall time</span><span class="v">0.933 s</span></div>
+</div>
+<h3 class="sec">Analyzer config</h3>
+<div class="card"><table><tbody><tr><td class="mono" style="color:var(--muted)">filename</td><td class="mono">tests/atl/(non-)termination/terminating/termination/zune_combination_1.c</td></tr><tr><td class="mono" style="color:var(--muted)">analysis_type</td><td class="mono">termination</td></tr><tr><td class="mono" style="color:var(--muted)">property</td><td class="mono">AF{exit:true}</td></tr><tr><td class="mono" style="color:var(--muted)">precondition</td><td class="mono">true</td></tr><tr><td class="mono" style="color:var(--muted)">result</td><td class="mono">UKNOWN</td></tr><tr><td class="mono" style="color:var(--muted)">domain</td><td class="mono">polyhedra</td></tr><tr><td class="mono" style="color:var(--muted)">joinbwd</td><td class="mono">2</td></tr><tr><td class="mono" style="color:var(--muted)">time</td><td class="mono">1</td></tr></tbody></table></div>
+<h3 class="sec">Decision tree &amp; preconditions</h3>
+<div class="treechips">
+  <span class="tag">15 leaves</span>
+  <span class="tag true">8 defined region(s)</span>
+  <span class="tag">7 distinct guard(s)</span>
+</div>
+<div class="card treesvg"><svg width="862pt" height="548pt"
+ viewBox="0.00 0.00 862.46 548.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 544)">
+<title>T</title>
+<!-- n0 -->
+<g id="node1" class="node">
+<title>n0</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="233.5" cy="-522" rx="87.39" ry="18"/>
+<text text-anchor="middle" x="233.5" y="-519.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$9{isLeapYear} &gt;= 1</text>
+</g>
+<!-- n1 -->
+<g id="node2" class="node">
+<title>n1</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="145.5" cy="-450" rx="70.92" ry="18"/>
+<text text-anchor="middle" x="145.5" y="-447.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$5{days} &gt;= 733</text>
+</g>
+<!-- n0&#45;&gt;n1 -->
+<g id="edge27" class="edge">
+<title>n0&#45;&gt;n1</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M212.65,-504.41C201.14,-495.26 186.68,-483.76 174.13,-473.77"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="176.21,-470.96 166.21,-467.47 171.85,-476.43 176.21,-470.96"/>
+</g>
+<!-- n12 -->
+<g id="node13" class="node">
+<title>n12</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="327.5" cy="-450" rx="87.39" ry="18"/>
+<text text-anchor="middle" x="327.5" y="-447.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$9{isLeapYear} &gt;= 0</text>
+</g>
+<!-- n0&#45;&gt;n12 -->
+<g id="edge28" class="edge">
+<title>n0&#45;&gt;n12</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M255.78,-504.41C268.19,-495.17 283.81,-483.54 297.3,-473.49"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="299.45,-476.25 305.38,-467.47 295.27,-470.64 299.45,-476.25"/>
+</g>
+<!-- n2 -->
+<g id="node3" class="node">
+<title>n2</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M44.5,-396C44.5,-396 14.5,-396 14.5,-396 8.5,-396 2.5,-390 2.5,-384 2.5,-384 2.5,-372 2.5,-372 2.5,-366 8.5,-360 14.5,-360 14.5,-360 44.5,-360 44.5,-360 50.5,-360 56.5,-366 56.5,-372 56.5,-372 56.5,-384 56.5,-384 56.5,-390 50.5,-396 44.5,-396"/>
+<text text-anchor="middle" x="29.5" y="-375.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n1&#45;&gt;n2 -->
+<g id="edge9" class="edge">
+<title>n1&#45;&gt;n2</title>
+<path fill="none" stroke="#aaaaaa" d="M119.18,-433.12C103.24,-423.5 82.7,-411.1 65.3,-400.6"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="66.89,-397.48 56.52,-395.31 63.28,-403.47 66.89,-397.48"/>
+</g>
+<!-- n3 -->
+<g id="node4" class="node">
+<title>n3</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="145.5" cy="-378" rx="70.92" ry="18"/>
+<text text-anchor="middle" x="145.5" y="-375.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$5{days} &gt;= 732</text>
+</g>
+<!-- n1&#45;&gt;n3 -->
+<g id="edge10" class="edge">
+<title>n1&#45;&gt;n3</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M145.5,-431.7C145.5,-423.98 145.5,-414.71 145.5,-406.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="149,-406.1 145.5,-396.1 142,-406.1 149,-406.1"/>
+</g>
+<!-- n4 -->
+<g id="node5" class="node">
+<title>n4</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M45,-324C45,-324 12,-324 12,-324 6,-324 0,-318 0,-312 0,-312 0,-300 0,-300 0,-294 6,-288 12,-288 12,-288 45,-288 45,-288 51,-288 57,-294 57,-300 57,-300 57,-312 57,-312 57,-318 51,-324 45,-324"/>
+<text text-anchor="middle" x="28.5" y="-303.2" font-family="monospace" font-size="11.00" fill="#1b2430">bottom</text>
+</g>
+<!-- n3&#45;&gt;n4 -->
+<g id="edge7" class="edge">
+<title>n3&#45;&gt;n4</title>
+<path fill="none" stroke="#aaaaaa" d="M118.95,-361.12C103.22,-351.7 83.04,-339.63 65.74,-329.28"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="67.37,-326.17 56.99,-324.04 63.77,-332.18 67.37,-326.17"/>
+</g>
+<!-- n5 -->
+<g id="node6" class="node">
+<title>n5</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="145.5" cy="-306" rx="70.92" ry="18"/>
+<text text-anchor="middle" x="145.5" y="-303.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$5{days} &gt;= 731</text>
+</g>
+<!-- n3&#45;&gt;n5 -->
+<g id="edge8" class="edge">
+<title>n3&#45;&gt;n5</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M145.5,-359.7C145.5,-351.98 145.5,-342.71 145.5,-334.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="149,-334.1 145.5,-324.1 142,-334.1 149,-334.1"/>
+</g>
+<!-- n6 -->
+<g id="node7" class="node">
+<title>n6</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M86.5,-252C86.5,-252 56.5,-252 56.5,-252 50.5,-252 44.5,-246 44.5,-240 44.5,-240 44.5,-228 44.5,-228 44.5,-222 50.5,-216 56.5,-216 56.5,-216 86.5,-216 86.5,-216 92.5,-216 98.5,-222 98.5,-228 98.5,-228 98.5,-240 98.5,-240 98.5,-246 92.5,-252 86.5,-252"/>
+<text text-anchor="middle" x="71.5" y="-231.2" font-family="monospace" font-size="11.00" fill="#1b2430">8</text>
+</g>
+<!-- n5&#45;&gt;n6 -->
+<g id="edge5" class="edge">
+<title>n5&#45;&gt;n6</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M127.96,-288.41C118.77,-279.71 107.33,-268.89 97.16,-259.27"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="99.35,-256.53 89.68,-252.2 94.54,-261.62 99.35,-256.53"/>
+</g>
+<!-- n7 -->
+<g id="node8" class="node">
+<title>n7</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="187.5" cy="-234" rx="70.92" ry="18"/>
+<text text-anchor="middle" x="187.5" y="-231.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$5{days} &gt;= 367</text>
+</g>
+<!-- n5&#45;&gt;n7 -->
+<g id="edge6" class="edge">
+<title>n5&#45;&gt;n7</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M155.67,-288.05C160.55,-279.92 166.5,-270 171.93,-260.94"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="174.99,-262.65 177.13,-252.28 168.99,-259.05 174.99,-262.65"/>
+</g>
+<!-- n8 -->
+<g id="node9" class="node">
+<title>n8</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M144.5,-180C144.5,-180 114.5,-180 114.5,-180 108.5,-180 102.5,-174 102.5,-168 102.5,-168 102.5,-156 102.5,-156 102.5,-150 108.5,-144 114.5,-144 114.5,-144 144.5,-144 144.5,-144 150.5,-144 156.5,-150 156.5,-156 156.5,-156 156.5,-168 156.5,-168 156.5,-174 150.5,-180 144.5,-180"/>
+<text text-anchor="middle" x="129.5" y="-159.2" font-family="monospace" font-size="11.00" fill="#1b2430">8</text>
+</g>
+<!-- n7&#45;&gt;n8 -->
+<g id="edge3" class="edge">
+<title>n7&#45;&gt;n8</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M173.46,-216.05C166.51,-207.67 157.98,-197.38 150.29,-188.1"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="152.89,-185.74 143.81,-180.28 147.5,-190.21 152.89,-185.74"/>
+</g>
+<!-- n9 -->
+<g id="node10" class="node">
+<title>n9</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="245.5" cy="-162" rx="70.92" ry="18"/>
+<text text-anchor="middle" x="245.5" y="-159.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$5{days} &gt;= 366</text>
+</g>
+<!-- n7&#45;&gt;n9 -->
+<g id="edge4" class="edge">
+<title>n7&#45;&gt;n9</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M201.54,-216.05C208.59,-207.54 217.27,-197.07 225.05,-187.68"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="227.9,-189.72 231.59,-179.79 222.51,-185.26 227.9,-189.72"/>
+</g>
+<!-- n10 -->
+<g id="node11" class="node">
+<title>n10</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M225,-108C225,-108 192,-108 192,-108 186,-108 180,-102 180,-96 180,-96 180,-84 180,-84 180,-78 186,-72 192,-72 192,-72 225,-72 225,-72 231,-72 237,-78 237,-84 237,-84 237,-96 237,-96 237,-102 231,-108 225,-108"/>
+<text text-anchor="middle" x="208.5" y="-87.2" font-family="monospace" font-size="11.00" fill="#1b2430">bottom</text>
+</g>
+<!-- n9&#45;&gt;n10 -->
+<g id="edge1" class="edge">
+<title>n9&#45;&gt;n10</title>
+<path fill="none" stroke="#aaaaaa" d="M236.54,-144.05C232.29,-136.01 227.11,-126.2 222.36,-117.23"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="225.4,-115.48 217.63,-108.28 219.21,-118.75 225.4,-115.48"/>
+</g>
+<!-- n11 -->
+<g id="node12" class="node">
+<title>n11</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M297.5,-108C297.5,-108 267.5,-108 267.5,-108 261.5,-108 255.5,-102 255.5,-96 255.5,-96 255.5,-84 255.5,-84 255.5,-78 261.5,-72 267.5,-72 267.5,-72 297.5,-72 297.5,-72 303.5,-72 309.5,-78 309.5,-84 309.5,-84 309.5,-96 309.5,-96 309.5,-102 303.5,-108 297.5,-108"/>
+<text text-anchor="middle" x="282.5" y="-87.2" font-family="monospace" font-size="11.00" fill="#1b2430">3</text>
+</g>
+<!-- n9&#45;&gt;n11 -->
+<g id="edge2" class="edge">
+<title>n9&#45;&gt;n11</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M254.46,-144.05C258.71,-136.01 263.89,-126.2 268.64,-117.23"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="271.79,-118.75 273.37,-108.28 265.6,-115.48 271.79,-118.75"/>
+</g>
+<!-- n13 -->
+<g id="node14" class="node">
+<title>n13</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="327.5" cy="-378" rx="70.92" ry="18"/>
+<text text-anchor="middle" x="327.5" y="-375.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$5{days} &gt;= 731</text>
+</g>
+<!-- n12&#45;&gt;n13 -->
+<g id="edge25" class="edge">
+<title>n12&#45;&gt;n13</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M327.5,-431.7C327.5,-423.98 327.5,-414.71 327.5,-406.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="331,-406.1 327.5,-396.1 324,-406.1 331,-406.1"/>
+</g>
+<!-- n18 -->
+<g id="node19" class="node">
+<title>n18</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="493.5" cy="-378" rx="70.92" ry="18"/>
+<text text-anchor="middle" x="493.5" y="-375.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$5{days} &gt;= 733</text>
+</g>
+<!-- n12&#45;&gt;n18 -->
+<g id="edge26" class="edge">
+<title>n12&#45;&gt;n18</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M363.93,-433.64C389,-423.06 422.46,-408.95 449.1,-397.72"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="450.72,-400.84 458.58,-393.73 448,-394.39 450.72,-400.84"/>
+</g>
+<!-- n14 -->
+<g id="node15" class="node">
+<title>n14</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M276.5,-324C276.5,-324 246.5,-324 246.5,-324 240.5,-324 234.5,-318 234.5,-312 234.5,-312 234.5,-300 234.5,-300 234.5,-294 240.5,-288 246.5,-288 246.5,-288 276.5,-288 276.5,-288 282.5,-288 288.5,-294 288.5,-300 288.5,-300 288.5,-312 288.5,-312 288.5,-318 282.5,-324 276.5,-324"/>
+<text text-anchor="middle" x="261.5" y="-303.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n13&#45;&gt;n14 -->
+<g id="edge13" class="edge">
+<title>n13&#45;&gt;n14</title>
+<path fill="none" stroke="#aaaaaa" d="M311.86,-360.41C303.8,-351.86 293.8,-341.26 284.85,-331.77"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="287.36,-329.32 277.95,-324.45 282.26,-334.12 287.36,-329.32"/>
+</g>
+<!-- n15 -->
+<g id="node16" class="node">
+<title>n15</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="377.5" cy="-306" rx="70.92" ry="18"/>
+<text text-anchor="middle" x="377.5" y="-303.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$5{days} &gt;= 366</text>
+</g>
+<!-- n13&#45;&gt;n15 -->
+<g id="edge14" class="edge">
+<title>n13&#45;&gt;n15</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M339.6,-360.05C345.62,-351.63 353.01,-341.28 359.67,-331.97"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="362.54,-333.96 365.51,-323.79 356.85,-329.89 362.54,-333.96"/>
+</g>
+<!-- n16 -->
+<g id="node17" class="node">
+<title>n16</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M340.5,-252C340.5,-252 310.5,-252 310.5,-252 304.5,-252 298.5,-246 298.5,-240 298.5,-240 298.5,-228 298.5,-228 298.5,-222 304.5,-216 310.5,-216 310.5,-216 340.5,-216 340.5,-216 346.5,-216 352.5,-222 352.5,-228 352.5,-228 352.5,-240 352.5,-240 352.5,-246 346.5,-252 340.5,-252"/>
+<text text-anchor="middle" x="325.5" y="-231.2" font-family="monospace" font-size="11.00" fill="#1b2430">7</text>
+</g>
+<!-- n15&#45;&gt;n16 -->
+<g id="edge11" class="edge">
+<title>n15&#45;&gt;n16</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M364.91,-288.05C358.74,-279.75 351.19,-269.58 344.35,-260.38"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="347.11,-258.22 338.33,-252.28 341.49,-262.39 347.11,-258.22"/>
+</g>
+<!-- n17 -->
+<g id="node18" class="node">
+<title>n17</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M412.5,-252C412.5,-252 382.5,-252 382.5,-252 376.5,-252 370.5,-246 370.5,-240 370.5,-240 370.5,-228 370.5,-228 370.5,-222 376.5,-216 382.5,-216 382.5,-216 412.5,-216 412.5,-216 418.5,-216 424.5,-222 424.5,-228 424.5,-228 424.5,-240 424.5,-240 424.5,-246 418.5,-252 412.5,-252"/>
+<text text-anchor="middle" x="397.5" y="-231.2" font-family="monospace" font-size="11.00" fill="#1b2430">3</text>
+</g>
+<!-- n15&#45;&gt;n17 -->
+<g id="edge12" class="edge">
+<title>n15&#45;&gt;n17</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M382.44,-287.7C384.67,-279.9 387.35,-270.51 389.83,-261.83"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="393.23,-262.68 392.61,-252.1 386.5,-260.76 393.23,-262.68"/>
+</g>
+<!-- n19 -->
+<g id="node20" class="node">
+<title>n19</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M508.5,-324C508.5,-324 478.5,-324 478.5,-324 472.5,-324 466.5,-318 466.5,-312 466.5,-312 466.5,-300 466.5,-300 466.5,-294 472.5,-288 478.5,-288 478.5,-288 508.5,-288 508.5,-288 514.5,-288 520.5,-294 520.5,-300 520.5,-300 520.5,-312 520.5,-312 520.5,-318 514.5,-324 508.5,-324"/>
+<text text-anchor="middle" x="493.5" y="-303.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n18&#45;&gt;n19 -->
+<g id="edge23" class="edge">
+<title>n18&#45;&gt;n19</title>
+<path fill="none" stroke="#aaaaaa" d="M493.5,-359.7C493.5,-351.98 493.5,-342.71 493.5,-334.11"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="497,-334.1 493.5,-324.1 490,-334.1 497,-334.1"/>
+</g>
+<!-- n20 -->
+<g id="node21" class="node">
+<title>n20</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="609.5" cy="-306" rx="70.92" ry="18"/>
+<text text-anchor="middle" x="609.5" y="-303.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$5{days} &gt;= 732</text>
+</g>
+<!-- n18&#45;&gt;n20 -->
+<g id="edge24" class="edge">
+<title>n18&#45;&gt;n20</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M519.82,-361.12C535.99,-351.36 556.89,-338.75 574.45,-328.15"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="576.53,-330.98 583.28,-322.82 572.91,-324.99 576.53,-330.98"/>
+</g>
+<!-- n21 -->
+<g id="node22" class="node">
+<title>n21</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M567,-252C567,-252 534,-252 534,-252 528,-252 522,-246 522,-240 522,-240 522,-228 522,-228 522,-222 528,-216 534,-216 534,-216 567,-216 567,-216 573,-216 579,-222 579,-228 579,-228 579,-240 579,-240 579,-246 573,-252 567,-252"/>
+<text text-anchor="middle" x="550.5" y="-231.2" font-family="monospace" font-size="11.00" fill="#1b2430">bottom</text>
+</g>
+<!-- n20&#45;&gt;n21 -->
+<g id="edge21" class="edge">
+<title>n20&#45;&gt;n21</title>
+<path fill="none" stroke="#aaaaaa" d="M595.22,-288.05C588.15,-279.67 579.47,-269.38 571.65,-260.1"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="574.18,-257.67 565.06,-252.28 568.83,-262.18 574.18,-257.67"/>
+</g>
+<!-- n22 -->
+<g id="node23" class="node">
+<title>n22</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="667.5" cy="-234" rx="70.92" ry="18"/>
+<text text-anchor="middle" x="667.5" y="-231.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$5{days} &gt;= 731</text>
+</g>
+<!-- n20&#45;&gt;n22 -->
+<g id="edge22" class="edge">
+<title>n20&#45;&gt;n22</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M623.54,-288.05C630.59,-279.54 639.27,-269.07 647.05,-259.68"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="649.9,-261.72 653.59,-251.79 644.51,-257.26 649.9,-261.72"/>
+</g>
+<!-- n23 -->
+<g id="node24" class="node">
+<title>n23</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M624.5,-180C624.5,-180 594.5,-180 594.5,-180 588.5,-180 582.5,-174 582.5,-168 582.5,-168 582.5,-156 582.5,-156 582.5,-150 588.5,-144 594.5,-144 594.5,-144 624.5,-144 624.5,-144 630.5,-144 636.5,-150 636.5,-156 636.5,-156 636.5,-168 636.5,-168 636.5,-174 630.5,-180 624.5,-180"/>
+<text text-anchor="middle" x="609.5" y="-159.2" font-family="monospace" font-size="11.00" fill="#1b2430">8</text>
+</g>
+<!-- n22&#45;&gt;n23 -->
+<g id="edge19" class="edge">
+<title>n22&#45;&gt;n23</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M653.46,-216.05C646.51,-207.67 637.98,-197.38 630.29,-188.1"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="632.89,-185.74 623.81,-180.28 627.5,-190.21 632.89,-185.74"/>
+</g>
+<!-- n24 -->
+<g id="node25" class="node">
+<title>n24</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="725.5" cy="-162" rx="70.92" ry="18"/>
+<text text-anchor="middle" x="725.5" y="-159.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$5{days} &gt;= 367</text>
+</g>
+<!-- n22&#45;&gt;n24 -->
+<g id="edge20" class="edge">
+<title>n22&#45;&gt;n24</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M681.54,-216.05C688.59,-207.54 697.27,-197.07 705.05,-187.68"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="707.9,-189.72 711.59,-179.79 702.51,-185.26 707.9,-189.72"/>
+</g>
+<!-- n25 -->
+<g id="node26" class="node">
+<title>n25</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M682.5,-108C682.5,-108 652.5,-108 652.5,-108 646.5,-108 640.5,-102 640.5,-96 640.5,-96 640.5,-84 640.5,-84 640.5,-78 646.5,-72 652.5,-72 652.5,-72 682.5,-72 682.5,-72 688.5,-72 694.5,-78 694.5,-84 694.5,-84 694.5,-96 694.5,-96 694.5,-102 688.5,-108 682.5,-108"/>
+<text text-anchor="middle" x="667.5" y="-87.2" font-family="monospace" font-size="11.00" fill="#1b2430">8</text>
+</g>
+<!-- n24&#45;&gt;n25 -->
+<g id="edge17" class="edge">
+<title>n24&#45;&gt;n25</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M711.46,-144.05C704.51,-135.67 695.98,-125.38 688.29,-116.1"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="690.89,-113.74 681.81,-108.28 685.5,-118.21 690.89,-113.74"/>
+</g>
+<!-- n26 -->
+<g id="node27" class="node">
+<title>n26</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="783.5" cy="-90" rx="70.92" ry="18"/>
+<text text-anchor="middle" x="783.5" y="-87.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$5{days} &gt;= 366</text>
+</g>
+<!-- n24&#45;&gt;n26 -->
+<g id="edge18" class="edge">
+<title>n24&#45;&gt;n26</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M739.54,-144.05C746.59,-135.54 755.27,-125.07 763.05,-115.68"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="765.9,-117.72 769.59,-107.79 760.51,-113.26 765.9,-117.72"/>
+</g>
+<!-- n27 -->
+<g id="node28" class="node">
+<title>n27</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M763,-36C763,-36 730,-36 730,-36 724,-36 718,-30 718,-24 718,-24 718,-12 718,-12 718,-6 724,0 730,0 730,0 763,0 763,0 769,0 775,-6 775,-12 775,-12 775,-24 775,-24 775,-30 769,-36 763,-36"/>
+<text text-anchor="middle" x="746.5" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">bottom</text>
+</g>
+<!-- n26&#45;&gt;n27 -->
+<g id="edge15" class="edge">
+<title>n26&#45;&gt;n27</title>
+<path fill="none" stroke="#aaaaaa" d="M774.54,-72.05C770.29,-64.01 765.11,-54.2 760.36,-45.23"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="763.4,-43.48 755.63,-36.28 757.21,-46.75 763.4,-43.48"/>
+</g>
+<!-- n28 -->
+<g id="node29" class="node">
+<title>n28</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M835.5,-36C835.5,-36 805.5,-36 805.5,-36 799.5,-36 793.5,-30 793.5,-24 793.5,-24 793.5,-12 793.5,-12 793.5,-6 799.5,0 805.5,0 805.5,0 835.5,0 835.5,0 841.5,0 847.5,-6 847.5,-12 847.5,-12 847.5,-24 847.5,-24 847.5,-30 841.5,-36 835.5,-36"/>
+<text text-anchor="middle" x="820.5" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">3</text>
+</g>
+<!-- n26&#45;&gt;n28 -->
+<g id="edge16" class="edge">
+<title>n26&#45;&gt;n28</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M792.46,-72.05C796.71,-64.01 801.89,-54.2 806.64,-45.23"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="809.79,-46.75 811.37,-36.28 803.6,-43.48 809.79,-46.75"/>
+</g>
+</g>
+</svg>
+</div>
+<h3 class="sec">Defined regions (sufficient preconditions)</h3>
+<div class="card"><table><thead><tr><th>#</th><th>Region (conjunction of guards)</th>
+<th>Ranking function</th><th>Status</th></tr></thead><tbody><tr><td class="num">1</td><td class="prop">$9{isLeapYear} &gt;= 1 &and; &not;($5{days} &gt;= 733) &and; &not;($5{days} &gt;= 732) &and; $5{days} &gt;= 731</td><td class="mono">8</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">2</td><td class="prop">&not;($9{isLeapYear} &gt;= 1) &and; $9{isLeapYear} &gt;= 0 &and; &not;($5{days} &gt;= 731) &and; $5{days} &gt;= 366</td><td class="mono">7</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">3</td><td class="prop">&not;($9{isLeapYear} &gt;= 1) &and; $9{isLeapYear} &gt;= 0 &and; &not;($5{days} &gt;= 731) &and; &not;($5{days} &gt;= 366)</td><td class="mono">3</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">4</td><td class="prop">$9{isLeapYear} &gt;= 1 &and; &not;($5{days} &gt;= 733) &and; &not;($5{days} &gt;= 732) &and; &not;($5{days} &gt;= 731) &and; $5{days} &gt;= 367</td><td class="mono">8</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">5</td><td class="prop">&not;($9{isLeapYear} &gt;= 1) &and; &not;($9{isLeapYear} &gt;= 0) &and; &not;($5{days} &gt;= 733) &and; &not;($5{days} &gt;= 732) &and; $5{days} &gt;= 731</td><td class="mono">8</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">6</td><td class="prop">$9{isLeapYear} &gt;= 1 &and; &not;($5{days} &gt;= 733) &and; &not;($5{days} &gt;= 732) &and; &not;($5{days} &gt;= 731) &and; &not;($5{days} &gt;= 367) &and; &not;($5{days} &gt;= 366)</td><td class="mono">3</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">7</td><td class="prop">&not;($9{isLeapYear} &gt;= 1) &and; &not;($9{isLeapYear} &gt;= 0) &and; &not;($5{days} &gt;= 733) &and; &not;($5{days} &gt;= 732) &and; &not;($5{days} &gt;= 731) &and; $5{days} &gt;= 367</td><td class="mono">8</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">8</td><td class="prop">&not;($9{isLeapYear} &gt;= 1) &and; &not;($9{isLeapYear} &gt;= 0) &and; &not;($5{days} &gt;= 733) &and; &not;($5{days} &gt;= 732) &and; &not;($5{days} &gt;= 731) &and; &not;($5{days} &gt;= 367) &and; &not;($5{days} &gt;= 366)</td><td class="mono">3</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">9</td><td class="prop">$9{isLeapYear} &gt;= 1 &and; $5{days} &gt;= 733</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">10</td><td class="prop">$9{isLeapYear} &gt;= 1 &and; &not;($5{days} &gt;= 733) &and; $5{days} &gt;= 732</td><td class="mono">bottom</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">11</td><td class="prop">&not;($9{isLeapYear} &gt;= 1) &and; $9{isLeapYear} &gt;= 0 &and; $5{days} &gt;= 731</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">12</td><td class="prop">&not;($9{isLeapYear} &gt;= 1) &and; &not;($9{isLeapYear} &gt;= 0) &and; $5{days} &gt;= 733</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">13</td><td class="prop">&not;($9{isLeapYear} &gt;= 1) &and; &not;($9{isLeapYear} &gt;= 0) &and; &not;($5{days} &gt;= 733) &and; $5{days} &gt;= 732</td><td class="mono">bottom</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">14</td><td class="prop">$9{isLeapYear} &gt;= 1 &and; &not;($5{days} &gt;= 733) &and; &not;($5{days} &gt;= 732) &and; &not;($5{days} &gt;= 731) &and; &not;($5{days} &gt;= 367) &and; $5{days} &gt;= 366</td><td class="mono">bottom</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">15</td><td class="prop">&not;($9{isLeapYear} &gt;= 1) &and; &not;($9{isLeapYear} &gt;= 0) &and; &not;($5{days} &gt;= 733) &and; &not;($5{days} &gt;= 732) &and; &not;($5{days} &gt;= 731) &and; &not;($5{days} &gt;= 367) &and; $5{days} &gt;= 366</td><td class="mono">bottom</td><td class="c"><span class="badge fail">undefined</span></td></tr></tbody></table></div>
+<h3 class="sec">Distinct guards</h3>
+<div class="card" style="padding:10px 20px"><ul class="guards"><li class="mono">$5{days} &gt;= 366</li><li class="mono">$5{days} &gt;= 367</li><li class="mono">$5{days} &gt;= 731</li><li class="mono">$5{days} &gt;= 732</li><li class="mono">$5{days} &gt;= 733</li><li class="mono">$9{isLeapYear} &gt;= 0</li><li class="mono">$9{isLeapYear} &gt;= 1</li></ul></div>
+
+<h3 class="sec">Source</h3>
+<pre class="block"><code class="language-c">/* http://techcrunch.com/2008/12/31/zune-bug-explained-in-detail/
+
+suggested parameters:
+- partition abstract domain = boxes [default]
+- function abstract domain = affine [default]
+- backward widening delay = 2 [default]
+*/
+
+int main() {
+  int days, year = 1980;
+  int isLeapYear;
+  while (days &gt; 365) {
+    if ( isLeapYear ) {
+      if (days &gt; 366) {
+        days -= 366;
+        year += 1;
+      }
+    } else {
+      days -= 365;
+      year += 1;
+    }
+  }
+  return 0;
+}</code></pre>
+<h3 class="sec">Analysis log</h3>
+<pre class="block"><code>
+Abstract typed Syntax:
+{
+  {32}
+}
+int main()@
+{
+  {6} int days;
+  {8} int year = 1980;
+  {10} int isLeapYear;
+  {11} while {12} (days &gt; 365)
+  {
+    {13} if (isLeapYear != 0)
+    {
+      {14} if (days &gt; 366)
+      {
+        {15} days = days - 366;
+        {16} year = year + 1;
+        {17}
+      }
+      else
+      {
+        {18}
+      }
+      {19}
+    }
+    else
+    {
+      {20} days = days - 365;
+      {21} year = year + 1;
+      {22}
+    }
+    {23}
+  }
+  {24} break#12:;
+  {25} __return4 = 0;
+  {26} return;
+  {27} return#3:;
+  {28} delete days;
+  {29} delete year;
+  {30} delete isLeapYear;
+  {31}
+}
+
+Backward Analysis:
+[6:]: -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 3
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 8
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 8
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; -$9{isLeapYear} &gt;= 1 ? top
+-$5{days} &gt;= -365 &amp;&amp; $9{isLeapYear} == 0 ? 3
+$5{days} &gt;= 366 &amp;&amp; -$5{days} &gt;= -730 &amp;&amp; $9{isLeapYear} == 0 ? 7
+$5{days} &gt;= 731 &amp;&amp; $9{isLeapYear} == 0 ? top
+$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 3
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 8
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 8
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; $9{isLeapYear} &gt;= 1 ? top
+
+[8:]: -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 3
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 8
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 8
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; -$9{isLeapYear} &gt;= 1 ? top
+-$5{days} &gt;= -365 &amp;&amp; $9{isLeapYear} == 0 ? 3
+$5{days} &gt;= 366 &amp;&amp; -$5{days} &gt;= -730 &amp;&amp; $9{isLeapYear} == 0 ? 7
+$5{days} &gt;= 731 &amp;&amp; $9{isLeapYear} == 0 ? top
+$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 3
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 8
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 8
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; $9{isLeapYear} &gt;= 1 ? top
+
+[ 10:]: -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 2
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 7
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 7
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; -$9{isLeapYear} &gt;= 1 ? top
+-$5{days} &gt;= -365 &amp;&amp; $9{isLeapYear} == 0 ? 2
+$5{days} &gt;= 366 &amp;&amp; -$5{days} &gt;= -730 &amp;&amp; $9{isLeapYear} == 0 ? 6
+$5{days} &gt;= 731 &amp;&amp; $9{isLeapYear} == 0 ? top
+$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 2
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 7
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 7
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; $9{isLeapYear} &gt;= 1 ? top
+
+[11:]: -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 2
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 7
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 7
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; -$9{isLeapYear} &gt;= 1 ? top
+-$5{days} &gt;= -365 &amp;&amp; $9{isLeapYear} == 0 ? 2
+$5{days} &gt;= 366 &amp;&amp; -$5{days} &gt;= -730 &amp;&amp; $9{isLeapYear} == 0 ? 6
+$5{days} &gt;= 731 &amp;&amp; $9{isLeapYear} == 0 ? top
+$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 2
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 7
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 7
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; $9{isLeapYear} &gt;= 1 ? top
+
+[12:]: -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 2
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 7
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 7
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; -$9{isLeapYear} &gt;= 1 ? top
+-$5{days} &gt;= -365 &amp;&amp; $9{isLeapYear} == 0 ? 2
+$5{days} &gt;= 366 &amp;&amp; -$5{days} &gt;= -730 &amp;&amp; $9{isLeapYear} == 0 ? 6
+$5{days} &gt;= 731 &amp;&amp; $9{isLeapYear} == 0 ? top
+$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 2
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 7
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 7
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; $9{isLeapYear} &gt;= 1 ? top
+
+[13:]: -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 4
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 6
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 6
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -1095 ? 11
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 1096 ? 11
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 1097 ? 11
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 1098 ? bottom
+$5{days} &gt;= 1099 &amp;&amp; -$9{isLeapYear} &gt;= 1 ? top
+-$5{days} &gt;= -730 &amp;&amp; $9{isLeapYear} == 0 ? 5
+$5{days} &gt;= 731 &amp;&amp; -$5{days} &gt;= -1095 &amp;&amp; $9{isLeapYear} == 0 ? 9
+$5{days} &gt;= 1096 &amp;&amp; $9{isLeapYear} == 0 ? top
+$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 4
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 6
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 6
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -1095 ? 11
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 1096 ? 11
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 1097 ? 11
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 1098 ? bottom
+$5{days} &gt;= 1099 &amp;&amp; $9{isLeapYear} &gt;= 1 ? top
+
+[14:]: -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 3
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -731 ? 5
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -1096 ? 10
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 1097 ? 10
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 1098 ? bottom
+$5{days} &gt;= 1099 &amp;&amp; -$9{isLeapYear} &gt;= 1 ? top
+-$5{days} &gt;= -365 &amp;&amp; $9{isLeapYear} == 0 ? 3
+$5{days} == 366 &amp;&amp; $9{isLeapYear} == 0 ? 7
+$5{days} &gt;= 367 &amp;&amp; -$5{days} &gt;= -731 &amp;&amp; $9{isLeapYear} == 0 ? 5
+$5{days} &gt;= 732 &amp;&amp; -$5{days} &gt;= -1096 &amp;&amp; $9{isLeapYear} == 0 ? 9
+$5{days} &gt;= 1097 &amp;&amp; $9{isLeapYear} == 0 ? top
+$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 3
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -731 ? 5
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -1096 ? 10
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 1097 ? 10
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 1098 ? bottom
+$5{days} &gt;= 1099 &amp;&amp; $9{isLeapYear} &gt;= 1 ? top
+
+[15:]: -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -731 ? 4
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -1096 ? 9
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 1097 ? 9
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 1098 ? bottom
+$5{days} &gt;= 1099 &amp;&amp; -$9{isLeapYear} &gt;= 1 ? top
+-$5{days} &gt;= -731 &amp;&amp; $9{isLeapYear} == 0 ? 4
+$5{days} &gt;= 732 &amp;&amp; -$5{days} &gt;= -1096 &amp;&amp; $9{isLeapYear} == 0 ? 8
+$5{days} &gt;= 1097 &amp;&amp; $9{isLeapYear} == 0 ? top
+$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -731 ? 4
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -1096 ? 9
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 1097 ? 9
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 1098 ? bottom
+$5{days} &gt;= 1099 &amp;&amp; $9{isLeapYear} &gt;= 1 ? top
+
+[16:]: -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 3
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 8
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 8
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; -$9{isLeapYear} &gt;= 1 ? top
+-$5{days} &gt;= -365 &amp;&amp; $9{isLeapYear} == 0 ? 3
+$5{days} &gt;= 366 &amp;&amp; -$5{days} &gt;= -730 &amp;&amp; $9{isLeapYear} == 0 ? 7
+$5{days} &gt;= 731 &amp;&amp; $9{isLeapYear} == 0 ? top
+$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 3
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 8
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 8
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; $9{isLeapYear} &gt;= 1 ? top
+
+[17:]: -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 2
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 7
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 7
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; -$9{isLeapYear} &gt;= 1 ? top
+-$5{days} &gt;= -365 &amp;&amp; $9{isLeapYear} == 0 ? 2
+$5{days} &gt;= 366 &amp;&amp; -$5{days} &gt;= -730 &amp;&amp; $9{isLeapYear} == 0 ? 6
+$5{days} &gt;= 731 &amp;&amp; $9{isLeapYear} == 0 ? top
+$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 2
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 7
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 7
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; $9{isLeapYear} &gt;= 1 ? top
+
+[18:]: -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 2
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 7
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 7
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; -$9{isLeapYear} &gt;= 1 ? top
+-$5{days} &gt;= -365 &amp;&amp; $9{isLeapYear} == 0 ? 2
+$5{days} &gt;= 366 &amp;&amp; -$5{days} &gt;= -730 &amp;&amp; $9{isLeapYear} == 0 ? 6
+$5{days} &gt;= 731 &amp;&amp; $9{isLeapYear} == 0 ? top
+$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 2
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 7
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 7
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; $9{isLeapYear} &gt;= 1 ? top
+
+[19:]: -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 2
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 7
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 7
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; -$9{isLeapYear} &gt;= 1 ? top
+-$5{days} &gt;= -365 &amp;&amp; $9{isLeapYear} == 0 ? 2
+$5{days} &gt;= 366 &amp;&amp; -$5{days} &gt;= -730 &amp;&amp; $9{isLeapYear} == 0 ? 6
+$5{days} &gt;= 731 &amp;&amp; $9{isLeapYear} == 0 ? top
+$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 2
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 7
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 7
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; $9{isLeapYear} &gt;= 1 ? top
+
+[20:]: -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 4
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? bottom
+$5{days} &gt;= 732 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -1095 ? 9
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 1096 ? 9
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 1097 ? bottom
+$5{days} &gt;= 1098 &amp;&amp; -$9{isLeapYear} &gt;= 1 ? top
+-$5{days} &gt;= -730 &amp;&amp; $9{isLeapYear} == 0 ? 4
+$5{days} &gt;= 731 &amp;&amp; -$5{days} &gt;= -1095 &amp;&amp; $9{isLeapYear} == 0 ? 8
+$5{days} &gt;= 1096 &amp;&amp; $9{isLeapYear} == 0 ? top
+$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 4
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? bottom
+$5{days} &gt;= 732 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -1095 ? 9
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 1096 ? 9
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 1097 ? bottom
+$5{days} &gt;= 1098 &amp;&amp; $9{isLeapYear} &gt;= 1 ? top
+
+[21:]: -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 3
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 8
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 8
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; -$9{isLeapYear} &gt;= 1 ? top
+-$5{days} &gt;= -365 &amp;&amp; $9{isLeapYear} == 0 ? 3
+$5{days} &gt;= 366 &amp;&amp; -$5{days} &gt;= -730 &amp;&amp; $9{isLeapYear} == 0 ? 7
+$5{days} &gt;= 731 &amp;&amp; $9{isLeapYear} == 0 ? top
+$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 3
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 8
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 8
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; $9{isLeapYear} &gt;= 1 ? top
+
+[22:]: -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 2
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 7
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 7
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; -$9{isLeapYear} &gt;= 1 ? top
+-$5{days} &gt;= -365 &amp;&amp; $9{isLeapYear} == 0 ? 2
+$5{days} &gt;= 366 &amp;&amp; -$5{days} &gt;= -730 &amp;&amp; $9{isLeapYear} == 0 ? 6
+$5{days} &gt;= 731 &amp;&amp; $9{isLeapYear} == 0 ? top
+$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 2
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 7
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 7
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; $9{isLeapYear} &gt;= 1 ? top
+
+[23:]: -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 2
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 7
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 7
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; -$9{isLeapYear} &gt;= 1 ? top
+-$5{days} &gt;= -365 &amp;&amp; $9{isLeapYear} == 0 ? 2
+$5{days} &gt;= 366 &amp;&amp; -$5{days} &gt;= -730 &amp;&amp; $9{isLeapYear} == 0 ? 6
+$5{days} &gt;= 731 &amp;&amp; $9{isLeapYear} == 0 ? top
+$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 2
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 7
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 7
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; $9{isLeapYear} &gt;= 1 ? top
+
+[24:]: top ? 1
+
+[25:]: top ? 1
+
+[26:]: top ? 0.
+
+[27:]: top ? 0.
+
+[28:]: top ? 0.
+
+[29:]: top ? 0.
+
+[30:]: top ? 0.
+
+[31:]: top ? 0.
+
+[32:]: -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 3
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; -$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 8
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 8
+-$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; -$9{isLeapYear} &gt;= 1 ? top
+-$5{days} &gt;= -365 &amp;&amp; $9{isLeapYear} == 0 ? 3
+$5{days} &gt;= 366 &amp;&amp; -$5{days} &gt;= -730 &amp;&amp; $9{isLeapYear} == 0 ? 7
+$5{days} &gt;= 731 &amp;&amp; $9{isLeapYear} == 0 ? top
+$9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -365 ? 3
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 366 ? bottom
+$5{days} &gt;= 367 &amp;&amp; $9{isLeapYear} &gt;= 1 &amp;&amp; -$5{days} &gt;= -730 ? 8
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 731 ? 8
+$9{isLeapYear} &gt;= 1 &amp;&amp; $5{days} == 732 ? bottom
+$5{days} &gt;= 733 &amp;&amp; $9{isLeapYear} &gt;= 1 ? top
+
+
+Final Analysis Result: UNKNOWN
+{
+  &quot;Config&quot;: {
+    &quot;filename&quot;: &quot;tests/atl/(non-)termination/terminating/termination/zune_combination_1.c&quot;,
+    &quot;analysis_type&quot;: &quot;termination&quot;,
+    &quot;property&quot;: &quot;AF{exit:true}&quot;,
+    &quot;precondition&quot;: &quot;true&quot;,
+    &quot;result&quot;: &quot;UKNOWN&quot;,
+    &quot;domain&quot;: &quot;polyhedra&quot;,
+    &quot;joinbwd&quot;: 2,
+    &quot;time&quot;: &quot;1&quot;
+  },
+  &quot;tree&quot;: {
+    &quot;Node&quot;: {
+      &quot;constraint&quot;: &quot;$9{isLeapYear} &gt;= 1&quot;,
+      &quot;left&quot;: {
+        &quot;Node&quot;: {
+          &quot;constraint&quot;: &quot;$5{days} &gt;= 733&quot;,
+          &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+          &quot;right&quot;: {
+            &quot;Node&quot;: {
+              &quot;constraint&quot;: &quot;$5{days} &gt;= 732&quot;,
+              &quot;left&quot;: { &quot;Leaf&quot;: &quot;bottom&quot; },
+              &quot;right&quot;: {
+                &quot;Node&quot;: {
+                  &quot;constraint&quot;: &quot;$5{days} &gt;= 731&quot;,
+                  &quot;left&quot;: { &quot;Leaf&quot;: &quot;8&quot; },
+                  &quot;right&quot;: {
+                    &quot;Node&quot;: {
+                      &quot;constraint&quot;: &quot;$5{days} &gt;= 367&quot;,
+                      &quot;left&quot;: { &quot;Leaf&quot;: &quot;8&quot; },
+                      &quot;right&quot;: {
+                        &quot;Node&quot;: {
+                          &quot;constraint&quot;: &quot;$5{days} &gt;= 366&quot;,
+                          &quot;left&quot;: { &quot;Leaf&quot;: &quot;bottom&quot; },
+                          &quot;right&quot;: { &quot;Leaf&quot;: &quot;3&quot; }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      &quot;right&quot;: {
+        &quot;Node&quot;: {
+          &quot;constraint&quot;: &quot;$9{isLeapYear} &gt;= 0&quot;,
+          &quot;left&quot;: {
+            &quot;Node&quot;: {
+              &quot;constraint&quot;: &quot;$5{days} &gt;= 731&quot;,
+              &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+              &quot;right&quot;: {
+                &quot;Node&quot;: {
+                  &quot;constraint&quot;: &quot;$5{days} &gt;= 366&quot;,
+                  &quot;left&quot;: { &quot;Leaf&quot;: &quot;7&quot; },
+                  &quot;right&quot;: { &quot;Leaf&quot;: &quot;3&quot; }
+                }
+              }
+            }
+          },
+          &quot;right&quot;: {
+            &quot;Node&quot;: {
+              &quot;constraint&quot;: &quot;$5{days} &gt;= 733&quot;,
+              &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+              &quot;right&quot;: {
+                &quot;Node&quot;: {
+                  &quot;constraint&quot;: &quot;$5{days} &gt;= 732&quot;,
+                  &quot;left&quot;: { &quot;Leaf&quot;: &quot;bottom&quot; },
+                  &quot;right&quot;: {
+                    &quot;Node&quot;: {
+                      &quot;constraint&quot;: &quot;$5{days} &gt;= 731&quot;,
+                      &quot;left&quot;: { &quot;Leaf&quot;: &quot;8&quot; },
+                      &quot;right&quot;: {
+                        &quot;Node&quot;: {
+                          &quot;constraint&quot;: &quot;$5{days} &gt;= 367&quot;,
+                          &quot;left&quot;: { &quot;Leaf&quot;: &quot;8&quot; },
+                          &quot;right&quot;: {
+                            &quot;Node&quot;: {
+                              &quot;constraint&quot;: &quot;$5{days} &gt;= 366&quot;,
+                              &quot;left&quot;: { &quot;Leaf&quot;: &quot;bottom&quot; },
+                              &quot;right&quot;: { &quot;Leaf&quot;: &quot;3&quot; }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  &quot;vulnerability&quot;: &quot;Not analyzed&quot;
+}</code></pre>
+</div>
+<script>hljs.highlightAll();</script>
+</body></html>

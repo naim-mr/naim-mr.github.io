@@ -1,0 +1,1160 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>network_virus</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+:root, html[data-theme="dark"]{
+  --bg:#0f1115; --surface:#171a21; --surface2:#1e222b; --border:#2a2f3a;
+  --text:#e6e8ee; --muted:#9aa3b2; --accent:#5b8def;
+  --true:#3fb950; --true-bg:#10371d;
+  --unknown:#d29922; --unknown-bg:#3a2e0c;
+  --fail:#f85149; --fail-bg:#3a1413;
+  --hero:linear-gradient(135deg,#1b2a4a 0%,#10131a 70%);
+}
+html[data-theme="light"]{
+  --bg:#f4f6fb; --surface:#ffffff; --surface2:#eef1f7; --border:#d8deea;
+  --text:#1b2430; --muted:#5b6675; --accent:#1f6feb;
+  --true:#1a7f37; --true-bg:#d8f3df;
+  --unknown:#9a6700; --unknown-bg:#fdf0d0;
+  --fail:#cf222e; --fail-bg:#ffe0e0;
+  --hero:linear-gradient(135deg,#dbe6ff 0%,#f4f6fb 70%);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px; line-height:1.5;
+}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1200px; margin:0 auto; padding:0 24px 80px}
+header.hero{
+  background:var(--hero);
+  border-bottom:1px solid var(--border); padding:34px 24px; margin-bottom:24px;
+}
+header.hero .inner{max-width:1200px; margin:0 auto; position:relative}
+header.hero h1{margin:0; font-size:30px; font-weight:700; letter-spacing:.3px}
+.theme-toggle{
+  position:absolute; top:0; right:0; cursor:pointer; font-size:13px; font-weight:600;
+  padding:8px 14px; border-radius:999px; background:var(--surface2);
+  border:1px solid var(--border); color:var(--text);
+}
+.theme-toggle:hover{border-color:var(--accent)}
+.stats{margin:4px 0 30px}
+.stats .stat-head{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:12px}
+.stats h2{font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); margin:0}
+.seg{display:inline-flex; border:1px solid var(--border); border-radius:10px; overflow:hidden}
+.seg button{
+  background:var(--surface); color:var(--muted); border:none; padding:7px 16px;
+  font-size:13px; font-weight:600; cursor:pointer;
+}
+.seg button.active{background:var(--accent); color:#fff}
+.stats .chart{background:#fff; border:1px solid var(--border); border-radius:14px; padding:10px; text-align:center}
+.stats .chart img{max-width:100%; height:auto}
+header.hero .sub{color:var(--muted); margin-top:6px; font-size:14px}
+.chips{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px}
+.chip{
+  display:inline-flex; align-items:baseline; gap:8px; padding:7px 14px;
+  border-radius:999px; background:var(--surface2); border:1px solid var(--border);
+  font-size:13px; font-weight:600;
+}
+.chip b{font-size:16px}
+.chip.true{color:var(--true)} .chip.unknown{color:var(--unknown)}
+.chip.fail,.chip.timeout{color:var(--fail)} .chip.total{color:var(--text)}
+.chip.info{color:var(--accent)}
+.controls{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin:6px 0 22px}
+.controls input[type=search]{
+  flex:1; min-width:220px; padding:10px 14px; border-radius:10px;
+  background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:14px;
+}
+.controls label{color:var(--muted); font-size:14px; display:inline-flex; gap:7px; align-items:center; cursor:pointer}
+section.grp{margin-bottom:30px}
+section.grp h2{
+  font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted);
+  margin:0 0 10px; padding-bottom:8px; border-bottom:1px solid var(--border);
+}
+.card{background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden}
+table{border-collapse:collapse; width:100%; font-size:14px}
+thead th{
+  position:sticky; top:0; background:var(--surface2); color:var(--muted);
+  text-align:left; font-weight:600; padding:11px 16px; border-bottom:1px solid var(--border);
+  font-size:12px; text-transform:uppercase; letter-spacing:.5px;
+}
+tbody td{padding:11px 16px; border-bottom:1px solid var(--border); vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface2)}
+td.c{text-align:center; white-space:nowrap}
+code.mono,td.prop,.mono{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  font-size:13px; color:var(--text)}
+td.prop{color:var(--text); font-weight:500}
+.badge{
+  display:inline-block; padding:3px 11px; border-radius:999px; font-size:12px; font-weight:700;
+  letter-spacing:.3px;
+}
+.badge.true{color:var(--true); background:var(--true-bg)}
+.badge.unknown{color:var(--unknown); background:var(--unknown-bg)}
+.badge.fail,.badge.timeout{color:var(--fail); background:var(--fail-bg)}
+.badge.info{color:var(--accent); background:rgba(91,141,239,.16)}
+/* one colour per ctl lifting variant (TRUE cells) */
+.badge.v-base{color:#3fb950; background:rgba(63,185,80,.16)}
+.badge.v-resilience{color:#5b8def; background:rgba(91,141,239,.16)}
+.badge.v-resilience_reachability{color:#1ab2a8; background:rgba(26,178,168,.16)}
+.badge.v-robust_reachability{color:#f0883e; background:rgba(240,136,62,.18)}
+.chip.v-base{color:#3fb950} .chip.v-resilience{color:#5b8def}
+.chip.v-resilience_reachability{color:#1ab2a8} .chip.v-robust_reachability{color:#f0883e}
+.tag{font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--muted);
+  background:var(--surface2); padding:2px 8px; border-radius:6px}
+.empty{color:var(--muted); text-align:center; padding:40px}
+/* per-test page */
+.meta{display:flex; flex-wrap:wrap; gap:22px; background:var(--surface); border:1px solid var(--border);
+  border-radius:14px; padding:18px 22px; margin-bottom:22px}
+.meta .item{display:flex; flex-direction:column; gap:3px}
+.meta .item .k{font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted)}
+.meta .item .v{font-size:15px; font-family:ui-monospace,Menlo,monospace}
+/* tabs */
+nav.tabs{display:flex; gap:6px; margin:0 0 22px; border-bottom:1px solid var(--border)}
+nav.tabs button{
+  background:none; border:none; border-bottom:2px solid transparent; color:var(--muted);
+  font-size:15px; font-weight:600; padding:10px 18px; cursor:pointer; margin-bottom:-1px;
+}
+nav.tabs button:hover{color:var(--text)}
+nav.tabs button.active{color:var(--accent); border-bottom-color:var(--accent)}
+.panel[hidden]{display:none}
+/* summary table */
+table.summary{margin-bottom:22px}
+table.summary td.num{text-align:right; font-family:ui-monospace,Menlo,monospace}
+.rate{display:inline-block; min-width:46px}
+.bar{height:7px; border-radius:4px; background:var(--surface2); overflow:hidden; margin-top:4px}
+.bar > i{display:block; height:100%; background:var(--true)}
+/* decision tree */
+.treechips{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px}
+.tag.true{color:var(--true); background:var(--true-bg)}
+.treesvg{background:#fff; padding:14px; text-align:center; overflow:auto}
+.treesvg svg{max-width:100%; height:auto}
+ul.guards{margin:6px 0; padding-left:22px}
+ul.guards li{padding:2px 0; font-size:13px}
+h3.sec{font-size:14px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:26px 0 10px}
+pre.block{background:#0b0d12; border:1px solid var(--border); border-radius:12px; padding:16px;
+  overflow:auto; font-size:13px; line-height:1.45; max-height:560px}
+pre.block code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.back{display:inline-block; margin-bottom:18px; font-size:14px}
+</style><script>
+(function(){
+  const root = document.documentElement;
+  function fromUrl(){ try{ return new URLSearchParams(location.search).get('theme'); }catch(e){ return null; } }
+  function fromStore(){ try{ return localStorage.getItem('ftheme'); }catch(e){ return null; } }
+  function persist(t){ try{ localStorage.setItem('ftheme', t); }catch(e){} }
+  // URL param wins (survives file:// where localStorage is not shared across pages).
+  root.setAttribute('data-theme', fromUrl() || fromStore() || 'dark');
+  // Carry the current theme through internal links so navigation keeps it.
+  function propagate(t){
+    document.querySelectorAll('a[href]').forEach(function(a){
+      const href = a.getAttribute('href');
+      if(!href || href.indexOf('://')>=0 || href.charAt(0)==='#') return;
+      if(href.indexOf('.html')<0) return;
+      a.setAttribute('href', href.split('?')[0] + '?theme=' + t);
+    });
+  }
+  function lbl(){ return root.getAttribute('data-theme')==='dark' ? '\u2600 light' : '\u263e dark'; }
+  document.addEventListener('DOMContentLoaded', function(){
+    propagate(root.getAttribute('data-theme'));
+    const btn = document.getElementById('theme');
+    if(!btn) return;
+    btn.textContent = lbl();
+    btn.addEventListener('click', function(){
+      const next = root.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      persist(next);
+      propagate(next);
+      btn.textContent = lbl();
+    });
+  });
+})();
+</script></head><body>
+<header class="hero"><div class="inner">
+<button id="theme" class="theme-toggle"></button>
+<a class="back" href="./index.html">&larr; back to overview</a>
+<h1>network_virus</h1>
+<div class="sub mono">tests/atl/prism_games/Security/network_virus.c</div>
+</div></header>
+<div class="wrap">
+<div class="meta">
+  <div class="item"><span class="k">Group</span><span class="v">atl/</span></div>
+  <div class="item"><span class="k">Property</span><span class="v">&lt;admin&gt;G{infected &lt;= cap}</span></div>
+  <div class="item"><span class="k">Domain</span><span class="v">polyhedra</span></div>
+  <div class="item"><span class="k">Result</span><span class="v"><span class="badge unknown">UNKNOWN</span></span></div>
+  <div class="item"><span class="k">Time</span><span class="v">0.461 s</span></div>
+  <div class="item"><span class="k">Wall time</span><span class="v">0.533 s</span></div>
+</div>
+<h3 class="sec">Analyzer config</h3>
+<div class="card"><table><tbody><tr><td class="mono" style="color:var(--muted)">filename</td><td class="mono">tests/atl/prism_games/Security/network_virus.c</td></tr><tr><td class="mono" style="color:var(--muted)">analysis_type</td><td class="mono">atl-resilience</td></tr><tr><td class="mono" style="color:var(--muted)">property</td><td class="mono">&lt;admin&gt;G{infected &lt;= cap}</td></tr><tr><td class="mono" style="color:var(--muted)">precondition</td><td class="mono">true</td></tr><tr><td class="mono" style="color:var(--muted)">result</td><td class="mono">UKNOWN</td></tr><tr><td class="mono" style="color:var(--muted)">domain</td><td class="mono">polyhedra</td></tr><tr><td class="mono" style="color:var(--muted)">joinbwd</td><td class="mono">7</td></tr><tr><td class="mono" style="color:var(--muted)">time</td><td class="mono">0.461268000001</td></tr></tbody></table></div>
+<h3 class="sec">Decision tree &amp; preconditions</h3>
+<div class="treechips">
+  <span class="tag">8 leaves</span>
+  <span class="tag true">1 defined region(s)</span>
+  <span class="tag">4 distinct guard(s)</span>
+</div>
+<div class="card treesvg"><svg width="770pt" height="332pt"
+ viewBox="0.00 0.00 770.38 332.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 328)">
+<title>T</title>
+<!-- n0 -->
+<g id="node1" class="node">
+<title>n0</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="266.5" cy="-306" rx="115.41" ry="18"/>
+<text text-anchor="middle" x="266.5" y="-303.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$11{infected}&#45;$5{cap} &gt;= 1</text>
+</g>
+<!-- n1 -->
+<g id="node2" class="node">
+<title>n1</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="138.5" cy="-234" rx="119.83" ry="18"/>
+<text text-anchor="middle" x="138.5" y="-231.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$11{infected} &gt;= 2147483648</text>
+</g>
+<!-- n0&#45;&gt;n1 -->
+<g id="edge13" class="edge">
+<title>n0&#45;&gt;n1</title>
+<path fill="none" stroke="#aaaaaa" d="M236.49,-288.59C218.96,-279 196.65,-266.8 177.74,-256.46"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="179.22,-253.28 168.77,-251.55 175.86,-259.42 179.22,-253.28"/>
+</g>
+<!-- n8 -->
+<g id="node9" class="node">
+<title>n8</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="395.5" cy="-234" rx="119.83" ry="18"/>
+<text text-anchor="middle" x="395.5" y="-231.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$11{infected} &gt;= 2147483648</text>
+</g>
+<!-- n0&#45;&gt;n8 -->
+<g id="edge14" class="edge">
+<title>n0&#45;&gt;n8</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M296.74,-288.59C314.41,-279 336.9,-266.8 355.96,-256.46"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="357.88,-259.4 365,-251.55 354.54,-253.24 357.88,-259.4"/>
+</g>
+<!-- n2 -->
+<g id="node3" class="node">
+<title>n2</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M45,-180C45,-180 12,-180 12,-180 6,-180 0,-174 0,-168 0,-168 0,-156 0,-156 0,-150 6,-144 12,-144 12,-144 45,-144 45,-144 51,-144 57,-150 57,-156 57,-156 57,-168 57,-168 57,-174 51,-180 45,-180"/>
+<text text-anchor="middle" x="28.5" y="-159.2" font-family="monospace" font-size="11.00" fill="#1b2430">bottom</text>
+</g>
+<!-- n1&#45;&gt;n2 -->
+<g id="edge5" class="edge">
+<title>n1&#45;&gt;n2</title>
+<path fill="none" stroke="#aaaaaa" d="M112.43,-216.41C97.96,-207.2 79.75,-195.61 63.99,-185.59"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="65.85,-182.62 55.53,-180.2 62.09,-188.52 65.85,-182.62"/>
+</g>
+<!-- n3 -->
+<g id="node4" class="node">
+<title>n3</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="157.5" cy="-162" rx="82.97" ry="18"/>
+<text text-anchor="middle" x="157.5" y="-159.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$11{infected} &gt;= 2</text>
+</g>
+<!-- n1&#45;&gt;n3 -->
+<g id="edge6" class="edge">
+<title>n1&#45;&gt;n3</title>
+<path fill="none" stroke="#aaaaaa" d="M143.2,-215.7C145.31,-207.9 147.86,-198.51 150.22,-189.83"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="153.62,-190.67 152.86,-180.1 146.86,-188.84 153.62,-190.67"/>
+</g>
+<!-- n4 -->
+<g id="node5" class="node">
+<title>n4</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M122,-108C122,-108 89,-108 89,-108 83,-108 77,-102 77,-96 77,-96 77,-84 77,-84 77,-78 83,-72 89,-72 89,-72 122,-72 122,-72 128,-72 134,-78 134,-84 134,-84 134,-96 134,-96 134,-102 128,-108 122,-108"/>
+<text text-anchor="middle" x="105.5" y="-87.2" font-family="monospace" font-size="11.00" fill="#1b2430">bottom</text>
+</g>
+<!-- n3&#45;&gt;n4 -->
+<g id="edge3" class="edge">
+<title>n3&#45;&gt;n4</title>
+<path fill="none" stroke="#aaaaaa" d="M144.91,-144.05C138.74,-135.75 131.19,-125.58 124.35,-116.38"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="127.11,-114.22 118.33,-108.28 121.49,-118.39 127.11,-114.22"/>
+</g>
+<!-- n5 -->
+<g id="node6" class="node">
+<title>n5</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="275.5" cy="-90" rx="123.75" ry="18"/>
+<text text-anchor="middle" x="275.5" y="-87.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$11{infected} &gt;= &#45;2147483647</text>
+</g>
+<!-- n3&#45;&gt;n5 -->
+<g id="edge4" class="edge">
+<title>n3&#45;&gt;n5</title>
+<path fill="none" stroke="#aaaaaa" d="M184.57,-144.94C200.56,-135.45 221.03,-123.31 238.5,-112.95"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="240.51,-115.83 247.32,-107.72 236.94,-109.81 240.51,-115.83"/>
+</g>
+<!-- n6 -->
+<g id="node7" class="node">
+<title>n6</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M255,-36C255,-36 222,-36 222,-36 216,-36 210,-30 210,-24 210,-24 210,-12 210,-12 210,-6 216,0 222,0 222,0 255,0 255,0 261,0 267,-6 267,-12 267,-12 267,-24 267,-24 267,-30 261,-36 255,-36"/>
+<text text-anchor="middle" x="238.5" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">bottom</text>
+</g>
+<!-- n5&#45;&gt;n6 -->
+<g id="edge1" class="edge">
+<title>n5&#45;&gt;n6</title>
+<path fill="none" stroke="#aaaaaa" d="M266.35,-71.7C262.1,-63.64 256.94,-53.89 252.23,-44.98"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="255.31,-43.31 247.54,-36.1 249.12,-46.58 255.31,-43.31"/>
+</g>
+<!-- n7 -->
+<g id="node8" class="node">
+<title>n7</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M330,-36C330,-36 297,-36 297,-36 291,-36 285,-30 285,-24 285,-24 285,-12 285,-12 285,-6 291,0 297,0 297,0 330,0 330,0 336,0 342,-6 342,-12 342,-12 342,-24 342,-24 342,-30 336,-36 330,-36"/>
+<text text-anchor="middle" x="313.5" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">bottom</text>
+</g>
+<!-- n5&#45;&gt;n7 -->
+<g id="edge2" class="edge">
+<title>n5&#45;&gt;n7</title>
+<path fill="none" stroke="#aaaaaa" d="M284.89,-71.7C289.26,-63.64 294.56,-53.89 299.4,-44.98"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="302.52,-46.56 304.21,-36.1 296.37,-43.22 302.52,-46.56"/>
+</g>
+<!-- n9 -->
+<g id="node10" class="node">
+<title>n9</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M375,-180C375,-180 342,-180 342,-180 336,-180 330,-174 330,-168 330,-168 330,-156 330,-156 330,-150 336,-144 342,-144 342,-144 375,-144 375,-144 381,-144 387,-150 387,-156 387,-156 387,-168 387,-168 387,-174 381,-180 375,-180"/>
+<text text-anchor="middle" x="358.5" y="-159.2" font-family="monospace" font-size="11.00" fill="#1b2430">bottom</text>
+</g>
+<!-- n8&#45;&gt;n9 -->
+<g id="edge11" class="edge">
+<title>n8&#45;&gt;n9</title>
+<path fill="none" stroke="#aaaaaa" d="M386.35,-215.7C382.1,-207.64 376.94,-197.89 372.23,-188.98"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="375.31,-187.31 367.54,-180.1 369.12,-190.58 375.31,-187.31"/>
+</g>
+<!-- n10 -->
+<g id="node11" class="node">
+<title>n10</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="487.5" cy="-162" rx="82.97" ry="18"/>
+<text text-anchor="middle" x="487.5" y="-159.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$11{infected} &gt;= 2</text>
+</g>
+<!-- n8&#45;&gt;n10 -->
+<g id="edge12" class="edge">
+<title>n8&#45;&gt;n10</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M417.77,-216.05C429.72,-206.96 444.62,-195.63 457.57,-185.77"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="459.91,-188.39 465.75,-179.55 455.67,-182.82 459.91,-188.39"/>
+</g>
+<!-- n11 -->
+<g id="node12" class="node">
+<title>n11</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M485,-108C485,-108 452,-108 452,-108 446,-108 440,-102 440,-96 440,-96 440,-84 440,-84 440,-78 446,-72 452,-72 452,-72 485,-72 485,-72 491,-72 497,-78 497,-84 497,-84 497,-96 497,-96 497,-102 491,-108 485,-108"/>
+<text text-anchor="middle" x="468.5" y="-87.2" font-family="monospace" font-size="11.00" fill="#1b2430">bottom</text>
+</g>
+<!-- n10&#45;&gt;n11 -->
+<g id="edge9" class="edge">
+<title>n10&#45;&gt;n11</title>
+<path fill="none" stroke="#aaaaaa" d="M482.8,-143.7C480.69,-135.9 478.14,-126.51 475.78,-117.83"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="479.14,-116.84 473.14,-108.1 472.38,-118.67 479.14,-116.84"/>
+</g>
+<!-- n12 -->
+<g id="node13" class="node">
+<title>n12</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="638.5" cy="-90" rx="123.75" ry="18"/>
+<text text-anchor="middle" x="638.5" y="-87.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$11{infected} &gt;= &#45;2147483647</text>
+</g>
+<!-- n10&#45;&gt;n12 -->
+<g id="edge10" class="edge">
+<title>n10&#45;&gt;n12</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M521.01,-145.46C542.47,-135.52 570.56,-122.49 593.9,-111.68"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="595.64,-114.73 603.24,-107.34 592.7,-108.37 595.64,-114.73"/>
+</g>
+<!-- n13 -->
+<g id="node14" class="node">
+<title>n13</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M618,-36C618,-36 585,-36 585,-36 579,-36 573,-30 573,-24 573,-24 573,-12 573,-12 573,-6 579,0 585,0 585,0 618,0 618,0 624,0 630,-6 630,-12 630,-12 630,-24 630,-24 630,-30 624,-36 618,-36"/>
+<text text-anchor="middle" x="601.5" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">bottom</text>
+</g>
+<!-- n12&#45;&gt;n13 -->
+<g id="edge7" class="edge">
+<title>n12&#45;&gt;n13</title>
+<path fill="none" stroke="#aaaaaa" d="M629.35,-71.7C625.1,-63.64 619.94,-53.89 615.23,-44.98"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="618.31,-43.31 610.54,-36.1 612.12,-46.58 618.31,-43.31"/>
+</g>
+<!-- n14 -->
+<g id="node15" class="node">
+<title>n14</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M690.5,-36C690.5,-36 660.5,-36 660.5,-36 654.5,-36 648.5,-30 648.5,-24 648.5,-24 648.5,-12 648.5,-12 648.5,-6 654.5,0 660.5,0 660.5,0 690.5,0 690.5,0 696.5,0 702.5,-6 702.5,-12 702.5,-12 702.5,-24 702.5,-24 702.5,-30 696.5,-36 690.5,-36"/>
+<text text-anchor="middle" x="675.5" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">0.</text>
+</g>
+<!-- n12&#45;&gt;n14 -->
+<g id="edge8" class="edge">
+<title>n12&#45;&gt;n14</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M647.65,-71.7C651.9,-63.64 657.06,-53.89 661.77,-44.98"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="664.88,-46.58 666.46,-36.1 658.69,-43.31 664.88,-46.58"/>
+</g>
+</g>
+</svg>
+</div>
+<h3 class="sec">Defined regions (sufficient preconditions)</h3>
+<div class="card"><table><thead><tr><th>#</th><th>Region (conjunction of guards)</th>
+<th>Ranking function</th><th>Status</th></tr></thead><tbody><tr><td class="num">1</td><td class="prop">&not;($11{infected}-$5{cap} &gt;= 1) &and; &not;($11{infected} &gt;= 2147483648) &and; &not;($11{infected} &gt;= 2) &and; &not;($11{infected} &gt;= -2147483647)</td><td class="mono">0.</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">2</td><td class="prop">$11{infected}-$5{cap} &gt;= 1 &and; $11{infected} &gt;= 2147483648</td><td class="mono">bottom</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">3</td><td class="prop">&not;($11{infected}-$5{cap} &gt;= 1) &and; $11{infected} &gt;= 2147483648</td><td class="mono">bottom</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">4</td><td class="prop">$11{infected}-$5{cap} &gt;= 1 &and; &not;($11{infected} &gt;= 2147483648) &and; $11{infected} &gt;= 2</td><td class="mono">bottom</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">5</td><td class="prop">&not;($11{infected}-$5{cap} &gt;= 1) &and; &not;($11{infected} &gt;= 2147483648) &and; $11{infected} &gt;= 2</td><td class="mono">bottom</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">6</td><td class="prop">$11{infected}-$5{cap} &gt;= 1 &and; &not;($11{infected} &gt;= 2147483648) &and; &not;($11{infected} &gt;= 2) &and; $11{infected} &gt;= -2147483647</td><td class="mono">bottom</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">7</td><td class="prop">$11{infected}-$5{cap} &gt;= 1 &and; &not;($11{infected} &gt;= 2147483648) &and; &not;($11{infected} &gt;= 2) &and; &not;($11{infected} &gt;= -2147483647)</td><td class="mono">bottom</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">8</td><td class="prop">&not;($11{infected}-$5{cap} &gt;= 1) &and; &not;($11{infected} &gt;= 2147483648) &and; &not;($11{infected} &gt;= 2) &and; $11{infected} &gt;= -2147483647</td><td class="mono">bottom</td><td class="c"><span class="badge fail">undefined</span></td></tr></tbody></table></div>
+<h3 class="sec">Distinct guards</h3>
+<div class="card" style="padding:10px 20px"><ul class="guards"><li class="mono">$11{infected} &gt;= -2147483647</li><li class="mono">$11{infected} &gt;= 2</li><li class="mono">$11{infected} &gt;= 2147483648</li><li class="mono">$11{infected}-$5{cap} &gt;= 1</li></ul></div>
+
+<h3 class="sec">Source</h3>
+<pre class="block"><code class="language-c">// =====================================================================
+// Network Virus Infection -- PRISM case study (de-probabilised, game cast)
+// ---------------------------------------------------------------------
+// Source : PRISM case studies, &quot;Network Virus Infection&quot;.
+//   https://www.prismmodelchecker.org/casestudies/
+// Original model description: see network_virus.txt
+// ---------------------------------------------------------------------
+// A virus spreads across a network; an administrator runs disinfection /
+// patching. Each round the virus tries to infect one more node; the admin
+// may disinfect one node. The admin keeps the number of infected nodes
+// bounded whatever the virus does.
+//
+//   agent &quot;admin&quot; = input(&quot;admin&quot;)  -&gt; administrator (coalition, angelic)
+//   agent &quot;virus&quot; = input(&quot;virus&quot;)  -&gt; virus spread (adversary)
+//
+// The administrator keeps infections bounded (TRUE):
+//   -atl &quot;&lt;admin&gt;G{infected &lt;= cap}&quot;
+// =====================================================================
+
+int main() {
+    int cap = input(&quot;virus&quot;);  // tolerated infection bound: arbitrary, not fixed in advance
+    if (cap &lt; 1) cap = 1;      // the count transiently reaches 1 before disinfection
+    int infected = 0;      // number of infected nodes
+    while (1) {
+        int spread = input(&quot;virus&quot;);   // virus infects a node this round?
+        int clean  = input(&quot;admin&quot;);   // admin disinfects a node this round?
+        if (spread == 1) { infected = infected + 1; }
+        if (clean == 1) { if (infected &gt; 0) { infected = infected - 1; } }
+    }
+}
+</code></pre>
+<h3 class="sec">Analysis log</h3>
+<pre class="block"><code>
+Abstract typed Syntax:
+{
+  {38}
+}
+int main()@
+{
+  {6} int cap = input(&#x27;virus&#x27;);
+  {7} if (cap &lt; 1)
+  {
+    {8} cap = 1;
+    {9}
+  }
+  else
+  {
+    {10}
+  }
+  {12} int infected = 0;
+  {13} while {14} (1 != 0)
+  {
+    {16} int spread = input(&#x27;virus&#x27;);
+    {18} int clean = input(&#x27;admin&#x27;);
+    {19} if (spread == 1)
+    {
+      {20} infected = infected + 1;
+      {21}
+    }
+    else
+    {
+      {22}
+    }
+    {23} if (clean == 1)
+    {
+      {24} if (infected &gt; 0)
+      {
+        {25} infected = infected - 1;
+        {26}
+      }
+      else
+      {
+        {27}
+      }
+      {28}
+    }
+    else
+    {
+      {29}
+    }
+    {30} delete spread;
+    {31} delete clean;
+    {32}
+  }
+  {33} break#14:;
+  {34} return#3:;
+  {35} delete cap;
+  {36} delete infected;
+  {37}
+}
+
+Abstract atl typed Syntax:
+ {
+  {38}
+}
+int main()@
+{
+  {6} int cap = input(&#x27;virus&#x27;);
+  {7} if (cap &lt; 1)
+  {
+    {8} cap = 1;
+    {9}
+  }
+  else
+  {
+    {10}
+  }
+  {12} int infected = 0;
+  {13} while {14} (1 != 0)
+  {
+    {39} loop:;
+    {16} int spread = input(&#x27;virus&#x27;);
+    {18} int clean = input(&#x27;admin&#x27;);
+    {19} if (spread == 1)
+    {
+      {20} infected = infected + 1;
+      {21}
+    }
+    else
+    {
+      {22}
+    }
+    {23} if (clean == 1)
+    {
+      {24} if (infected &gt; 0)
+      {
+        {25} infected = infected - 1;
+        {26}
+      }
+      else
+      {
+        {27}
+      }
+      {28}
+    }
+    else
+    {
+      {29}
+    }
+    {30} delete spread;
+    {31} delete clean;
+    {32}
+  }
+  {33} break#14:;
+  {34} return#3:;
+  {35} delete cap;
+  {36} delete infected;
+  {-1} exit:;
+  {37}
+}
+debug cp 
+
+Forward Summary :
+
+Forward Analysis numerical:
+[-1:]: bottom
+[6:]: top
+[7:]: $5{cap} &gt;= -2147483648 &amp;&amp; -$5{cap} &gt;= -2147483647
+[8:]: $5{cap} &gt;= -2147483648 &amp;&amp; -$5{cap} &gt;= 0
+[9:]: $5{cap} == 1
+[ 10:]: $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647
+[12:]: $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647
+[13:]: $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; $11{infected} == 0
+[14:]: $11{infected} &gt;= 0 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647
+[16:]: $11{infected} &gt;= 0 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647
+[18:]: $11{infected} &gt;= 0 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647
+[19:]: $11{infected} &gt;= 0 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647
+[20:]: $11{infected} &gt;= 0 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; $15{spread} == 1
+[21:]: $11{infected} &gt;= 1 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; $15{spread} == 1
+[22:]: $11{infected} &gt;= 0 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647
+[23:]: $11{infected} &gt;= 0 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647
+[24:]: $11{infected} &gt;= 0 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $17{clean} == 1
+[25:]: $11{infected} &gt;= 1 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $17{clean} == 1
+[26:]: $11{infected} &gt;= 0 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $17{clean} == 1
+[27:]: $15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $11{infected} == 0 &amp;&amp; $17{clean} == 1
+[28:]: $11{infected} &gt;= 0 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $17{clean} == 1
+[29:]: $11{infected} &gt;= 0 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647
+[30:]: $11{infected} &gt;= 0 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647
+[31:]: $11{infected} &gt;= 0 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647
+[32:]: $11{infected} &gt;= 0 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647
+[33:]: bottom
+[34:]: bottom
+[35:]: bottom
+[36:]: bottom
+[37:]: bottom
+[38:]: top
+[39:]: $11{infected} &gt;= 0 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647
+in if is tainted ?cap &lt; 1yes! 
+in if is tainted ?spread == 1yes! 
+in if is tainted ?infected &gt; 0yes! 
+in if is tainted ?clean == 1yes! 
+in if is tainted ?1 != 0no! 
+
+Forward Taint Summary :
+
+Forward Analysis numerical:
+[-1:]: cap -- 
+[6:]: 
+[7:]: cap -- 
+[8:]: cap -- 
+[9:]: 
+[ 10:]: cap -- 
+[12:]: cap -- 
+[13:]: cap -- 
+[14:]: cap -- 
+[16:]: cap -- 
+[18:]: spread -- cap -- 
+[19:]: clean -- spread -- cap -- 
+[20:]: clean -- spread -- cap -- 
+[21:]: clean -- spread -- cap -- 
+[22:]: clean -- spread -- cap -- 
+[23:]: clean -- spread -- infected -- cap -- 
+[24:]: clean -- spread -- infected -- cap -- 
+[25:]: clean -- spread -- infected -- cap -- 
+[26:]: clean -- spread -- infected -- cap -- 
+[27:]: clean -- spread -- infected -- cap -- 
+[28:]: clean -- spread -- infected -- cap -- 
+[29:]: clean -- spread -- infected -- cap -- 
+[30:]: clean -- spread -- infected -- cap -- 
+[31:]: clean -- spread -- infected -- cap -- 
+[32:]: clean -- spread -- infected -- cap -- 
+[33:]: cap -- 
+[34:]: cap -- 
+[35:]: cap -- 
+[36:]: cap -- 
+[37:]: cap -- 
+[39:]: cap -- 
+Property: infected &lt;= cap
+
+[-1:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[6:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[7:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[8:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[9:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[ 10:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[12:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[13:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[14:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[16:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[18:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[19:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[20:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[21:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[22:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[23:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[24:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[25:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[26:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[27:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[28:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[29:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[30:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[31:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[32:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[33:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[34:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[35:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[36:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[37:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[39:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+debug cp 
+adminin if is tainted ?cap &lt; 1yes! 
+in if is tainted ?spread == 1yes! 
+in if is tainted ?infected &gt; 0yes! 
+in if is tainted ?clean == 1no! 
+in if is tainted ?1 != 0no! 
+
+Forward Taint Summary :
+
+Forward Analysis numerical:
+[-1:]: cap -- 
+[6:]: 
+[7:]: cap -- 
+[8:]: cap -- 
+[9:]: 
+[ 10:]: cap -- 
+[12:]: cap -- 
+[13:]: cap -- 
+[14:]: cap -- 
+[16:]: cap -- 
+[18:]: spread -- cap -- 
+[19:]: spread -- cap -- 
+[20:]: spread -- cap -- 
+[21:]: spread -- cap -- 
+[22:]: spread -- cap -- 
+[23:]: spread -- infected -- cap -- 
+[24:]: spread -- infected -- cap -- 
+[25:]: spread -- infected -- cap -- 
+[26:]: spread -- infected -- cap -- 
+[27:]: spread -- infected -- cap -- 
+[28:]: spread -- infected -- cap -- 
+[29:]: spread -- infected -- cap -- 
+[30:]: spread -- infected -- cap -- 
+[31:]: spread -- infected -- cap -- 
+[32:]: spread -- infected -- cap -- 
+[33:]: cap -- 
+[34:]: cap -- 
+[35:]: cap -- 
+[36:]: cap -- 
+[37:]: cap -- 
+[39:]: cap -- 
+check if is controlled infected - 1 ? false 
+ check if is controlled infected &gt; 0 ? false 
+ check if is controlled clean == 1 ? true 
+ check if is controlled infected + 1 ? true 
+ check if is controlled spread == 1 ? false 
+ check if is controlled input(&#x27;admin&#x27;) ? true 
+ check if is controlled input(&#x27;virus&#x27;) ? false 
+ check if is controlled 1 != 0 ? true 
+ check if is controlled infected - 1 ? false 
+ check if is controlled infected &gt; 0 ? false 
+ check if is controlled clean == 1 ? true 
+ check if is controlled infected + 1 ? true 
+ check if is controlled spread == 1 ? false 
+ check if is controlled input(&#x27;admin&#x27;) ? true 
+ check if is controlled input(&#x27;virus&#x27;) ? false 
+ check if is controlled 1 != 0 ? true 
+ check if is controlled 0 ? true 
+ check if is controlled 1 ? true 
+ check if is controlled cap &lt; 1 ? false 
+ check if is controlled input(&#x27;virus&#x27;) ? false 
+ Property: &lt;admin &gt;G{infected &lt;= cap}
+
+[-1:]:
+
+[6:]:
+-$11{infected}+$5{cap} &gt;= 0 &amp;&amp; -$11{infected} &gt;= 2147483648 ? 0.
+$11{infected} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 0 &amp;&amp; -$11{infected} &gt;= -1 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; -$11{infected}+$5{cap} &gt;= 0 &amp;&amp; -$11{infected} &gt;= -2147483647 ? bottom
+$11{infected} &gt;= 2147483648 &amp;&amp; -$11{infected}+$5{cap} &gt;= 0 ? bottom
+$11{infected}-$5{cap} &gt;= 1 &amp;&amp; -$11{infected} &gt;= 2147483648 ? bottom
+$11{infected} &gt;= -2147483647 &amp;&amp; $11{infected}-$5{cap} &gt;= 1 &amp;&amp; -$11{infected} &gt;= -1 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; $11{infected}-$5{cap} &gt;= 1 &amp;&amp; -$11{infected} &gt;= -2147483647 ? bottom
+$11{infected} &gt;= 2147483648 &amp;&amp; $11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[7:]:
+$5{cap} &gt;= -2147483648 &amp;&amp; -$5{cap} &gt;= 0 &amp;&amp; -$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 &amp;&amp; $5{cap} &gt;= -2147483648 &amp;&amp; -$11{infected} &gt;= -1 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; $5{cap} &gt;= -2147483648 &amp;&amp; -$5{cap} &gt;= 0 ? bottom
+$5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 ? bottom
+
+[8:]:
+$5{cap} &gt;= -2147483648 &amp;&amp; -$5{cap} &gt;= 0 &amp;&amp; -$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 &amp;&amp; $5{cap} &gt;= -2147483648 &amp;&amp; -$11{infected} &gt;= -1 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; $5{cap} &gt;= -2147483648 &amp;&amp; -$5{cap} &gt;= 0 ? bottom
+
+[9:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[ 10:]:
+-$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[12:]:
+$5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 0 ? 0.
+$11{infected}-$5{cap} &gt;= 1 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 ? bottom
+
+[13:]:
+$5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; $11{infected} == 0 ? 0.
+
+[14:]:
+-$11{infected}+$5{cap} &gt;= 1 &amp;&amp; -$11{infected} &gt;= 0 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+-$11{infected}+$5{cap} == 0 ? bottom
+-$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 ? bottom
+
+[16:]:
+$5{cap} &gt;= 2 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; $11{infected} == 0 ? 0.
+$5{cap} &gt;= 3 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; $11{infected} == 1 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 2 ? 0.
+$11{infected} == 0 &amp;&amp; $5{cap} == 1 ? 0.
+$11{infected} == 1 &amp;&amp; $5{cap} == 2 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; -$11{infected} &gt;= -2147483646 &amp;&amp; -$11{infected}+$5{cap} == 1 ? 0.
+$11{infected} == 1 &amp;&amp; $5{cap} == 1 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected} &gt;= 3 &amp;&amp; -$11{infected} &gt;= -2147483649 &amp;&amp; -$11{infected}+$5{cap} == -2 ? bottom
+$11{infected}-$5{cap} &gt;= 3 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 ? bottom
+
+[18:]:
+$15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; $11{infected} == 0 ? 0.
+$15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 2 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; $11{infected} == 1 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+$15{spread} &gt;= -2147483648 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; $11{infected} == 1 &amp;&amp; $5{cap} == 1 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} == 0 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected} &gt;= 3 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; -$11{infected} &gt;= -2147483649 &amp;&amp; -$11{infected}+$5{cap} == -2 ? bottom
+$11{infected}-$5{cap} &gt;= 3 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= 0 ? bottom
+$5{cap} &gt;= 2 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; $11{infected} == 0 &amp;&amp; $15{spread} == 1 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 2 &amp;&amp; $15{spread} == 1 ? 0.
+$11{infected} == 0 &amp;&amp; $15{spread} == 1 &amp;&amp; $5{cap} == 1 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; -$11{infected} &gt;= -2147483646 &amp;&amp; $15{spread} == 1 &amp;&amp; -$11{infected}+$5{cap} == 1 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; $15{spread} == 1 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; $15{spread} == 1 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; $15{spread} == 1 ? bottom
+$15{spread} &gt;= 2 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $11{infected} == 0 ? 0.
+$15{spread} &gt;= 2 &amp;&amp; $5{cap} &gt;= 2 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $11{infected} == 1 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= 2 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+$15{spread} &gt;= 2 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $11{infected} == 1 &amp;&amp; $5{cap} == 1 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= 2 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} == 0 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= 2 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected} &gt;= 3 &amp;&amp; $15{spread} &gt;= 2 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483649 &amp;&amp; -$11{infected}+$5{cap} == -2 ? bottom
+$11{infected}-$5{cap} &gt;= 3 &amp;&amp; $15{spread} &gt;= 2 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 ? bottom
+
+[19:]:
+$15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; $11{infected} == 0 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$15{spread} &gt;= 0 ? bottom
+$11{infected} &gt;= 0 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$11{infected}+$5{cap} &gt;= 2 &amp;&amp; $15{spread} == 1 ? 0.
+$11{infected} &gt;= 0 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$11{infected} &gt;= -2147483646 &amp;&amp; $15{spread} == 1 &amp;&amp; -$11{infected}+$5{cap} == 1 ? bottom
+$11{infected} &gt;= 1 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; $15{spread} == 1 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$11{infected}-$5{cap} &gt;= 1 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; $15{spread} == 1 ? bottom
+$15{spread} &gt;= 2 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $11{infected} == 0 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; $15{spread} &gt;= 2 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; $15{spread} &gt;= 2 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= 2 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 &amp;&amp; $15{spread} &gt;= 2 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$15{spread} &gt;= -2147483647 ? bottom
+$15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; $11{infected} == 0 &amp;&amp; $17{clean} == 1 ? 0.
+$15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; $11{infected} == 1 &amp;&amp; $17{clean} == 1 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; -$11{infected}+$5{cap} &gt;= 0 &amp;&amp; $17{clean} == 1 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; $17{clean} == 1 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected} &gt;= 3 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; -$11{infected} &gt;= -2147483649 &amp;&amp; $17{clean} == 1 &amp;&amp; -$11{infected}+$5{cap} == -2 ? bottom
+$11{infected}-$5{cap} &gt;= 3 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; $17{clean} == 1 ? bottom
+$5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; $11{infected} == 0 &amp;&amp; $15{spread} == 1 &amp;&amp; $17{clean} == 1 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 &amp;&amp; $15{spread} == 1 &amp;&amp; $17{clean} == 1 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; $15{spread} == 1 &amp;&amp; $17{clean} == 1 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; $15{spread} == 1 &amp;&amp; $17{clean} == 1 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; $15{spread} == 1 &amp;&amp; $17{clean} == 1 ? bottom
+$15{spread} &gt;= 2 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $11{infected} == 0 &amp;&amp; $17{clean} == 1 ? 0.
+$15{spread} &gt;= 2 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $11{infected} == 1 &amp;&amp; $17{clean} == 1 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= 2 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 0 &amp;&amp; $17{clean} == 1 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= 2 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; $17{clean} == 1 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected} &gt;= 3 &amp;&amp; $15{spread} &gt;= 2 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483649 &amp;&amp; $17{clean} == 1 &amp;&amp; -$11{infected}+$5{cap} == -2 ? bottom
+$11{infected}-$5{cap} &gt;= 3 &amp;&amp; $15{spread} &gt;= 2 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $17{clean} == 1 ? bottom
+$15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; $11{infected} == 0 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= 0 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= 0 ? bottom
+$11{infected} &gt;= 0 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 2 &amp;&amp; $15{spread} == 1 ? 0.
+$11{infected} &gt;= 0 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483646 &amp;&amp; $15{spread} == 1 &amp;&amp; -$11{infected}+$5{cap} == 1 ? bottom
+$11{infected} &gt;= 1 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; $15{spread} == 1 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$11{infected}-$5{cap} &gt;= 1 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; $15{spread} == 1 ? bottom
+$15{spread} &gt;= 2 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $11{infected} == 0 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; $15{spread} &gt;= 2 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; $15{spread} &gt;= 2 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= 2 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 &amp;&amp; $15{spread} &gt;= 2 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 ? bottom
+
+[20:]:
+$11{infected} &gt;= 0 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$11{infected}+$5{cap} &gt;= 2 &amp;&amp; $15{spread} == 1 ? 0.
+$11{infected} &gt;= 0 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$11{infected} &gt;= -2147483646 &amp;&amp; $15{spread} == 1 &amp;&amp; -$11{infected}+$5{cap} == 1 ? bottom
+$11{infected} &gt;= 1 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; $15{spread} == 1 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$11{infected}-$5{cap} &gt;= 1 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; $15{spread} == 1 ? bottom
+$5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; $11{infected} == 0 &amp;&amp; $15{spread} == 1 &amp;&amp; $17{clean} == 1 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 &amp;&amp; $15{spread} == 1 &amp;&amp; $17{clean} == 1 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; $15{spread} == 1 &amp;&amp; $17{clean} == 1 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; $15{spread} == 1 &amp;&amp; $17{clean} == 1 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; $15{spread} == 1 &amp;&amp; $17{clean} == 1 ? bottom
+$11{infected} &gt;= 0 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 2 &amp;&amp; $15{spread} == 1 ? 0.
+$11{infected} &gt;= 0 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483646 &amp;&amp; $15{spread} == 1 &amp;&amp; -$11{infected}+$5{cap} == 1 ? bottom
+$11{infected} &gt;= 1 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; $15{spread} == 1 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$11{infected}-$5{cap} &gt;= 1 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; $15{spread} == 1 ? bottom
+
+[21:]:
+-$17{clean} &gt;= 0 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 &amp;&amp; -$11{infected} &gt;= 0 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+-$17{clean} &gt;= 0 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+-$17{clean} &gt;= 0 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 &amp;&amp; -$17{clean} &gt;= 0 ? bottom
+-$11{infected}+$5{cap} &gt;= 0 &amp;&amp; -$11{infected} &gt;= 0 &amp;&amp; $17{clean} == 1 ? 0.
+$5{cap} &gt;= 1 &amp;&amp; $11{infected} == 1 &amp;&amp; $17{clean} == 1 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; -$11{infected}+$5{cap} &gt;= 0 &amp;&amp; $17{clean} == 1 ? 0.
+$17{clean} == 1 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$17{clean} == 1 &amp;&amp; -$11{infected}+$5{cap} == -2 ? bottom
+$11{infected}-$5{cap} &gt;= 3 &amp;&amp; $17{clean} == 1 ? bottom
+$17{clean} &gt;= 2 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 &amp;&amp; -$11{infected} &gt;= 0 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+$17{clean} &gt;= 2 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$17{clean} &gt;= 2 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 &amp;&amp; $17{clean} &gt;= 2 ? bottom
+
+[22:]:
+-$17{clean} &gt;= 0 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 &amp;&amp; -$11{infected} &gt;= 0 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+-$17{clean} &gt;= 0 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+-$17{clean} &gt;= 0 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 &amp;&amp; -$17{clean} &gt;= 0 ? bottom
+-$11{infected}+$5{cap} &gt;= 0 &amp;&amp; -$11{infected} &gt;= 0 &amp;&amp; $17{clean} == 1 ? 0.
+$5{cap} &gt;= 1 &amp;&amp; $11{infected} == 1 &amp;&amp; $17{clean} == 1 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; -$11{infected}+$5{cap} &gt;= 0 &amp;&amp; $17{clean} == 1 ? 0.
+$17{clean} == 1 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$17{clean} == 1 &amp;&amp; -$11{infected}+$5{cap} == -2 ? bottom
+$11{infected}-$5{cap} &gt;= 3 &amp;&amp; $17{clean} == 1 ? bottom
+$17{clean} &gt;= 2 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 &amp;&amp; -$11{infected} &gt;= 0 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+$17{clean} &gt;= 2 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$17{clean} &gt;= 2 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 &amp;&amp; $17{clean} &gt;= 2 ? bottom
+
+[23:]:
+$15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $11{infected} == 0 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= 0 &amp;&amp; -$15{spread} &gt;= -2147483647 ? bottom
+$15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $11{infected} == 0 &amp;&amp; $17{clean} == 1 ? 0.
+$15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $11{infected} == 1 &amp;&amp; $17{clean} == 1 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 0 &amp;&amp; $17{clean} == 1 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; $17{clean} == 1 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected} &gt;= 3 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483649 &amp;&amp; $17{clean} == 1 &amp;&amp; -$11{infected}+$5{cap} == -2 ? bottom
+$11{infected}-$5{cap} &gt;= 3 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $17{clean} == 1 ? bottom
+$15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $11{infected} == 0 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= 2 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 ? bottom
+
+[24:]:
+$15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $11{infected} == 0 &amp;&amp; $17{clean} == 1 ? 0.
+$15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $11{infected} == 1 &amp;&amp; $17{clean} == 1 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 0 &amp;&amp; $17{clean} == 1 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; $17{clean} == 1 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected} &gt;= 3 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483649 &amp;&amp; $17{clean} == 1 &amp;&amp; -$11{infected}+$5{cap} == -2 ? bottom
+$11{infected}-$5{cap} &gt;= 3 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $17{clean} == 1 ? bottom
+
+[25:]:
+$15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $11{infected} == 1 &amp;&amp; $17{clean} == 1 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 0 &amp;&amp; $17{clean} == 1 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; $17{clean} == 1 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected} &gt;= 3 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483649 &amp;&amp; $17{clean} == 1 &amp;&amp; -$11{infected}+$5{cap} == -2 ? bottom
+$11{infected}-$5{cap} &gt;= 3 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $17{clean} == 1 ? bottom
+
+[26:]:
+-$11{infected}+$5{cap} &gt;= 1 &amp;&amp; -$11{infected} &gt;= 0 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+-$11{infected}+$5{cap} == 0 ? bottom
+-$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 ? bottom
+
+[27:]:
+-$11{infected}+$5{cap} &gt;= 1 &amp;&amp; -$11{infected} &gt;= 0 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+-$11{infected}+$5{cap} == 0 ? bottom
+-$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 ? bottom
+
+[28:]:
+-$11{infected}+$5{cap} &gt;= 1 &amp;&amp; -$11{infected} &gt;= 0 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+-$11{infected}+$5{cap} == 0 ? bottom
+-$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 ? bottom
+
+[29:]:
+-$11{infected}+$5{cap} &gt;= 1 &amp;&amp; -$11{infected} &gt;= 0 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+-$11{infected}+$5{cap} == 0 ? bottom
+-$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 ? bottom
+
+[30:]:
+$15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $11{infected} == 0 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 ? bottom
+
+[31:]:
+$15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; $11{infected} == 0 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 &amp;&amp; $15{spread} &gt;= -2147483648 &amp;&amp; $17{clean} &gt;= -2147483648 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$17{clean} &gt;= -2147483647 &amp;&amp; -$15{spread} &gt;= -2147483647 ? bottom
+
+[32:]:
+-$11{infected}+$5{cap} &gt;= 1 &amp;&amp; -$11{infected} &gt;= 0 ? 0.
+$11{infected} &gt;= 1 &amp;&amp; -$11{infected}+$5{cap} &gt;= 1 ? 0.
+-$11{infected}+$5{cap} == 0 ? bottom
+-$11{infected}+$5{cap} == -1 ? bottom
+$11{infected}-$5{cap} &gt;= 2 ? bottom
+
+[33:]:
+
+[34:]:
+
+[35:]:
+
+[36:]:
+
+[37:]:
+-$11{infected}+$5{cap} &gt;= 0 ? bottom
+$11{infected}-$5{cap} &gt;= 1 ? bottom
+
+[39:]:
+$5{cap} &gt;= 2 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; $11{infected} == 0 ? 0.
+$5{cap} &gt;= 3 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; $11{infected} == 1 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; -$5{cap} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 2 ? 0.
+$11{infected} == 0 &amp;&amp; $5{cap} == 1 ? 0.
+$11{infected} == 1 &amp;&amp; $5{cap} == 2 ? 0.
+$11{infected} &gt;= 2 &amp;&amp; -$11{infected} &gt;= -2147483646 &amp;&amp; -$11{infected}+$5{cap} == 1 ? 0.
+$11{infected} == 1 &amp;&amp; $5{cap} == 1 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; -$11{infected} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} == 0 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; -$11{infected} &gt;= -2147483648 &amp;&amp; -$11{infected}+$5{cap} == -1 ? bottom
+$11{infected} &gt;= 3 &amp;&amp; -$11{infected} &gt;= -2147483649 &amp;&amp; -$11{infected}+$5{cap} == -2 ? bottom
+$11{infected}-$5{cap} &gt;= 3 &amp;&amp; $5{cap} &gt;= 1 &amp;&amp; -$5{cap} &gt;= -2147483647 ? bottom
+
+
+ Resulting tree:  
+ -$11{infected}+$5{cap} &gt;= 0 &amp;&amp; -$11{infected} &gt;= 2147483648 ? 0.
+$11{infected} &gt;= -2147483647 &amp;&amp; -$11{infected}+$5{cap} &gt;= 0 &amp;&amp; -$11{infected} &gt;= -1 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; -$11{infected}+$5{cap} &gt;= 0 &amp;&amp; -$11{infected} &gt;= -2147483647 ? bottom
+$11{infected} &gt;= 2147483648 &amp;&amp; -$11{infected}+$5{cap} &gt;= 0 ? bottom
+$11{infected}-$5{cap} &gt;= 1 &amp;&amp; -$11{infected} &gt;= 2147483648 ? bottom
+$11{infected} &gt;= -2147483647 &amp;&amp; $11{infected}-$5{cap} &gt;= 1 &amp;&amp; -$11{infected} &gt;= -1 ? bottom
+$11{infected} &gt;= 2 &amp;&amp; $11{infected}-$5{cap} &gt;= 1 &amp;&amp; -$11{infected} &gt;= -2147483647 ? bottom
+$11{infected} &gt;= 2147483648 &amp;&amp; $11{infected}-$5{cap} &gt;= 1 ? bottom
+
+Time: 0.461269
+Final Analysis Result: UNKNOWN
+{
+  &quot;Config&quot;: {
+    &quot;filename&quot;: &quot;tests/atl/prism_games/Security/network_virus.c&quot;,
+    &quot;analysis_type&quot;: &quot;atl-resilience&quot;,
+    &quot;property&quot;: &quot;&lt;admin&gt;G{infected &lt;= cap}&quot;,
+    &quot;precondition&quot;: &quot;true&quot;,
+    &quot;result&quot;: &quot;UKNOWN&quot;,
+    &quot;domain&quot;: &quot;polyhedra&quot;,
+    &quot;joinbwd&quot;: 7,
+    &quot;time&quot;: &quot;0.461268000001&quot;
+  },
+  &quot;tree&quot;: {
+    &quot;Node&quot;: {
+      &quot;constraint&quot;: &quot;$11{infected}-$5{cap} &gt;= 1&quot;,
+      &quot;left&quot;: {
+        &quot;Node&quot;: {
+          &quot;constraint&quot;: &quot;$11{infected} &gt;= 2147483648&quot;,
+          &quot;left&quot;: { &quot;Leaf&quot;: &quot;bottom&quot; },
+          &quot;right&quot;: {
+            &quot;Node&quot;: {
+              &quot;constraint&quot;: &quot;$11{infected} &gt;= 2&quot;,
+              &quot;left&quot;: { &quot;Leaf&quot;: &quot;bottom&quot; },
+              &quot;right&quot;: {
+                &quot;Node&quot;: {
+                  &quot;constraint&quot;: &quot;$11{infected} &gt;= -2147483647&quot;,
+                  &quot;left&quot;: { &quot;Leaf&quot;: &quot;bottom&quot; },
+                  &quot;right&quot;: { &quot;Leaf&quot;: &quot;bottom&quot; }
+                }
+              }
+            }
+          }
+        }
+      },
+      &quot;right&quot;: {
+        &quot;Node&quot;: {
+          &quot;constraint&quot;: &quot;$11{infected} &gt;= 2147483648&quot;,
+          &quot;left&quot;: { &quot;Leaf&quot;: &quot;bottom&quot; },
+          &quot;right&quot;: {
+            &quot;Node&quot;: {
+              &quot;constraint&quot;: &quot;$11{infected} &gt;= 2&quot;,
+              &quot;left&quot;: { &quot;Leaf&quot;: &quot;bottom&quot; },
+              &quot;right&quot;: {
+                &quot;Node&quot;: {
+                  &quot;constraint&quot;: &quot;$11{infected} &gt;= -2147483647&quot;,
+                  &quot;left&quot;: { &quot;Leaf&quot;: &quot;bottom&quot; },
+                  &quot;right&quot;: { &quot;Leaf&quot;: &quot;0.&quot; }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  &quot;vulnerability&quot;: &quot;Not analyzed&quot;
+}</code></pre>
+</div>
+<script>hljs.highlightAll();</script>
+</body></html>

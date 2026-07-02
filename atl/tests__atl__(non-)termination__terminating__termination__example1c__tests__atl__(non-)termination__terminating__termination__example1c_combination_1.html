@@ -1,0 +1,1710 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>example1c</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+:root, html[data-theme="dark"]{
+  --bg:#0f1115; --surface:#171a21; --surface2:#1e222b; --border:#2a2f3a;
+  --text:#e6e8ee; --muted:#9aa3b2; --accent:#5b8def;
+  --true:#3fb950; --true-bg:#10371d;
+  --unknown:#d29922; --unknown-bg:#3a2e0c;
+  --fail:#f85149; --fail-bg:#3a1413;
+  --hero:linear-gradient(135deg,#1b2a4a 0%,#10131a 70%);
+}
+html[data-theme="light"]{
+  --bg:#f4f6fb; --surface:#ffffff; --surface2:#eef1f7; --border:#d8deea;
+  --text:#1b2430; --muted:#5b6675; --accent:#1f6feb;
+  --true:#1a7f37; --true-bg:#d8f3df;
+  --unknown:#9a6700; --unknown-bg:#fdf0d0;
+  --fail:#cf222e; --fail-bg:#ffe0e0;
+  --hero:linear-gradient(135deg,#dbe6ff 0%,#f4f6fb 70%);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px; line-height:1.5;
+}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1200px; margin:0 auto; padding:0 24px 80px}
+header.hero{
+  background:var(--hero);
+  border-bottom:1px solid var(--border); padding:34px 24px; margin-bottom:24px;
+}
+header.hero .inner{max-width:1200px; margin:0 auto; position:relative}
+header.hero h1{margin:0; font-size:30px; font-weight:700; letter-spacing:.3px}
+.theme-toggle{
+  position:absolute; top:0; right:0; cursor:pointer; font-size:13px; font-weight:600;
+  padding:8px 14px; border-radius:999px; background:var(--surface2);
+  border:1px solid var(--border); color:var(--text);
+}
+.theme-toggle:hover{border-color:var(--accent)}
+.stats{margin:4px 0 30px}
+.stats .stat-head{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:12px}
+.stats h2{font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); margin:0}
+.seg{display:inline-flex; border:1px solid var(--border); border-radius:10px; overflow:hidden}
+.seg button{
+  background:var(--surface); color:var(--muted); border:none; padding:7px 16px;
+  font-size:13px; font-weight:600; cursor:pointer;
+}
+.seg button.active{background:var(--accent); color:#fff}
+.stats .chart{background:#fff; border:1px solid var(--border); border-radius:14px; padding:10px; text-align:center}
+.stats .chart img{max-width:100%; height:auto}
+header.hero .sub{color:var(--muted); margin-top:6px; font-size:14px}
+.chips{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px}
+.chip{
+  display:inline-flex; align-items:baseline; gap:8px; padding:7px 14px;
+  border-radius:999px; background:var(--surface2); border:1px solid var(--border);
+  font-size:13px; font-weight:600;
+}
+.chip b{font-size:16px}
+.chip.true{color:var(--true)} .chip.unknown{color:var(--unknown)}
+.chip.fail,.chip.timeout{color:var(--fail)} .chip.total{color:var(--text)}
+.chip.info{color:var(--accent)}
+.controls{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin:6px 0 22px}
+.controls input[type=search]{
+  flex:1; min-width:220px; padding:10px 14px; border-radius:10px;
+  background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:14px;
+}
+.controls label{color:var(--muted); font-size:14px; display:inline-flex; gap:7px; align-items:center; cursor:pointer}
+section.grp{margin-bottom:30px}
+section.grp h2{
+  font-size:15px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted);
+  margin:0 0 10px; padding-bottom:8px; border-bottom:1px solid var(--border);
+}
+.card{background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden}
+table{border-collapse:collapse; width:100%; font-size:14px}
+thead th{
+  position:sticky; top:0; background:var(--surface2); color:var(--muted);
+  text-align:left; font-weight:600; padding:11px 16px; border-bottom:1px solid var(--border);
+  font-size:12px; text-transform:uppercase; letter-spacing:.5px;
+}
+tbody td{padding:11px 16px; border-bottom:1px solid var(--border); vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface2)}
+td.c{text-align:center; white-space:nowrap}
+code.mono,td.prop,.mono{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  font-size:13px; color:var(--text)}
+td.prop{color:var(--text); font-weight:500}
+.badge{
+  display:inline-block; padding:3px 11px; border-radius:999px; font-size:12px; font-weight:700;
+  letter-spacing:.3px;
+}
+.badge.true{color:var(--true); background:var(--true-bg)}
+.badge.unknown{color:var(--unknown); background:var(--unknown-bg)}
+.badge.fail,.badge.timeout{color:var(--fail); background:var(--fail-bg)}
+.badge.info{color:var(--accent); background:rgba(91,141,239,.16)}
+/* one colour per ctl lifting variant (TRUE cells) */
+.badge.v-base{color:#3fb950; background:rgba(63,185,80,.16)}
+.badge.v-resilience{color:#5b8def; background:rgba(91,141,239,.16)}
+.badge.v-resilience_reachability{color:#1ab2a8; background:rgba(26,178,168,.16)}
+.badge.v-robust_reachability{color:#f0883e; background:rgba(240,136,62,.18)}
+.chip.v-base{color:#3fb950} .chip.v-resilience{color:#5b8def}
+.chip.v-resilience_reachability{color:#1ab2a8} .chip.v-robust_reachability{color:#f0883e}
+.tag{font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--muted);
+  background:var(--surface2); padding:2px 8px; border-radius:6px}
+.empty{color:var(--muted); text-align:center; padding:40px}
+/* per-test page */
+.meta{display:flex; flex-wrap:wrap; gap:22px; background:var(--surface); border:1px solid var(--border);
+  border-radius:14px; padding:18px 22px; margin-bottom:22px}
+.meta .item{display:flex; flex-direction:column; gap:3px}
+.meta .item .k{font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted)}
+.meta .item .v{font-size:15px; font-family:ui-monospace,Menlo,monospace}
+/* tabs */
+nav.tabs{display:flex; gap:6px; margin:0 0 22px; border-bottom:1px solid var(--border)}
+nav.tabs button{
+  background:none; border:none; border-bottom:2px solid transparent; color:var(--muted);
+  font-size:15px; font-weight:600; padding:10px 18px; cursor:pointer; margin-bottom:-1px;
+}
+nav.tabs button:hover{color:var(--text)}
+nav.tabs button.active{color:var(--accent); border-bottom-color:var(--accent)}
+.panel[hidden]{display:none}
+/* summary table */
+table.summary{margin-bottom:22px}
+table.summary td.num{text-align:right; font-family:ui-monospace,Menlo,monospace}
+.rate{display:inline-block; min-width:46px}
+.bar{height:7px; border-radius:4px; background:var(--surface2); overflow:hidden; margin-top:4px}
+.bar > i{display:block; height:100%; background:var(--true)}
+/* decision tree */
+.treechips{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px}
+.tag.true{color:var(--true); background:var(--true-bg)}
+.treesvg{background:#fff; padding:14px; text-align:center; overflow:auto}
+.treesvg svg{max-width:100%; height:auto}
+ul.guards{margin:6px 0; padding-left:22px}
+ul.guards li{padding:2px 0; font-size:13px}
+h3.sec{font-size:14px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:26px 0 10px}
+pre.block{background:#0b0d12; border:1px solid var(--border); border-radius:12px; padding:16px;
+  overflow:auto; font-size:13px; line-height:1.45; max-height:560px}
+pre.block code{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.back{display:inline-block; margin-bottom:18px; font-size:14px}
+</style><script>
+(function(){
+  const root = document.documentElement;
+  function fromUrl(){ try{ return new URLSearchParams(location.search).get('theme'); }catch(e){ return null; } }
+  function fromStore(){ try{ return localStorage.getItem('ftheme'); }catch(e){ return null; } }
+  function persist(t){ try{ localStorage.setItem('ftheme', t); }catch(e){} }
+  // URL param wins (survives file:// where localStorage is not shared across pages).
+  root.setAttribute('data-theme', fromUrl() || fromStore() || 'dark');
+  // Carry the current theme through internal links so navigation keeps it.
+  function propagate(t){
+    document.querySelectorAll('a[href]').forEach(function(a){
+      const href = a.getAttribute('href');
+      if(!href || href.indexOf('://')>=0 || href.charAt(0)==='#') return;
+      if(href.indexOf('.html')<0) return;
+      a.setAttribute('href', href.split('?')[0] + '?theme=' + t);
+    });
+  }
+  function lbl(){ return root.getAttribute('data-theme')==='dark' ? '\u2600 light' : '\u263e dark'; }
+  document.addEventListener('DOMContentLoaded', function(){
+    propagate(root.getAttribute('data-theme'));
+    const btn = document.getElementById('theme');
+    if(!btn) return;
+    btn.textContent = lbl();
+    btn.addEventListener('click', function(){
+      const next = root.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      persist(next);
+      propagate(next);
+      btn.textContent = lbl();
+    });
+  });
+})();
+</script></head><body>
+<header class="hero"><div class="inner">
+<button id="theme" class="theme-toggle"></button>
+<a class="back" href="./index.html">&larr; back to overview</a>
+<h1>example1c</h1>
+<div class="sub mono">tests/atl/(non-)termination/terminating/termination/example1c_combination_1.c</div>
+</div></header>
+<div class="wrap">
+<div class="meta">
+  <div class="item"><span class="k">Group</span><span class="v">atl/</span></div>
+  <div class="item"><span class="k">Property</span><span class="v">AF{exit:true}</span></div>
+  <div class="item"><span class="k">Domain</span><span class="v">polyhedra</span></div>
+  <div class="item"><span class="k">Result</span><span class="v"><span class="badge unknown">UNKNOWN</span></span></div>
+  <div class="item"><span class="k">Time</span><span class="v">1.000 s</span></div>
+  <div class="item"><span class="k">Wall time</span><span class="v">0.668 s</span></div>
+</div>
+<h3 class="sec">Analyzer config</h3>
+<div class="card"><table><tbody><tr><td class="mono" style="color:var(--muted)">filename</td><td class="mono">tests/atl/(non-)termination/terminating/termination/example1c_combination_1.c</td></tr><tr><td class="mono" style="color:var(--muted)">analysis_type</td><td class="mono">termination</td></tr><tr><td class="mono" style="color:var(--muted)">property</td><td class="mono">AF{exit:true}</td></tr><tr><td class="mono" style="color:var(--muted)">precondition</td><td class="mono">true</td></tr><tr><td class="mono" style="color:var(--muted)">result</td><td class="mono">UKNOWN</td></tr><tr><td class="mono" style="color:var(--muted)">domain</td><td class="mono">polyhedra</td></tr><tr><td class="mono" style="color:var(--muted)">joinbwd</td><td class="mono">2</td></tr><tr><td class="mono" style="color:var(--muted)">time</td><td class="mono">1</td></tr></tbody></table></div>
+<h3 class="sec">Decision tree &amp; preconditions</h3>
+<div class="treechips">
+  <span class="tag">30 leaves</span>
+  <span class="tag true">12 defined region(s)</span>
+  <span class="tag">11 distinct guard(s)</span>
+</div>
+<div class="card treesvg"><svg width="1714pt" height="836pt"
+ viewBox="0.00 0.00 1714.46 836.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 832)">
+<title>T</title>
+<!-- n0 -->
+<g id="node1" class="node">
+<title>n0</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="226" cy="-810" rx="111.5" ry="18"/>
+<text text-anchor="middle" x="226" y="-807.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y}&#45;$7{__return7} &gt;= 4</text>
+</g>
+<!-- n1 -->
+<g id="node2" class="node">
+<title>n1</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="130" cy="-738" rx="58.86" ry="18"/>
+<text text-anchor="middle" x="130" y="-735.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= 21</text>
+</g>
+<!-- n0&#45;&gt;n1 -->
+<g id="edge57" class="edge">
+<title>n0&#45;&gt;n1</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M202.76,-792.05C189.89,-782.67 173.76,-770.91 159.95,-760.84"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="161.85,-757.89 151.71,-754.83 157.73,-763.55 161.85,-757.89"/>
+</g>
+<!-- n16 -->
+<g id="node17" class="node">
+<title>n16</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="322" cy="-738" rx="115.41" ry="18"/>
+<text text-anchor="middle" x="322" y="-735.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y}&#45;$7{__return7} &gt;= &#45;3</text>
+</g>
+<!-- n0&#45;&gt;n16 -->
+<g id="edge58" class="edge">
+<title>n0&#45;&gt;n16</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M249.24,-792.05C261.74,-782.94 277.32,-771.58 290.86,-761.71"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="292.96,-764.51 298.98,-755.79 288.83,-758.85 292.96,-764.51"/>
+</g>
+<!-- n2 -->
+<g id="node3" class="node">
+<title>n2</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M42,-684C42,-684 12,-684 12,-684 6,-684 0,-678 0,-672 0,-672 0,-660 0,-660 0,-654 6,-648 12,-648 12,-648 42,-648 42,-648 48,-648 54,-654 54,-660 54,-660 54,-672 54,-672 54,-678 48,-684 42,-684"/>
+<text text-anchor="middle" x="27" y="-663.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n1&#45;&gt;n2 -->
+<g id="edge13" class="edge">
+<title>n1&#45;&gt;n2</title>
+<path fill="none" stroke="#aaaaaa" d="M106.88,-721.29C93.3,-712.06 75.88,-700.22 60.78,-689.96"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="62.44,-686.85 52.2,-684.13 58.51,-692.64 62.44,-686.85"/>
+</g>
+<!-- n3 -->
+<g id="node4" class="node">
+<title>n3</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="131" cy="-666" rx="58.86" ry="18"/>
+<text text-anchor="middle" x="131" y="-663.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= 11</text>
+</g>
+<!-- n1&#45;&gt;n3 -->
+<g id="edge14" class="edge">
+<title>n1&#45;&gt;n3</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M130.25,-719.7C130.36,-711.98 130.49,-702.71 130.61,-694.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="134.11,-694.15 130.76,-684.1 127.11,-694.05 134.11,-694.15"/>
+</g>
+<!-- n4 -->
+<g id="node5" class="node">
+<title>n4</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M51,-612C51,-612 21,-612 21,-612 15,-612 9,-606 9,-600 9,-600 9,-588 9,-588 9,-582 15,-576 21,-576 21,-576 51,-576 51,-576 57,-576 63,-582 63,-588 63,-588 63,-600 63,-600 63,-606 57,-612 51,-612"/>
+<text text-anchor="middle" x="36" y="-591.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n3&#45;&gt;n4 -->
+<g id="edge11" class="edge">
+<title>n3&#45;&gt;n4</title>
+<path fill="none" stroke="#aaaaaa" d="M109.44,-649.12C97.02,-639.96 81.18,-628.29 67.4,-618.14"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="69.26,-615.16 59.13,-612.04 65.11,-620.79 69.26,-615.16"/>
+</g>
+<!-- n5 -->
+<g id="node6" class="node">
+<title>n5</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="136" cy="-594" rx="54.94" ry="18"/>
+<text text-anchor="middle" x="136" y="-591.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= 4</text>
+</g>
+<!-- n3&#45;&gt;n5 -->
+<g id="edge12" class="edge">
+<title>n3&#45;&gt;n5</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M132.24,-647.7C132.79,-639.98 133.45,-630.71 134.06,-622.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="137.56,-622.33 134.78,-612.1 130.57,-621.83 137.56,-622.33"/>
+</g>
+<!-- n6 -->
+<g id="node7" class="node">
+<title>n6</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M145,-540C145,-540 115,-540 115,-540 109,-540 103,-534 103,-528 103,-528 103,-516 103,-516 103,-510 109,-504 115,-504 115,-504 145,-504 145,-504 151,-504 157,-510 157,-516 157,-516 157,-528 157,-528 157,-534 151,-540 145,-540"/>
+<text text-anchor="middle" x="130" y="-519.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n5&#45;&gt;n6 -->
+<g id="edge9" class="edge">
+<title>n5&#45;&gt;n6</title>
+<path fill="none" stroke="#aaaaaa" d="M134.52,-575.7C133.86,-567.98 133.06,-558.71 132.32,-550.11"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="135.81,-549.77 131.47,-540.1 128.83,-550.37 135.81,-549.77"/>
+</g>
+<!-- n7 -->
+<g id="node8" class="node">
+<title>n7</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="230" cy="-522" rx="54.94" ry="18"/>
+<text text-anchor="middle" x="230" y="-519.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= 1</text>
+</g>
+<!-- n5&#45;&gt;n7 -->
+<g id="edge10" class="edge">
+<title>n5&#45;&gt;n7</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M157.33,-577.12C170.07,-567.63 186.44,-555.44 200.42,-545.03"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="202.82,-547.6 208.75,-538.82 198.64,-541.99 202.82,-547.6"/>
+</g>
+<!-- n8 -->
+<g id="node9" class="node">
+<title>n8</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M144,-468C144,-468 114,-468 114,-468 108,-468 102,-462 102,-456 102,-456 102,-444 102,-444 102,-438 108,-432 114,-432 114,-432 144,-432 144,-432 150,-432 156,-438 156,-444 156,-444 156,-456 156,-456 156,-462 150,-468 144,-468"/>
+<text text-anchor="middle" x="129" y="-447.2" font-family="monospace" font-size="11.00" fill="#1b2430">10</text>
+</g>
+<!-- n7&#45;&gt;n8 -->
+<g id="edge7" class="edge">
+<title>n7&#45;&gt;n8</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M207.58,-505.46C194.27,-496.24 177.14,-484.37 162.28,-474.06"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="164.05,-471.03 153.83,-468.21 160.06,-476.78 164.05,-471.03"/>
+</g>
+<!-- n9 -->
+<g id="node10" class="node">
+<title>n9</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="233" cy="-450" rx="58.86" ry="18"/>
+<text text-anchor="middle" x="233" y="-447.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= &#45;3</text>
+</g>
+<!-- n7&#45;&gt;n9 -->
+<g id="edge8" class="edge">
+<title>n7&#45;&gt;n9</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M230.74,-503.7C231.07,-495.98 231.47,-486.71 231.84,-478.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="235.34,-478.25 232.27,-468.1 228.34,-477.95 235.34,-478.25"/>
+</g>
+<!-- n10 -->
+<g id="node11" class="node">
+<title>n10</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M244,-396C244,-396 214,-396 214,-396 208,-396 202,-390 202,-384 202,-384 202,-372 202,-372 202,-366 208,-360 214,-360 214,-360 244,-360 244,-360 250,-360 256,-366 256,-372 256,-372 256,-384 256,-384 256,-390 250,-396 244,-396"/>
+<text text-anchor="middle" x="229" y="-375.2" font-family="monospace" font-size="11.00" fill="#1b2430">10</text>
+</g>
+<!-- n9&#45;&gt;n10 -->
+<g id="edge5" class="edge">
+<title>n9&#45;&gt;n10</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M232.01,-431.7C231.57,-423.98 231.04,-414.71 230.55,-406.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="234.04,-405.89 229.98,-396.1 227.05,-406.29 234.04,-405.89"/>
+</g>
+<!-- n11 -->
+<g id="node12" class="node">
+<title>n11</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="337" cy="-378" rx="62.58" ry="18"/>
+<text text-anchor="middle" x="337" y="-375.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= &#45;10</text>
+</g>
+<!-- n9&#45;&gt;n11 -->
+<g id="edge6" class="edge">
+<title>n9&#45;&gt;n11</title>
+<path fill="none" stroke="#aaaaaa" d="M256.34,-433.29C270.69,-423.63 289.28,-411.12 304.99,-400.55"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="307.04,-403.39 313.38,-394.9 303.13,-397.58 307.04,-403.39"/>
+</g>
+<!-- n12 -->
+<g id="node13" class="node">
+<title>n12</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M350,-324C350,-324 320,-324 320,-324 314,-324 308,-318 308,-312 308,-312 308,-300 308,-300 308,-294 314,-288 320,-288 320,-288 350,-288 350,-288 356,-288 362,-294 362,-300 362,-300 362,-312 362,-312 362,-318 356,-324 350,-324"/>
+<text text-anchor="middle" x="335" y="-303.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n11&#45;&gt;n12 -->
+<g id="edge3" class="edge">
+<title>n11&#45;&gt;n12</title>
+<path fill="none" stroke="#aaaaaa" d="M336.51,-359.7C336.29,-351.98 336.02,-342.71 335.77,-334.11"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="339.27,-334 335.49,-324.1 332.28,-334.2 339.27,-334"/>
+</g>
+<!-- n13 -->
+<g id="node14" class="node">
+<title>n13</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="443" cy="-306" rx="62.58" ry="18"/>
+<text text-anchor="middle" x="443" y="-303.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= &#45;20</text>
+</g>
+<!-- n11&#45;&gt;n13 -->
+<g id="edge4" class="edge">
+<title>n11&#45;&gt;n13</title>
+<path fill="none" stroke="#aaaaaa" d="M360.79,-361.29C375.52,-351.56 394.63,-338.95 410.71,-328.32"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="412.87,-331.09 419.29,-322.66 409.02,-325.25 412.87,-331.09"/>
+</g>
+<!-- n14 -->
+<g id="node15" class="node">
+<title>n14</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M405,-252C405,-252 375,-252 375,-252 369,-252 363,-246 363,-240 363,-240 363,-228 363,-228 363,-222 369,-216 375,-216 375,-216 405,-216 405,-216 411,-216 417,-222 417,-228 417,-228 417,-240 417,-240 417,-246 411,-252 405,-252"/>
+<text text-anchor="middle" x="390" y="-231.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n13&#45;&gt;n14 -->
+<g id="edge1" class="edge">
+<title>n13&#45;&gt;n14</title>
+<path fill="none" stroke="#aaaaaa" d="M430.17,-288.05C423.88,-279.75 416.18,-269.58 409.21,-260.38"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="411.91,-258.14 403.08,-252.28 406.33,-262.36 411.91,-258.14"/>
+</g>
+<!-- n15 -->
+<g id="node16" class="node">
+<title>n15</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M477,-252C477,-252 447,-252 447,-252 441,-252 435,-246 435,-240 435,-240 435,-228 435,-228 435,-222 441,-216 447,-216 447,-216 477,-216 477,-216 483,-216 489,-222 489,-228 489,-228 489,-240 489,-240 489,-246 483,-252 477,-252"/>
+<text text-anchor="middle" x="462" y="-231.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n13&#45;&gt;n15 -->
+<g id="edge2" class="edge">
+<title>n13&#45;&gt;n15</title>
+<path fill="none" stroke="#aaaaaa" d="M447.7,-287.7C449.81,-279.9 452.36,-270.51 454.72,-261.83"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="458.12,-262.67 457.36,-252.1 451.36,-260.84 458.12,-262.67"/>
+</g>
+<!-- n17 -->
+<g id="node18" class="node">
+<title>n17</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="321" cy="-666" rx="58.86" ry="18"/>
+<text text-anchor="middle" x="321" y="-663.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= 21</text>
+</g>
+<!-- n16&#45;&gt;n17 -->
+<g id="edge55" class="edge">
+<title>n16&#45;&gt;n17</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M321.75,-719.7C321.64,-711.98 321.51,-702.71 321.39,-694.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="324.89,-694.05 321.24,-684.1 317.89,-694.15 324.89,-694.05"/>
+</g>
+<!-- n32 -->
+<g id="node33" class="node">
+<title>n32</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="457" cy="-666" rx="58.86" ry="18"/>
+<text text-anchor="middle" x="457" y="-663.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= 21</text>
+</g>
+<!-- n16&#45;&gt;n32 -->
+<g id="edge56" class="edge">
+<title>n16&#45;&gt;n32</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M353.65,-720.59C373.25,-710.43 398.53,-697.32 419.18,-686.61"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="421.04,-689.59 428.31,-681.88 417.82,-683.37 421.04,-689.59"/>
+</g>
+<!-- n18 -->
+<g id="node19" class="node">
+<title>n18</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M256,-612C256,-612 226,-612 226,-612 220,-612 214,-606 214,-600 214,-600 214,-588 214,-588 214,-582 220,-576 226,-576 226,-576 256,-576 256,-576 262,-576 268,-582 268,-588 268,-588 268,-600 268,-600 268,-606 262,-612 256,-612"/>
+<text text-anchor="middle" x="241" y="-591.2" font-family="monospace" font-size="11.00" fill="#1b2430">11</text>
+</g>
+<!-- n17&#45;&gt;n18 -->
+<g id="edge27" class="edge">
+<title>n17&#45;&gt;n18</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M302.45,-648.76C292.24,-639.84 279.4,-628.6 268.1,-618.71"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="270.4,-616.07 260.57,-612.12 265.79,-621.34 270.4,-616.07"/>
+</g>
+<!-- n19 -->
+<g id="node20" class="node">
+<title>n19</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="345" cy="-594" rx="58.86" ry="18"/>
+<text text-anchor="middle" x="345" y="-591.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= 11</text>
+</g>
+<!-- n17&#45;&gt;n19 -->
+<g id="edge28" class="edge">
+<title>n17&#45;&gt;n19</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M326.81,-648.05C329.51,-640.18 332.79,-630.62 335.81,-621.79"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="339.14,-622.87 339.08,-612.28 332.52,-620.6 339.14,-622.87"/>
+</g>
+<!-- n20 -->
+<g id="node21" class="node">
+<title>n20</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M350,-540C350,-540 320,-540 320,-540 314,-540 308,-534 308,-528 308,-528 308,-516 308,-516 308,-510 314,-504 320,-504 320,-504 350,-504 350,-504 356,-504 362,-510 362,-516 362,-516 362,-528 362,-528 362,-534 356,-540 350,-540"/>
+<text text-anchor="middle" x="335" y="-519.2" font-family="monospace" font-size="11.00" fill="#1b2430">12</text>
+</g>
+<!-- n19&#45;&gt;n20 -->
+<g id="edge25" class="edge">
+<title>n19&#45;&gt;n20</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M342.53,-575.7C341.43,-567.98 340.1,-558.71 338.87,-550.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="342.32,-549.51 337.44,-540.1 335.39,-550.5 342.32,-549.51"/>
+</g>
+<!-- n21 -->
+<g id="node22" class="node">
+<title>n21</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="435" cy="-522" rx="54.94" ry="18"/>
+<text text-anchor="middle" x="435" y="-519.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= 4</text>
+</g>
+<!-- n19&#45;&gt;n21 -->
+<g id="edge26" class="edge">
+<title>n19&#45;&gt;n21</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M365.87,-576.76C377.89,-567.42 393.16,-555.55 406.29,-545.33"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="408.8,-547.81 414.55,-538.91 404.51,-542.28 408.8,-547.81"/>
+</g>
+<!-- n22 -->
+<g id="node23" class="node">
+<title>n22</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M427,-468C427,-468 397,-468 397,-468 391,-468 385,-462 385,-456 385,-456 385,-444 385,-444 385,-438 391,-432 397,-432 397,-432 427,-432 427,-432 433,-432 439,-438 439,-444 439,-444 439,-456 439,-456 439,-462 433,-468 427,-468"/>
+<text text-anchor="middle" x="412" y="-447.2" font-family="monospace" font-size="11.00" fill="#1b2430">12</text>
+</g>
+<!-- n21&#45;&gt;n22 -->
+<g id="edge23" class="edge">
+<title>n21&#45;&gt;n22</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M429.43,-504.05C426.84,-496.18 423.7,-486.62 420.8,-477.79"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="424.12,-476.68 417.68,-468.28 417.47,-478.87 424.12,-476.68"/>
+</g>
+<!-- n23 -->
+<g id="node24" class="node">
+<title>n23</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="512" cy="-450" rx="54.94" ry="18"/>
+<text text-anchor="middle" x="512" y="-447.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= 1</text>
+</g>
+<!-- n21&#45;&gt;n23 -->
+<g id="edge24" class="edge">
+<title>n21&#45;&gt;n23</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M452.86,-504.76C462.87,-495.66 475.52,-484.16 486.55,-474.13"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="489.19,-476.46 494.24,-467.15 484.48,-471.28 489.19,-476.46"/>
+</g>
+<!-- n24 -->
+<g id="node25" class="node">
+<title>n24</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M485,-396C485,-396 455,-396 455,-396 449,-396 443,-390 443,-384 443,-384 443,-372 443,-372 443,-366 449,-360 455,-360 455,-360 485,-360 485,-360 491,-360 497,-366 497,-372 497,-372 497,-384 497,-384 497,-390 491,-396 485,-396"/>
+<text text-anchor="middle" x="470" y="-375.2" font-family="monospace" font-size="11.00" fill="#1b2430">10</text>
+</g>
+<!-- n23&#45;&gt;n24 -->
+<g id="edge21" class="edge">
+<title>n23&#45;&gt;n24</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M501.83,-432.05C496.95,-423.92 491,-414 485.57,-404.94"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="488.51,-403.05 480.37,-396.28 482.51,-406.65 488.51,-403.05"/>
+</g>
+<!-- n25 -->
+<g id="node26" class="node">
+<title>n25</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="574" cy="-378" rx="58.86" ry="18"/>
+<text text-anchor="middle" x="574" y="-375.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= &#45;3</text>
+</g>
+<!-- n23&#45;&gt;n25 -->
+<g id="edge22" class="edge">
+<title>n23&#45;&gt;n25</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M526.69,-432.41C534.41,-423.69 544.02,-412.85 552.56,-403.21"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="555.4,-405.28 559.41,-395.47 550.16,-400.64 555.4,-405.28"/>
+</g>
+<!-- n26 -->
+<g id="node27" class="node">
+<title>n26</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M568,-324C568,-324 538,-324 538,-324 532,-324 526,-318 526,-312 526,-312 526,-300 526,-300 526,-294 532,-288 538,-288 538,-288 568,-288 568,-288 574,-288 580,-294 580,-300 580,-300 580,-312 580,-312 580,-318 574,-324 568,-324"/>
+<text text-anchor="middle" x="553" y="-303.2" font-family="monospace" font-size="11.00" fill="#1b2430">10</text>
+</g>
+<!-- n25&#45;&gt;n26 -->
+<g id="edge19" class="edge">
+<title>n25&#45;&gt;n26</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M568.92,-360.05C566.58,-352.26 563.75,-342.82 561.12,-334.08"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="564.41,-332.85 558.18,-324.28 557.7,-334.86 564.41,-332.85"/>
+</g>
+<!-- n27 -->
+<g id="node28" class="node">
+<title>n27</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="661" cy="-306" rx="62.58" ry="18"/>
+<text text-anchor="middle" x="661" y="-303.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= &#45;10</text>
+</g>
+<!-- n25&#45;&gt;n27 -->
+<g id="edge20" class="edge">
+<title>n25&#45;&gt;n27</title>
+<path fill="none" stroke="#aaaaaa" d="M594.18,-360.76C605.71,-351.49 620.34,-339.71 632.97,-329.55"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="635.33,-332.14 640.93,-323.15 630.95,-326.69 635.33,-332.14"/>
+</g>
+<!-- n28 -->
+<g id="node29" class="node">
+<title>n28</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M569,-252C569,-252 539,-252 539,-252 533,-252 527,-246 527,-240 527,-240 527,-228 527,-228 527,-222 533,-216 539,-216 539,-216 569,-216 569,-216 575,-216 581,-222 581,-228 581,-228 581,-240 581,-240 581,-246 575,-252 569,-252"/>
+<text text-anchor="middle" x="554" y="-231.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n27&#45;&gt;n28 -->
+<g id="edge17" class="edge">
+<title>n27&#45;&gt;n28</title>
+<path fill="none" stroke="#aaaaaa" d="M636.99,-289.29C622.74,-279.97 604.44,-268 588.65,-257.67"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="590.46,-254.67 580.18,-252.13 586.63,-260.53 590.46,-254.67"/>
+</g>
+<!-- n29 -->
+<g id="node30" class="node">
+<title>n29</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="662" cy="-234" rx="62.58" ry="18"/>
+<text text-anchor="middle" x="662" y="-231.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= &#45;20</text>
+</g>
+<!-- n27&#45;&gt;n29 -->
+<g id="edge18" class="edge">
+<title>n27&#45;&gt;n29</title>
+<path fill="none" stroke="#aaaaaa" d="M661.25,-287.7C661.36,-279.98 661.49,-270.71 661.61,-262.11"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="665.11,-262.15 661.76,-252.1 658.11,-262.05 665.11,-262.15"/>
+</g>
+<!-- n30 -->
+<g id="node31" class="node">
+<title>n30</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M675,-180C675,-180 645,-180 645,-180 639,-180 633,-174 633,-168 633,-168 633,-156 633,-156 633,-150 639,-144 645,-144 645,-144 675,-144 675,-144 681,-144 687,-150 687,-156 687,-156 687,-168 687,-168 687,-174 681,-180 675,-180"/>
+<text text-anchor="middle" x="660" y="-159.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n29&#45;&gt;n30 -->
+<g id="edge15" class="edge">
+<title>n29&#45;&gt;n30</title>
+<path fill="none" stroke="#aaaaaa" d="M661.51,-215.7C661.29,-207.98 661.02,-198.71 660.77,-190.11"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="664.27,-190 660.49,-180.1 657.28,-190.2 664.27,-190"/>
+</g>
+<!-- n31 -->
+<g id="node32" class="node">
+<title>n31</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M747,-180C747,-180 717,-180 717,-180 711,-180 705,-174 705,-168 705,-168 705,-156 705,-156 705,-150 711,-144 717,-144 717,-144 747,-144 747,-144 753,-144 759,-150 759,-156 759,-156 759,-168 759,-168 759,-174 753,-180 747,-180"/>
+<text text-anchor="middle" x="732" y="-159.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n29&#45;&gt;n31 -->
+<g id="edge16" class="edge">
+<title>n29&#45;&gt;n31</title>
+<path fill="none" stroke="#aaaaaa" d="M678.59,-216.41C687.14,-207.86 697.74,-197.26 707.23,-187.77"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="709.96,-189.99 714.55,-180.45 705.01,-185.04 709.96,-189.99"/>
+</g>
+<!-- n33 -->
+<g id="node34" class="node">
+<title>n33</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M470,-612C470,-612 440,-612 440,-612 434,-612 428,-606 428,-600 428,-600 428,-588 428,-588 428,-582 434,-576 440,-576 440,-576 470,-576 470,-576 476,-576 482,-582 482,-588 482,-588 482,-600 482,-600 482,-606 476,-612 470,-612"/>
+<text text-anchor="middle" x="455" y="-591.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n32&#45;&gt;n33 -->
+<g id="edge53" class="edge">
+<title>n32&#45;&gt;n33</title>
+<path fill="none" stroke="#aaaaaa" d="M456.51,-647.7C456.29,-639.98 456.02,-630.71 455.77,-622.11"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="459.27,-622 455.49,-612.1 452.28,-622.2 459.27,-622"/>
+</g>
+<!-- n34 -->
+<g id="node35" class="node">
+<title>n34</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="559" cy="-594" rx="58.86" ry="18"/>
+<text text-anchor="middle" x="559" y="-591.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= 11</text>
+</g>
+<!-- n32&#45;&gt;n34 -->
+<g id="edge54" class="edge">
+<title>n32&#45;&gt;n34</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M479.89,-649.29C494.06,-639.56 512.45,-626.95 527.93,-616.32"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="529.92,-619.2 536.19,-610.66 525.96,-613.43 529.92,-619.2"/>
+</g>
+<!-- n35 -->
+<g id="node36" class="node">
+<title>n35</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M573,-540C573,-540 543,-540 543,-540 537,-540 531,-534 531,-528 531,-528 531,-516 531,-516 531,-510 537,-504 543,-504 543,-504 573,-504 573,-504 579,-504 585,-510 585,-516 585,-516 585,-528 585,-528 585,-534 579,-540 573,-540"/>
+<text text-anchor="middle" x="558" y="-519.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n34&#45;&gt;n35 -->
+<g id="edge51" class="edge">
+<title>n34&#45;&gt;n35</title>
+<path fill="none" stroke="#aaaaaa" d="M558.75,-575.7C558.64,-567.98 558.51,-558.71 558.39,-550.11"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="561.89,-550.05 558.24,-540.1 554.89,-550.15 561.89,-550.05"/>
+</g>
+<!-- n36 -->
+<g id="node37" class="node">
+<title>n36</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="658" cy="-522" rx="54.94" ry="18"/>
+<text text-anchor="middle" x="658" y="-519.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= 4</text>
+</g>
+<!-- n34&#45;&gt;n36 -->
+<g id="edge52" class="edge">
+<title>n34&#45;&gt;n36</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M581.46,-577.12C595.1,-567.47 612.69,-555.04 627.57,-544.52"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="629.82,-547.21 635.97,-538.58 625.78,-541.5 629.82,-547.21"/>
+</g>
+<!-- n37 -->
+<g id="node38" class="node">
+<title>n37</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M673,-468C673,-468 643,-468 643,-468 637,-468 631,-462 631,-456 631,-456 631,-444 631,-444 631,-438 637,-432 643,-432 643,-432 673,-432 673,-432 679,-432 685,-438 685,-444 685,-444 685,-456 685,-456 685,-462 679,-468 673,-468"/>
+<text text-anchor="middle" x="658" y="-447.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n36&#45;&gt;n37 -->
+<g id="edge49" class="edge">
+<title>n36&#45;&gt;n37</title>
+<path fill="none" stroke="#aaaaaa" d="M658,-503.7C658,-495.98 658,-486.71 658,-478.11"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="661.5,-478.1 658,-468.1 654.5,-478.1 661.5,-478.1"/>
+</g>
+<!-- n38 -->
+<g id="node39" class="node">
+<title>n38</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="758" cy="-450" rx="54.94" ry="18"/>
+<text text-anchor="middle" x="758" y="-447.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= 1</text>
+</g>
+<!-- n36&#45;&gt;n38 -->
+<g id="edge50" class="edge">
+<title>n36&#45;&gt;n38</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M680.19,-505.46C694.05,-495.77 712.07,-483.15 727.29,-472.5"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="729.68,-475.09 735.87,-466.49 725.67,-469.36 729.68,-475.09"/>
+</g>
+<!-- n39 -->
+<g id="node40" class="node">
+<title>n39</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M771,-396C771,-396 741,-396 741,-396 735,-396 729,-390 729,-384 729,-384 729,-372 729,-372 729,-366 735,-360 741,-360 741,-360 771,-360 771,-360 777,-360 783,-366 783,-372 783,-372 783,-384 783,-384 783,-390 777,-396 771,-396"/>
+<text text-anchor="middle" x="756" y="-375.2" font-family="monospace" font-size="11.00" fill="#1b2430">10</text>
+</g>
+<!-- n38&#45;&gt;n39 -->
+<g id="edge47" class="edge">
+<title>n38&#45;&gt;n39</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M757.51,-431.7C757.29,-423.98 757.02,-414.71 756.77,-406.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="760.27,-406 756.49,-396.1 753.28,-406.2 760.27,-406"/>
+</g>
+<!-- n40 -->
+<g id="node41" class="node">
+<title>n40</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="860" cy="-378" rx="58.86" ry="18"/>
+<text text-anchor="middle" x="860" y="-375.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= &#45;3</text>
+</g>
+<!-- n38&#45;&gt;n40 -->
+<g id="edge48" class="edge">
+<title>n38&#45;&gt;n40</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M780.64,-433.46C794.8,-423.75 813.24,-411.09 828.78,-400.42"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="830.81,-403.28 837.07,-394.73 826.85,-397.51 830.81,-403.28"/>
+</g>
+<!-- n41 -->
+<g id="node42" class="node">
+<title>n41</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M874,-324C874,-324 844,-324 844,-324 838,-324 832,-318 832,-312 832,-312 832,-300 832,-300 832,-294 838,-288 844,-288 844,-288 874,-288 874,-288 880,-288 886,-294 886,-300 886,-300 886,-312 886,-312 886,-318 880,-324 874,-324"/>
+<text text-anchor="middle" x="859" y="-303.2" font-family="monospace" font-size="11.00" fill="#1b2430">10</text>
+</g>
+<!-- n40&#45;&gt;n41 -->
+<g id="edge45" class="edge">
+<title>n40&#45;&gt;n41</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M859.75,-359.7C859.64,-351.98 859.51,-342.71 859.39,-334.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="862.89,-334.05 859.24,-324.1 855.89,-334.15 862.89,-334.05"/>
+</g>
+<!-- n42 -->
+<g id="node43" class="node">
+<title>n42</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="967" cy="-306" rx="62.58" ry="18"/>
+<text text-anchor="middle" x="967" y="-303.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= &#45;10</text>
+</g>
+<!-- n40&#45;&gt;n42 -->
+<g id="edge46" class="edge">
+<title>n40&#45;&gt;n42</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M883.75,-361.46C898.6,-351.75 917.95,-339.09 934.25,-328.42"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="936.5,-331.14 942.95,-322.73 932.67,-325.28 936.5,-331.14"/>
+</g>
+<!-- n43 -->
+<g id="node44" class="node">
+<title>n43</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="966" cy="-234" rx="111.5" ry="18"/>
+<text text-anchor="middle" x="966" y="-231.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y}+$7{__return7} &gt;= 4</text>
+</g>
+<!-- n42&#45;&gt;n43 -->
+<g id="edge43" class="edge">
+<title>n42&#45;&gt;n43</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M966.75,-287.7C966.64,-279.98 966.51,-270.71 966.39,-262.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="969.89,-262.05 966.24,-252.1 962.89,-262.15 969.89,-262.05"/>
+</g>
+<!-- n48 -->
+<g id="node49" class="node">
+<title>n48</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="1211" cy="-234" rx="62.58" ry="18"/>
+<text text-anchor="middle" x="1211" y="-231.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y} &gt;= &#45;20</text>
+</g>
+<!-- n42&#45;&gt;n48 -->
+<g id="edge44" class="edge">
+<title>n42&#45;&gt;n48</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M1009.78,-292.73C1051.2,-280.84 1114.09,-262.8 1158.52,-250.06"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="1159.62,-253.38 1168.27,-247.26 1157.69,-246.65 1159.62,-253.38"/>
+</g>
+<!-- n44 -->
+<g id="node45" class="node">
+<title>n44</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M821,-180C821,-180 791,-180 791,-180 785,-180 779,-174 779,-168 779,-168 779,-156 779,-156 779,-150 785,-144 791,-144 791,-144 821,-144 821,-144 827,-144 833,-150 833,-156 833,-156 833,-168 833,-168 833,-174 827,-180 821,-180"/>
+<text text-anchor="middle" x="806" y="-159.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n43&#45;&gt;n44 -->
+<g id="edge31" class="edge">
+<title>n43&#45;&gt;n44</title>
+<path fill="none" stroke="#aaaaaa" d="M927.58,-217.01C905.11,-207.57 876.03,-195.17 842.62,-180.21"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="843.63,-176.83 833.08,-175.92 840.76,-183.21 843.63,-176.83"/>
+</g>
+<!-- n45 -->
+<g id="node46" class="node">
+<title>n45</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="966" cy="-162" rx="115.41" ry="18"/>
+<text text-anchor="middle" x="966" y="-159.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y}+$7{__return7} &gt;= &#45;3</text>
+</g>
+<!-- n43&#45;&gt;n45 -->
+<g id="edge32" class="edge">
+<title>n43&#45;&gt;n45</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M966,-215.7C966,-207.98 966,-198.71 966,-190.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="969.5,-190.1 966,-180.1 962.5,-190.1 969.5,-190.1"/>
+</g>
+<!-- n46 -->
+<g id="node47" class="node">
+<title>n46</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M915,-108C915,-108 885,-108 885,-108 879,-108 873,-102 873,-96 873,-96 873,-84 873,-84 873,-78 879,-72 885,-72 885,-72 915,-72 915,-72 921,-72 927,-78 927,-84 927,-84 927,-96 927,-96 927,-102 921,-108 915,-108"/>
+<text text-anchor="middle" x="900" y="-87.2" font-family="monospace" font-size="11.00" fill="#1b2430">12</text>
+</g>
+<!-- n45&#45;&gt;n46 -->
+<g id="edge29" class="edge">
+<title>n45&#45;&gt;n46</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M950.02,-144.05C942.04,-135.58 932.22,-125.17 923.4,-115.82"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="925.69,-113.15 916.29,-108.28 920.6,-117.95 925.69,-113.15"/>
+</g>
+<!-- n47 -->
+<g id="node48" class="node">
+<title>n47</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M987,-108C987,-108 957,-108 957,-108 951,-108 945,-102 945,-96 945,-96 945,-84 945,-84 945,-78 951,-72 957,-72 957,-72 987,-72 987,-72 993,-72 999,-78 999,-84 999,-84 999,-96 999,-96 999,-102 993,-108 987,-108"/>
+<text text-anchor="middle" x="972" y="-87.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n45&#45;&gt;n47 -->
+<g id="edge30" class="edge">
+<title>n45&#45;&gt;n47</title>
+<path fill="none" stroke="#aaaaaa" d="M967.48,-143.7C968.14,-135.98 968.94,-126.71 969.68,-118.11"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="973.17,-118.37 970.53,-108.1 966.19,-117.77 973.17,-118.37"/>
+</g>
+<!-- n49 -->
+<g id="node50" class="node">
+<title>n49</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="1211" cy="-162" rx="111.5" ry="18"/>
+<text text-anchor="middle" x="1211" y="-159.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y}+$7{__return7} &gt;= 4</text>
+</g>
+<!-- n48&#45;&gt;n49 -->
+<g id="edge41" class="edge">
+<title>n48&#45;&gt;n49</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M1211,-215.7C1211,-207.98 1211,-198.71 1211,-190.11"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="1214.5,-190.1 1211,-180.1 1207.5,-190.1 1214.5,-190.1"/>
+</g>
+<!-- n54 -->
+<g id="node55" class="node">
+<title>n54</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="1451" cy="-162" rx="111.5" ry="18"/>
+<text text-anchor="middle" x="1451" y="-159.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y}+$7{__return7} &gt;= 4</text>
+</g>
+<!-- n48&#45;&gt;n54 -->
+<g id="edge42" class="edge">
+<title>n48&#45;&gt;n54</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M1253.35,-220.65C1291.18,-209.61 1347.05,-193.32 1389.75,-180.87"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="1390.85,-184.19 1399.47,-178.03 1388.89,-177.47 1390.85,-184.19"/>
+</g>
+<!-- n50 -->
+<g id="node51" class="node">
+<title>n50</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M1086,-108C1086,-108 1056,-108 1056,-108 1050,-108 1044,-102 1044,-96 1044,-96 1044,-84 1044,-84 1044,-78 1050,-72 1056,-72 1056,-72 1086,-72 1086,-72 1092,-72 1098,-78 1098,-84 1098,-84 1098,-96 1098,-96 1098,-102 1092,-108 1086,-108"/>
+<text text-anchor="middle" x="1071" y="-87.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n49&#45;&gt;n50 -->
+<g id="edge35" class="edge">
+<title>n49&#45;&gt;n50</title>
+<path fill="none" stroke="#aaaaaa" d="M1178.53,-144.76C1157.18,-134.09 1129.23,-120.11 1107.17,-109.09"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="1108.63,-105.9 1098.12,-104.56 1105.5,-112.16 1108.63,-105.9"/>
+</g>
+<!-- n51 -->
+<g id="node52" class="node">
+<title>n51</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="1231" cy="-90" rx="115.41" ry="18"/>
+<text text-anchor="middle" x="1231" y="-87.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y}+$7{__return7} &gt;= &#45;3</text>
+</g>
+<!-- n49&#45;&gt;n51 -->
+<g id="edge36" class="edge">
+<title>n49&#45;&gt;n51</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M1215.94,-143.7C1218.17,-135.9 1220.85,-126.51 1223.33,-117.83"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="1226.73,-118.68 1226.11,-108.1 1220,-116.76 1226.73,-118.68"/>
+</g>
+<!-- n52 -->
+<g id="node53" class="node">
+<title>n52</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M1210,-36C1210,-36 1180,-36 1180,-36 1174,-36 1168,-30 1168,-24 1168,-24 1168,-12 1168,-12 1168,-6 1174,0 1180,0 1180,0 1210,0 1210,0 1216,0 1222,-6 1222,-12 1222,-12 1222,-24 1222,-24 1222,-30 1216,-36 1210,-36"/>
+<text text-anchor="middle" x="1195" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">12</text>
+</g>
+<!-- n51&#45;&gt;n52 -->
+<g id="edge33" class="edge">
+<title>n51&#45;&gt;n52</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M1222.1,-71.7C1218,-63.73 1213.05,-54.1 1208.51,-45.26"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="1211.48,-43.4 1203.8,-36.1 1205.26,-46.6 1211.48,-43.4"/>
+</g>
+<!-- n53 -->
+<g id="node54" class="node">
+<title>n53</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M1282,-36C1282,-36 1252,-36 1252,-36 1246,-36 1240,-30 1240,-24 1240,-24 1240,-12 1240,-12 1240,-6 1246,0 1252,0 1252,0 1282,0 1282,0 1288,0 1294,-6 1294,-12 1294,-12 1294,-24 1294,-24 1294,-30 1288,-36 1282,-36"/>
+<text text-anchor="middle" x="1267" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n51&#45;&gt;n53 -->
+<g id="edge34" class="edge">
+<title>n51&#45;&gt;n53</title>
+<path fill="none" stroke="#aaaaaa" d="M1239.9,-71.7C1244,-63.73 1248.95,-54.1 1253.49,-45.26"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="1256.74,-46.6 1258.2,-36.1 1250.52,-43.4 1256.74,-46.6"/>
+</g>
+<!-- n55 -->
+<g id="node56" class="node">
+<title>n55</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M1446,-108C1446,-108 1416,-108 1416,-108 1410,-108 1404,-102 1404,-96 1404,-96 1404,-84 1404,-84 1404,-78 1410,-72 1416,-72 1416,-72 1446,-72 1446,-72 1452,-72 1458,-78 1458,-84 1458,-84 1458,-96 1458,-96 1458,-102 1452,-108 1446,-108"/>
+<text text-anchor="middle" x="1431" y="-87.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n54&#45;&gt;n55 -->
+<g id="edge39" class="edge">
+<title>n54&#45;&gt;n55</title>
+<path fill="none" stroke="#aaaaaa" d="M1446.06,-143.7C1443.83,-135.9 1441.15,-126.51 1438.67,-117.83"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="1442,-116.76 1435.89,-108.1 1435.27,-118.68 1442,-116.76"/>
+</g>
+<!-- n56 -->
+<g id="node57" class="node">
+<title>n56</title>
+<ellipse fill="#eef1f7" stroke="#bbbbbb" cx="1591" cy="-90" rx="115.41" ry="18"/>
+<text text-anchor="middle" x="1591" y="-87.2" font-family="monospace" font-size="11.00" fill="#1f3a93">$25{y}+$7{__return7} &gt;= &#45;3</text>
+</g>
+<!-- n54&#45;&gt;n56 -->
+<g id="edge40" class="edge">
+<title>n54&#45;&gt;n56</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M1483.47,-144.76C1503.03,-134.98 1528.14,-122.43 1549.18,-111.91"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="1550.84,-114.99 1558.22,-107.39 1547.71,-108.73 1550.84,-114.99"/>
+</g>
+<!-- n57 -->
+<g id="node58" class="node">
+<title>n57</title>
+<path fill="#d8f3df" stroke="#bbbbbb" d="M1570,-36C1570,-36 1540,-36 1540,-36 1534,-36 1528,-30 1528,-24 1528,-24 1528,-12 1528,-12 1528,-6 1534,0 1540,0 1540,0 1570,0 1570,0 1576,0 1582,-6 1582,-12 1582,-12 1582,-24 1582,-24 1582,-30 1576,-36 1570,-36"/>
+<text text-anchor="middle" x="1555" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">11</text>
+</g>
+<!-- n56&#45;&gt;n57 -->
+<g id="edge37" class="edge">
+<title>n56&#45;&gt;n57</title>
+<path fill="none" stroke="#2ca02c" stroke-width="1.8" d="M1582.1,-71.7C1578,-63.73 1573.05,-54.1 1568.51,-45.26"/>
+<polygon fill="#2ca02c" stroke="#2ca02c" stroke-width="1.8" points="1571.48,-43.4 1563.8,-36.1 1565.26,-46.6 1571.48,-43.4"/>
+</g>
+<!-- n58 -->
+<g id="node59" class="node">
+<title>n58</title>
+<path fill="#ffe0e0" stroke="#bbbbbb" d="M1642,-36C1642,-36 1612,-36 1612,-36 1606,-36 1600,-30 1600,-24 1600,-24 1600,-12 1600,-12 1600,-6 1606,0 1612,0 1612,0 1642,0 1642,0 1648,0 1654,-6 1654,-12 1654,-12 1654,-24 1654,-24 1654,-30 1648,-36 1642,-36"/>
+<text text-anchor="middle" x="1627" y="-15.2" font-family="monospace" font-size="11.00" fill="#1b2430">top</text>
+</g>
+<!-- n56&#45;&gt;n58 -->
+<g id="edge38" class="edge">
+<title>n56&#45;&gt;n58</title>
+<path fill="none" stroke="#aaaaaa" d="M1599.9,-71.7C1604,-63.73 1608.95,-54.1 1613.49,-45.26"/>
+<polygon fill="#aaaaaa" stroke="#aaaaaa" points="1616.74,-46.6 1618.2,-36.1 1610.52,-43.4 1616.74,-46.6"/>
+</g>
+</g>
+</svg>
+</div>
+<h3 class="sec">Defined regions (sufficient preconditions)</h3>
+<div class="card"><table><thead><tr><th>#</th><th>Region (conjunction of guards)</th>
+<th>Ranking function</th><th>Status</th></tr></thead><tbody><tr><td class="num">1</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; $25{y}-$7{__return7} &gt;= -3 &and; $25{y} &gt;= 21</td><td class="mono">11</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">2</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; $25{y}-$7{__return7} &gt;= -3 &and; &not;($25{y} &gt;= 21) &and; $25{y} &gt;= 11</td><td class="mono">12</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">3</td><td class="prop">$25{y}-$7{__return7} &gt;= 4 &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; $25{y} &gt;= 1</td><td class="mono">10</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">4</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; $25{y}-$7{__return7} &gt;= -3 &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; $25{y} &gt;= 4</td><td class="mono">12</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">5</td><td class="prop">$25{y}-$7{__return7} &gt;= 4 &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; &not;($25{y} &gt;= 1) &and; $25{y} &gt;= -3</td><td class="mono">10</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">6</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; $25{y}-$7{__return7} &gt;= -3 &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; $25{y} &gt;= 1</td><td class="mono">10</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">7</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; &not;($25{y}-$7{__return7} &gt;= -3) &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; $25{y} &gt;= 1</td><td class="mono">10</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">8</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; $25{y}-$7{__return7} &gt;= -3 &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; &not;($25{y} &gt;= 1) &and; $25{y} &gt;= -3</td><td class="mono">10</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">9</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; &not;($25{y}-$7{__return7} &gt;= -3) &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; &not;($25{y} &gt;= 1) &and; $25{y} &gt;= -3</td><td class="mono">10</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">10</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; &not;($25{y}-$7{__return7} &gt;= -3) &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; &not;($25{y} &gt;= 1) &and; &not;($25{y} &gt;= -3) &and; $25{y} &gt;= -10 &and; &not;($25{y}+$7{__return7} &gt;= 4) &and; $25{y}+$7{__return7} &gt;= -3</td><td class="mono">12</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">11</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; &not;($25{y}-$7{__return7} &gt;= -3) &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; &not;($25{y} &gt;= 1) &and; &not;($25{y} &gt;= -3) &and; &not;($25{y} &gt;= -10) &and; $25{y} &gt;= -20 &and; &not;($25{y}+$7{__return7} &gt;= 4) &and; $25{y}+$7{__return7} &gt;= -3</td><td class="mono">12</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">12</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; &not;($25{y}-$7{__return7} &gt;= -3) &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; &not;($25{y} &gt;= 1) &and; &not;($25{y} &gt;= -3) &and; &not;($25{y} &gt;= -10) &and; &not;($25{y} &gt;= -20) &and; &not;($25{y}+$7{__return7} &gt;= 4) &and; $25{y}+$7{__return7} &gt;= -3</td><td class="mono">11</td><td class="c"><span class="badge true">defined</span></td></tr><tr><td class="num">13</td><td class="prop">$25{y}-$7{__return7} &gt;= 4 &and; $25{y} &gt;= 21</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">14</td><td class="prop">$25{y}-$7{__return7} &gt;= 4 &and; &not;($25{y} &gt;= 21) &and; $25{y} &gt;= 11</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">15</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; &not;($25{y}-$7{__return7} &gt;= -3) &and; $25{y} &gt;= 21</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">16</td><td class="prop">$25{y}-$7{__return7} &gt;= 4 &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; $25{y} &gt;= 4</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">17</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; &not;($25{y}-$7{__return7} &gt;= -3) &and; &not;($25{y} &gt;= 21) &and; $25{y} &gt;= 11</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">18</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; &not;($25{y}-$7{__return7} &gt;= -3) &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; $25{y} &gt;= 4</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">19</td><td class="prop">$25{y}-$7{__return7} &gt;= 4 &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; &not;($25{y} &gt;= 1) &and; &not;($25{y} &gt;= -3) &and; $25{y} &gt;= -10</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">20</td><td class="prop">$25{y}-$7{__return7} &gt;= 4 &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; &not;($25{y} &gt;= 1) &and; &not;($25{y} &gt;= -3) &and; &not;($25{y} &gt;= -10) &and; $25{y} &gt;= -20</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">21</td><td class="prop">$25{y}-$7{__return7} &gt;= 4 &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; &not;($25{y} &gt;= 1) &and; &not;($25{y} &gt;= -3) &and; &not;($25{y} &gt;= -10) &and; &not;($25{y} &gt;= -20)</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">22</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; $25{y}-$7{__return7} &gt;= -3 &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; &not;($25{y} &gt;= 1) &and; &not;($25{y} &gt;= -3) &and; $25{y} &gt;= -10</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">23</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; $25{y}-$7{__return7} &gt;= -3 &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; &not;($25{y} &gt;= 1) &and; &not;($25{y} &gt;= -3) &and; &not;($25{y} &gt;= -10) &and; $25{y} &gt;= -20</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">24</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; $25{y}-$7{__return7} &gt;= -3 &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; &not;($25{y} &gt;= 1) &and; &not;($25{y} &gt;= -3) &and; &not;($25{y} &gt;= -10) &and; &not;($25{y} &gt;= -20)</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">25</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; &not;($25{y}-$7{__return7} &gt;= -3) &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; &not;($25{y} &gt;= 1) &and; &not;($25{y} &gt;= -3) &and; $25{y} &gt;= -10 &and; $25{y}+$7{__return7} &gt;= 4</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">26</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; &not;($25{y}-$7{__return7} &gt;= -3) &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; &not;($25{y} &gt;= 1) &and; &not;($25{y} &gt;= -3) &and; $25{y} &gt;= -10 &and; &not;($25{y}+$7{__return7} &gt;= 4) &and; &not;($25{y}+$7{__return7} &gt;= -3)</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">27</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; &not;($25{y}-$7{__return7} &gt;= -3) &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; &not;($25{y} &gt;= 1) &and; &not;($25{y} &gt;= -3) &and; &not;($25{y} &gt;= -10) &and; $25{y} &gt;= -20 &and; $25{y}+$7{__return7} &gt;= 4</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">28</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; &not;($25{y}-$7{__return7} &gt;= -3) &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; &not;($25{y} &gt;= 1) &and; &not;($25{y} &gt;= -3) &and; &not;($25{y} &gt;= -10) &and; &not;($25{y} &gt;= -20) &and; $25{y}+$7{__return7} &gt;= 4</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">29</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; &not;($25{y}-$7{__return7} &gt;= -3) &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; &not;($25{y} &gt;= 1) &and; &not;($25{y} &gt;= -3) &and; &not;($25{y} &gt;= -10) &and; $25{y} &gt;= -20 &and; &not;($25{y}+$7{__return7} &gt;= 4) &and; &not;($25{y}+$7{__return7} &gt;= -3)</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr><tr><td class="num">30</td><td class="prop">&not;($25{y}-$7{__return7} &gt;= 4) &and; &not;($25{y}-$7{__return7} &gt;= -3) &and; &not;($25{y} &gt;= 21) &and; &not;($25{y} &gt;= 11) &and; &not;($25{y} &gt;= 4) &and; &not;($25{y} &gt;= 1) &and; &not;($25{y} &gt;= -3) &and; &not;($25{y} &gt;= -10) &and; &not;($25{y} &gt;= -20) &and; &not;($25{y}+$7{__return7} &gt;= 4) &and; &not;($25{y}+$7{__return7} &gt;= -3)</td><td class="mono">top</td><td class="c"><span class="badge fail">undefined</span></td></tr></tbody></table></div>
+<h3 class="sec">Distinct guards</h3>
+<div class="card" style="padding:10px 20px"><ul class="guards"><li class="mono">$25{y} &gt;= -10</li><li class="mono">$25{y} &gt;= -20</li><li class="mono">$25{y} &gt;= -3</li><li class="mono">$25{y} &gt;= 1</li><li class="mono">$25{y} &gt;= 11</li><li class="mono">$25{y} &gt;= 21</li><li class="mono">$25{y} &gt;= 4</li><li class="mono">$25{y}+$7{__return7} &gt;= -3</li><li class="mono">$25{y}+$7{__return7} &gt;= 4</li><li class="mono">$25{y}-$7{__return7} &gt;= -3</li><li class="mono">$25{y}-$7{__return7} &gt;= 4</li></ul></div>
+
+<h3 class="sec">Source</h3>
+<pre class="block"><code class="language-c">/*
+TERMINATION
+
+suggested parameters:
+- conflict-driven conditional termination
+- partition abstract domain = boxes [default]
+- function abstract domain = affine [default]
+- backward widening delay = 2 [default]
+*/
+
+int get_step(int x) {
+  if (x &gt; 20) {
+    return 3;
+  } else if (x &gt; 10) {
+    return 2;
+  }
+  return 1;
+}
+
+int main()  {
+  int y, step;
+  if (y &gt; 0) {
+    step = -get_step(y);
+  } else {
+    step = get_step(-y);
+  }
+  while(y &lt; -3 || y &gt; 3) {
+    y = y + step;
+  }
+  return 0;
+}</code></pre>
+<h3 class="sec">Analysis log</h3>
+<pre class="block"><code>
+Abstract typed Syntax:
+{
+  {63}
+}
+int get_step(int x)@
+{
+  {9} if (x &gt; 20)
+  {
+    {10} __return7 = 3;
+    {11} return;
+    {12}
+  }
+  else
+  {
+    {13} if (x &gt; 10)
+    {
+      {14} __return7 = 2;
+      {15} return;
+      {16}
+    }
+    else
+    {
+      {17}
+    }
+    {18}
+  }
+  {19} __return7 = 1;
+  {20} return;
+  {21} return#6:;
+  {22}
+}
+int main()@
+{
+  {26} int y;
+  {28} int step;
+  {29} if (y &gt; 0)
+  {
+    {31} int x = y;
+    {32} int __returned30;
+    {33} int __return7;
+    {34} __return7 = get_step(x);
+    {35} __returned30 = __return7;
+    {36} delete __return7;
+    {37} delete x;
+    {38} step = - __returned30;
+    {39} delete __returned30;
+    {40}
+  }
+  else
+  {
+    {42} int x = - y;
+    {43} int __returned41;
+    {44} int __return7;
+    {45} __return7 = get_step(x);
+    {46} __returned41 = __return7;
+    {47} delete __return7;
+    {48} delete x;
+    {49} step = __returned41;
+    {50} delete __returned41;
+    {51}
+  }
+  {52} while {53} (y &lt; - 3 || y &gt; 3)
+  {
+    {54} y = y + step;
+    {55}
+  }
+  {56} break#53:;
+  {57} __return24 = 0;
+  {58} return;
+  {59} return#23:;
+  {60} delete y;
+  {61} delete step;
+  {62}
+}
+
+Backward Analysis:
+[9:]: -$8{x} &gt;= -10 ? 3
+$8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 ? 3
+$8{x} &gt;= 21 ? 2
+
+[ 10:]: top ? 1
+
+[11:]: top ? 0.
+
+[12:]: top ? 1
+
+[13:]: -$8{x} &gt;= -10 ? 2
+$8{x} &gt;= 11 ? 2
+
+[14:]: top ? 1
+
+[15:]: top ? 0.
+
+[16:]: top ? 1
+
+[17:]: top ? 1
+
+[18:]: top ? 1
+
+[19:]: top ? 1
+
+[20:]: top ? 0.
+
+[21:]: -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 6
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 4
+$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 6
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 ? top
+
+[22:]: -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 6
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 4
+$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 6
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 ? top
+
+[26:]: -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 21 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 21 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 11
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 21 ? top
+$25{y} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 11 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= -20 &amp;&amp; -$25{y} &gt;= 11 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 12
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= -20 &amp;&amp; -$25{y} &gt;= 11 ? top
+$25{y} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 12
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 0 ? 10
+$25{y} &gt;= 1 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 10
+$25{y} &gt;= 4 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -10 ? top
+$25{y} &gt;= 11 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -20 ? top
+$25{y} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 ? top
+$25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 21 ? top
+$25{y} &gt;= -20 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 11 ? top
+$25{y} &gt;= -10 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 0 ? 10
+$25{y} &gt;= 1 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 10
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -10 ? 12
+$25{y} &gt;= 11 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -20 ? 12
+$25{y} &gt;= 21 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 ? 11
+$25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 21 ? top
+$25{y} &gt;= -20 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 11 ? top
+$25{y} &gt;= -10 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 0 ? 10
+$25{y} &gt;= 1 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 10
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -10 ? top
+$25{y} &gt;= 11 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -20 ? top
+$25{y} &gt;= 21 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 ? top
+
+[28:]: -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 21 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 21 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 11
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 21 ? top
+$25{y} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 11 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= -20 &amp;&amp; -$25{y} &gt;= 11 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 12
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= -20 &amp;&amp; -$25{y} &gt;= 11 ? top
+$25{y} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 12
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 0 ? 10
+$25{y} &gt;= 1 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 10
+$25{y} &gt;= 4 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -10 ? top
+$25{y} &gt;= 11 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -20 ? top
+$25{y} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 ? top
+$25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 21 ? top
+$25{y} &gt;= -20 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 11 ? top
+$25{y} &gt;= -10 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 0 ? 10
+$25{y} &gt;= 1 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 10
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -10 ? 12
+$25{y} &gt;= 11 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -20 ? 12
+$25{y} &gt;= 21 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 ? 11
+$25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 21 ? top
+$25{y} &gt;= -20 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 11 ? top
+$25{y} &gt;= -10 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 0 ? 10
+$25{y} &gt;= 1 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 10
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -10 ? top
+$25{y} &gt;= 11 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -20 ? top
+$25{y} &gt;= 21 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 ? top
+
+[29:]: -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 21 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 21 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 11
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 21 ? top
+$25{y} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 11 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= -20 &amp;&amp; -$25{y} &gt;= 11 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 12
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= -20 &amp;&amp; -$25{y} &gt;= 11 ? top
+$25{y} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 12
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 0 ? 10
+$25{y} &gt;= 1 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 10
+$25{y} &gt;= 4 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -10 ? top
+$25{y} &gt;= 11 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -20 ? top
+$25{y} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 ? top
+$25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 21 ? top
+$25{y} &gt;= -20 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 11 ? top
+$25{y} &gt;= -10 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 0 ? 10
+$25{y} &gt;= 1 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 10
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -10 ? 12
+$25{y} &gt;= 11 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -20 ? 12
+$25{y} &gt;= 21 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 ? 11
+$25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 21 ? top
+$25{y} &gt;= -20 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 11 ? top
+$25{y} &gt;= -10 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 0 ? 10
+$25{y} &gt;= 1 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 10
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -10 ? top
+$25{y} &gt;= 11 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -20 ? top
+$25{y} &gt;= 21 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 ? top
+
+[31:]: -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 9
+$25{y} &gt;= 4 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -10 ? top
+$25{y} &gt;= 11 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -20 ? top
+$25{y} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 ? top
+$25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 ? 11
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 9
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -10 ? 11
+$25{y} &gt;= 11 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -20 ? 11
+$25{y} &gt;= 21 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 ? 10
+$25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 9
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -10 ? top
+$25{y} &gt;= 11 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -20 ? top
+$25{y} &gt;= 21 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 ? top
+
+[32:]: -$8{x} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 ? top
+$25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 ? 10
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 ? 10
+$25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 ? top
+$8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 ? top
+$25{y}-$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 ? 10
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 ? 10
+$25{y}-$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 ? top
+$8{x} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 7
+$25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 ? top
+$25{y}-$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 ? 9
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 7
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 ? 9
+$25{y}-$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y} &gt;= -3 ? 7
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 ? top
+
+[33:]: -$8{x} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 ? top
+$25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 ? 10
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 ? 10
+$25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 ? top
+$8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 ? top
+$25{y}-$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 ? 10
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 ? 10
+$25{y}-$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 ? top
+$8{x} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 7
+$25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 ? top
+$25{y}-$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 ? 9
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 7
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 ? 9
+$25{y}-$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y} &gt;= -3 ? 7
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 ? top
+
+[34:]: -$8{x} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 ? top
+$25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 ? 10
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 ? 10
+$25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 ? top
+$8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 ? top
+$25{y}-$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 ? 10
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 ? 10
+$25{y}-$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 ? top
+$8{x} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 7
+$25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 ? top
+$25{y}-$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 ? 9
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 7
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 ? 9
+$25{y}-$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y} &gt;= -3 ? 7
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 ? top
+
+[35:]: -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 4
+$25{y} &gt;= 4 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 ? top
+$25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 ? 6
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 4
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 ? 6
+$25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 4
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 ? top
+
+[36:]: -$25{y}+$30{__returned30} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y}+$30{__returned30} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 3
+$25{y} &gt;= 4 &amp;&amp; -$25{y}+$30{__returned30} &gt;= 4 ? top
+$25{y}-$30{__returned30} &gt;= -3 &amp;&amp; -$25{y}+$30{__returned30} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 ? 5
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$30{__returned30} &gt;= -3 &amp;&amp; -$25{y}+$30{__returned30} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 3
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$30{__returned30} &gt;= -3 &amp;&amp; -$25{y}+$30{__returned30} &gt;= -3 ? 5
+$25{y}-$30{__returned30} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$30{__returned30} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 3
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$30{__returned30} &gt;= 4 ? top
+
+[37:]: -$25{y}+$30{__returned30} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y}+$30{__returned30} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 3
+$25{y} &gt;= 4 &amp;&amp; -$25{y}+$30{__returned30} &gt;= 4 ? top
+$25{y}-$30{__returned30} &gt;= -3 &amp;&amp; -$25{y}+$30{__returned30} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 ? 5
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$30{__returned30} &gt;= -3 &amp;&amp; -$25{y}+$30{__returned30} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 3
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$30{__returned30} &gt;= -3 &amp;&amp; -$25{y}+$30{__returned30} &gt;= -3 ? 5
+$25{y}-$30{__returned30} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$30{__returned30} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 3
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$30{__returned30} &gt;= 4 ? top
+
+[38:]: -$25{y}+$30{__returned30} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y}+$30{__returned30} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 3
+$25{y} &gt;= 4 &amp;&amp; -$25{y}+$30{__returned30} &gt;= 4 ? top
+$25{y}-$30{__returned30} &gt;= -3 &amp;&amp; -$25{y}+$30{__returned30} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 ? 5
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$30{__returned30} &gt;= -3 &amp;&amp; -$25{y}+$30{__returned30} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 3
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$30{__returned30} &gt;= -3 &amp;&amp; -$25{y}+$30{__returned30} &gt;= -3 ? 5
+$25{y}-$30{__returned30} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$30{__returned30} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 3
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$30{__returned30} &gt;= 4 ? top
+
+[39:]: -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= 4 ? top
+$25{y}+$27{step} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= -3 ? 4
+$25{y}+$27{step} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 2
+$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= 4 ? top
+$25{y}+$27{step} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= -3 ? 4
+$25{y}+$27{step} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 ? top
+
+[40:]: -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= 4 ? top
+$25{y}+$27{step} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= -3 ? 4
+$25{y}+$27{step} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 2
+$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= 4 ? top
+$25{y}+$27{step} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= -3 ? 4
+$25{y}+$27{step} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 ? top
+
+[42:]: -$25{y} &gt;= 21 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 21 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 10
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 21 ? top
+$25{y} &gt;= -20 &amp;&amp; -$25{y} &gt;= 11 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= -20 &amp;&amp; -$25{y} &gt;= 11 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 11
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= -20 &amp;&amp; -$25{y} &gt;= 11 ? top
+$25{y} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 11
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 9
+$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 11
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 ? top
+
+[43:]: -$8{x} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 10
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 10
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 ? top
+$8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 10
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 10
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 ? top
+$8{x} &gt;= 21 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 9
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y} &gt;= -3 ? 7
+$25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 9
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 ? top
+
+[44:]: -$8{x} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 10
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 10
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 ? top
+$8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 10
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 10
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 ? top
+$8{x} &gt;= 21 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 9
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y} &gt;= -3 ? 7
+$25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 9
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 ? top
+
+[45:]: -$8{x} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 10
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 10
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$8{x} &gt;= -10 ? top
+$8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 10
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y} &gt;= -3 ? 8
+$25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 10
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 11 &amp;&amp; -$8{x} &gt;= -20 ? top
+$8{x} &gt;= 21 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 9
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y} &gt;= -3 ? 7
+$25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 9
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; $8{x} &gt;= 21 ? top
+
+[46:]: -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 6
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 4
+$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 6
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 ? top
+
+[47:]: -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$41{__returned41} &gt;= 4 ? top
+$25{y}+$41{__returned41} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$41{__returned41} &gt;= -3 ? 5
+$25{y}+$41{__returned41} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 3
+$25{y} &gt;= 4 &amp;&amp; -$25{y}-$41{__returned41} &gt;= 4 ? top
+$25{y}+$41{__returned41} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$25{y}-$41{__returned41} &gt;= -3 ? 5
+$25{y}+$41{__returned41} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 ? top
+
+[48:]: -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$41{__returned41} &gt;= 4 ? top
+$25{y}+$41{__returned41} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$41{__returned41} &gt;= -3 ? 5
+$25{y}+$41{__returned41} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 3
+$25{y} &gt;= 4 &amp;&amp; -$25{y}-$41{__returned41} &gt;= 4 ? top
+$25{y}+$41{__returned41} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$25{y}-$41{__returned41} &gt;= -3 ? 5
+$25{y}+$41{__returned41} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 ? top
+
+[49:]: -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$41{__returned41} &gt;= 4 ? top
+$25{y}+$41{__returned41} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$41{__returned41} &gt;= -3 ? 5
+$25{y}+$41{__returned41} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 3
+$25{y} &gt;= 4 &amp;&amp; -$25{y}-$41{__returned41} &gt;= 4 ? top
+$25{y}+$41{__returned41} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$25{y}-$41{__returned41} &gt;= -3 ? 5
+$25{y}+$41{__returned41} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 ? top
+
+[50:]: -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= 4 ? top
+$25{y}+$27{step} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= -3 ? 4
+$25{y}+$27{step} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 2
+$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= 4 ? top
+$25{y}+$27{step} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= -3 ? 4
+$25{y}+$27{step} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 ? top
+
+[51:]: -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= 4 ? top
+$25{y}+$27{step} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= -3 ? 4
+$25{y}+$27{step} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 2
+$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= 4 ? top
+$25{y}+$27{step} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= -3 ? 4
+$25{y}+$27{step} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 ? top
+
+[52:]: -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= 4 ? top
+$25{y}+$27{step} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= -3 ? 4
+$25{y}+$27{step} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 2
+$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= 4 ? top
+$25{y}+$27{step} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= -3 ? 4
+$25{y}+$27{step} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 ? top
+
+[53:]: -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= 4 ? top
+$25{y}+$27{step} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= -3 ? 4
+$25{y}+$27{step} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 2
+$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= 4 ? top
+$25{y}+$27{step} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= -3 ? 4
+$25{y}+$27{step} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 ? top
+
+[54:]: -$25{y}-$27{step} &gt;= 4 &amp;&amp; -$25{y}-2$27{step} &gt;= 4 ? top
+$25{y}+2$27{step} &gt;= -3 &amp;&amp; -$25{y}-$27{step} &gt;= 4 &amp;&amp; -$25{y}-2$27{step} &gt;= -3 ? 5
+$25{y}+2$27{step} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= 4 ? top
+$25{y}+$27{step} &gt;= -3 &amp;&amp; -$25{y}-$27{step} &gt;= -3 ? 3
+$25{y}+$27{step} &gt;= 4 &amp;&amp; -$25{y}-2$27{step} &gt;= 4 ? top
+$25{y}+2$27{step} &gt;= -3 &amp;&amp; $25{y}+$27{step} &gt;= 4 &amp;&amp; -$25{y}-2$27{step} &gt;= -3 ? 5
+$25{y}+2$27{step} &gt;= 4 &amp;&amp; $25{y}+$27{step} &gt;= 4 ? top
+
+[55:]: -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= 4 ? top
+$25{y}+$27{step} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= -3 ? 4
+$25{y}+$27{step} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 2
+$25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= 4 ? top
+$25{y}+$27{step} &gt;= -3 &amp;&amp; $25{y} &gt;= 4 &amp;&amp; -$25{y}-$27{step} &gt;= -3 ? 4
+$25{y}+$27{step} &gt;= 4 &amp;&amp; $25{y} &gt;= 4 ? top
+
+[56:]: top ? 1
+
+[57:]: top ? 1
+
+[58:]: top ? 0.
+
+[59:]: top ? 0.
+
+[60:]: top ? 0.
+
+[61:]: top ? 0.
+
+[62:]: top ? 0.
+
+[63:]: -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 21 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 21 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 11
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 21 ? top
+$25{y} &gt;= -20 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 11 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= -20 &amp;&amp; -$25{y} &gt;= 11 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 12
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= -20 &amp;&amp; -$25{y} &gt;= 11 ? top
+$25{y} &gt;= -10 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= 4 ? top
+$25{y}+$7{__return7} &gt;= -3 &amp;&amp; $25{y} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 &amp;&amp; -$25{y}-$7{__return7} &gt;= -3 ? 12
+$25{y}+$7{__return7} &gt;= 4 &amp;&amp; $25{y} &gt;= -10 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 0 ? 10
+$25{y} &gt;= 1 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 10
+$25{y} &gt;= 4 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -10 ? top
+$25{y} &gt;= 11 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -20 ? top
+$25{y} &gt;= 21 &amp;&amp; -$25{y}+$7{__return7} &gt;= 4 ? top
+$25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 21 ? top
+$25{y} &gt;= -20 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 11 ? top
+$25{y} &gt;= -10 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= 0 ? 10
+$25{y} &gt;= 1 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -3 ? 10
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -10 ? 12
+$25{y} &gt;= 11 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 &amp;&amp; -$25{y} &gt;= -20 ? 12
+$25{y} &gt;= 21 &amp;&amp; $25{y}-$7{__return7} &gt;= -3 &amp;&amp; -$25{y}+$7{__return7} &gt;= -3 ? 11
+$25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 21 ? top
+$25{y} &gt;= -20 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 11 ? top
+$25{y} &gt;= -10 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 4 ? top
+$25{y} &gt;= -3 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= 0 ? 10
+$25{y} &gt;= 1 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -3 ? 10
+$25{y} &gt;= 4 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -10 ? top
+$25{y} &gt;= 11 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 &amp;&amp; -$25{y} &gt;= -20 ? top
+$25{y} &gt;= 21 &amp;&amp; $25{y}-$7{__return7} &gt;= 4 ? top
+
+
+Final Analysis Result: UNKNOWN
+{
+  &quot;Config&quot;: {
+    &quot;filename&quot;: &quot;tests/atl/(non-)termination/terminating/termination/example1c_combination_1.c&quot;,
+    &quot;analysis_type&quot;: &quot;termination&quot;,
+    &quot;property&quot;: &quot;AF{exit:true}&quot;,
+    &quot;precondition&quot;: &quot;true&quot;,
+    &quot;result&quot;: &quot;UKNOWN&quot;,
+    &quot;domain&quot;: &quot;polyhedra&quot;,
+    &quot;joinbwd&quot;: 2,
+    &quot;time&quot;: &quot;1&quot;
+  },
+  &quot;tree&quot;: {
+    &quot;Node&quot;: {
+      &quot;constraint&quot;: &quot;$25{y}-$7{__return7} &gt;= 4&quot;,
+      &quot;left&quot;: {
+        &quot;Node&quot;: {
+          &quot;constraint&quot;: &quot;$25{y} &gt;= 21&quot;,
+          &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+          &quot;right&quot;: {
+            &quot;Node&quot;: {
+              &quot;constraint&quot;: &quot;$25{y} &gt;= 11&quot;,
+              &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+              &quot;right&quot;: {
+                &quot;Node&quot;: {
+                  &quot;constraint&quot;: &quot;$25{y} &gt;= 4&quot;,
+                  &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+                  &quot;right&quot;: {
+                    &quot;Node&quot;: {
+                      &quot;constraint&quot;: &quot;$25{y} &gt;= 1&quot;,
+                      &quot;left&quot;: { &quot;Leaf&quot;: &quot;10&quot; },
+                      &quot;right&quot;: {
+                        &quot;Node&quot;: {
+                          &quot;constraint&quot;: &quot;$25{y} &gt;= -3&quot;,
+                          &quot;left&quot;: { &quot;Leaf&quot;: &quot;10&quot; },
+                          &quot;right&quot;: {
+                            &quot;Node&quot;: {
+                              &quot;constraint&quot;: &quot;$25{y} &gt;= -10&quot;,
+                              &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+                              &quot;right&quot;: {
+                                &quot;Node&quot;: {
+                                  &quot;constraint&quot;: &quot;$25{y} &gt;= -20&quot;,
+                                  &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+                                  &quot;right&quot;: { &quot;Leaf&quot;: &quot;top&quot; }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      &quot;right&quot;: {
+        &quot;Node&quot;: {
+          &quot;constraint&quot;: &quot;$25{y}-$7{__return7} &gt;= -3&quot;,
+          &quot;left&quot;: {
+            &quot;Node&quot;: {
+              &quot;constraint&quot;: &quot;$25{y} &gt;= 21&quot;,
+              &quot;left&quot;: { &quot;Leaf&quot;: &quot;11&quot; },
+              &quot;right&quot;: {
+                &quot;Node&quot;: {
+                  &quot;constraint&quot;: &quot;$25{y} &gt;= 11&quot;,
+                  &quot;left&quot;: { &quot;Leaf&quot;: &quot;12&quot; },
+                  &quot;right&quot;: {
+                    &quot;Node&quot;: {
+                      &quot;constraint&quot;: &quot;$25{y} &gt;= 4&quot;,
+                      &quot;left&quot;: { &quot;Leaf&quot;: &quot;12&quot; },
+                      &quot;right&quot;: {
+                        &quot;Node&quot;: {
+                          &quot;constraint&quot;: &quot;$25{y} &gt;= 1&quot;,
+                          &quot;left&quot;: { &quot;Leaf&quot;: &quot;10&quot; },
+                          &quot;right&quot;: {
+                            &quot;Node&quot;: {
+                              &quot;constraint&quot;: &quot;$25{y} &gt;= -3&quot;,
+                              &quot;left&quot;: { &quot;Leaf&quot;: &quot;10&quot; },
+                              &quot;right&quot;: {
+                                &quot;Node&quot;: {
+                                  &quot;constraint&quot;: &quot;$25{y} &gt;= -10&quot;,
+                                  &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+                                  &quot;right&quot;: {
+                                    &quot;Node&quot;: {
+                                      &quot;constraint&quot;: &quot;$25{y} &gt;= -20&quot;,
+                                      &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+                                      &quot;right&quot;: { &quot;Leaf&quot;: &quot;top&quot; }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          &quot;right&quot;: {
+            &quot;Node&quot;: {
+              &quot;constraint&quot;: &quot;$25{y} &gt;= 21&quot;,
+              &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+              &quot;right&quot;: {
+                &quot;Node&quot;: {
+                  &quot;constraint&quot;: &quot;$25{y} &gt;= 11&quot;,
+                  &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+                  &quot;right&quot;: {
+                    &quot;Node&quot;: {
+                      &quot;constraint&quot;: &quot;$25{y} &gt;= 4&quot;,
+                      &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+                      &quot;right&quot;: {
+                        &quot;Node&quot;: {
+                          &quot;constraint&quot;: &quot;$25{y} &gt;= 1&quot;,
+                          &quot;left&quot;: { &quot;Leaf&quot;: &quot;10&quot; },
+                          &quot;right&quot;: {
+                            &quot;Node&quot;: {
+                              &quot;constraint&quot;: &quot;$25{y} &gt;= -3&quot;,
+                              &quot;left&quot;: { &quot;Leaf&quot;: &quot;10&quot; },
+                              &quot;right&quot;: {
+                                &quot;Node&quot;: {
+                                  &quot;constraint&quot;: &quot;$25{y} &gt;= -10&quot;,
+                                  &quot;left&quot;: {
+                                    &quot;Node&quot;: {
+                                      &quot;constraint&quot;: &quot;$25{y}+$7{__return7} &gt;= 4&quot;,
+                                      &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+                                      &quot;right&quot;: {
+                                        &quot;Node&quot;: {
+                                          &quot;constraint&quot;: &quot;$25{y}+$7{__return7} &gt;= -3&quot;,
+                                          &quot;left&quot;: { &quot;Leaf&quot;: &quot;12&quot; },
+                                          &quot;right&quot;: { &quot;Leaf&quot;: &quot;top&quot; }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  &quot;right&quot;: {
+                                    &quot;Node&quot;: {
+                                      &quot;constraint&quot;: &quot;$25{y} &gt;= -20&quot;,
+                                      &quot;left&quot;: {
+                                        &quot;Node&quot;: {
+                                          &quot;constraint&quot;: &quot;$25{y}+$7{__return7} &gt;= 4&quot;,
+                                          &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+                                          &quot;right&quot;: {
+                                            &quot;Node&quot;: {
+                                              &quot;constraint&quot;: &quot;$25{y}+$7{__return7} &gt;= -3&quot;,
+                                              &quot;left&quot;: { &quot;Leaf&quot;: &quot;12&quot; },
+                                              &quot;right&quot;: { &quot;Leaf&quot;: &quot;top&quot; }
+                                            }
+                                          }
+                                        }
+                                      },
+                                      &quot;right&quot;: {
+                                        &quot;Node&quot;: {
+                                          &quot;constraint&quot;: &quot;$25{y}+$7{__return7} &gt;= 4&quot;,
+                                          &quot;left&quot;: { &quot;Leaf&quot;: &quot;top&quot; },
+                                          &quot;right&quot;: {
+                                            &quot;Node&quot;: {
+                                              &quot;constraint&quot;: &quot;$25{y}+$7{__return7} &gt;= -3&quot;,
+                                              &quot;left&quot;: { &quot;Leaf&quot;: &quot;11&quot; },
+                                              &quot;right&quot;: { &quot;Leaf&quot;: &quot;top&quot; }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  &quot;vulnerability&quot;: &quot;Not analyzed&quot;
+}</code></pre>
+</div>
+<script>hljs.highlightAll();</script>
+</body></html>
